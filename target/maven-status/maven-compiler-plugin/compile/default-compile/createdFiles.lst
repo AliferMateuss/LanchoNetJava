@@ -17,6 +17,7 @@ com\example\lanchonet\dtos\PessoaDto.class
 com\example\lanchonet\controllers\RelatorioController.class
 com\example\lanchonet\facades\UsuarioFacade.class
 com\example\lanchonet\facades\MesaFacade.class
+com\example\lanchonet\configs\WebConfiguration.class
 com\example\lanchonet\entidades\ItensCompra.class
 com\example\lanchonet\entidades\Compra.class
 com\example\lanchonet\controllers\ContasController.class
@@ -50,3 +51,4 @@ com\example\lanchonet\controllers\TipoPagamentoController.class
 com\example\lanchonet\dtos\CidadeDto.class
 com\example\lanchonet\facades\TipoPagamentoFacade.class
 com\example\lanchonet\facades\ProdutoFacade.class
+com\example\lanchonet\configs\WebConfiguration$1.class

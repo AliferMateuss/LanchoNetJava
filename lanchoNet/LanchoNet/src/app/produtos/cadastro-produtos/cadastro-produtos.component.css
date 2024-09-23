@@ -1,0 +1,19 @@
+.was-validated .form-control:valid, .form-control.is-valid {
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  padding-right: initial;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+.teste {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+  .mat-mdc-dialog-container.mdc-dialog.cdk-dialog-container.mdc-dialog--open, #mat-mdc-dialog-0 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }

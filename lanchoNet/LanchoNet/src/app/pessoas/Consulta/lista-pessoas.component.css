@@ -1,0 +1,9 @@
+body{
+    overflow:hidden;
+}
+
+
+
+.mat-column-nome, .mat-column-documento {
+  border-right: 1px solid currentColor;
+}

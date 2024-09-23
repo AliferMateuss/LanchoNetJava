@@ -1,0 +1,25 @@
+<h1 class="text-center">Cadastro de Mesas</h1>
+<div *ngIf="formMesa != undefined" style="margin-top: 20px">
+  <form class="row g-3 needs-validation" (ngSubmit)="salvarMesa()" [formGroup]="formMesa" #formDir="ngForm">
+      <div class="row" style="margin-bottom:40px;">
+        <div class="col-md-6">
+          <label for="numero" class="form-label">Número</label>
+          <input type="number" class="form-control" id="numero" [(ngModel)]="mesa.numero" formControlName="numero" required>
+          <div class="invalid-feedback">
+            Campo obrigatório
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="capacidade" class="form-label">Capacidade</label>
+          <input type="number" class="form-control" id="capacidade" [(ngModel)]="mesa.capacidade" formControlName="capacidade" required>
+          <div class="invalid-feedback">
+            Campo obrigatório
+          </div>
+        </div>
+      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
+        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaMesas']">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CadastroGrupoUsuariosComponent } from './cadastro-grupo-usuarios.component';
+import { CadastroCategoriasComponent } from './cadastro-categoria.component';
 
 describe('CadastroGrupoUsuariosComponent', () => {
-  let component: CadastroGrupoUsuariosComponent;
-  let fixture: ComponentFixture<CadastroGrupoUsuariosComponent>;
+  let component: CadastroCategoriasComponent;
+  let fixture: ComponentFixture<CadastroCategoriasComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CadastroGrupoUsuariosComponent]
+      declarations: [CadastroCategoriasComponent]
     });
-    fixture = TestBed.createComponent(CadastroGrupoUsuariosComponent);
+    fixture = TestBed.createComponent(CadastroCategoriasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

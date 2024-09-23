@@ -1,0 +1,56 @@
+<h1 class="text-center" style=" margin-bottom: 60px; ">Lista de Pessoas</h1>
+<div class="container-fluid">
+  <div class="container-fluid border border-dark rounded-4" style="margin: 10px 0px 10px 0px; padding-bottom: 10px; max-height: 300px; overflow-y: auto;">
+    <div class="col-md-12">
+      <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" matSort>
+        <ng-container matColumnDef="usuario">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Usuário </mat-header-cell>
+          <mat-cell *matCellDef="let usu"> {{ usu.usuario }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="grupoUsuario">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Grupo Usuário </mat-header-cell>
+          <mat-cell *matCellDef="let usu">  </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Acoes">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let usu" style="display:flex; align-items:center; justify-content:center;">
+            <button class="btn btn-primary" type="button" style="margin-right:8px" [routerLink]="['/../cadastroUsuarios', usu.id]"> <i class="bi bi-pencil-fill"></i> </button>
+            <button class="btn btn-danger" type="button" style="margin-right:8px" (click)="excluirUsuario(usu.id)"> <i class="bi bi-trash-fill"></i> </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="background-color: white;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <tr class="mat-row noDataRow" *matNoDataRow>
+          <td class="mat-cell" colspan="3">Nenhum usuário cadastrado!</td>
+        </tr>
+      </mat-table>
+      <mat-paginator #paginator [pageSize]="10" itemsPerPageLabel="" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; flex-wrap: wrap; flex-direction: row; column-gap: 100px; }">
+    <button type="button" class="btn btn-danger" [routerLink]="['/../']">
+      Voltar <i class="bi bi-arrow-bar-left"></i>
+    </button>
+    <button type="button" class="btn btn-primary" [routerLink]="['/../cadastroUsuarios', '' ]">
+      Cadastrar Produto <i class="bi bi-person-add"></i>
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

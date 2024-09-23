@@ -1,0 +1,71 @@
+<div class="top-bar">
+
+</div>
+<div class="overlay" (click)="fecharMenu()"  [ngClass]="{ 'menu-aberto': menuAberto, 'menu-fechado': !menuAberto }"></div>
+<div class="menu" [ngClass]="{ 'menu-aberto': menuAberto, 'menu-fechado': !menuAberto }">
+  <ul class="nav flex-column">
+    <li class="nav-item menuItem">
+      <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/home']">Home</a>
+    </li>
+    <li class="nav-item menuItem">
+      <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/counter']">Vender</a>
+    </li>
+    <li class="nav-item menuItem">
+      <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/fetch-data']">Comprar</a>
+    </li>
+    <li class="nav-item menuItem">
+      <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/relatorios']">Relatorios</a>
+    </li>
+    <li class="nav-item has-submenu" [class.submenu-active]="subMenuAberto.cadastros">
+      <a data-bs-toggle="collapse" data-bs-target="#cadastros" aria-expanded="false" aria-controls="cadastros" class="nav-link text-light" (click)="toggleSubMenu('cadastros')">
+        Cadastros
+        <span class="submenu-icon" [ngClass]="{'rotate-icon': subMenuAberto.cadastros}"><i class="bi bi-chevron-right"></i></span>
+      </a>
+      <div class="collapse" id="cadastros" style="">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small submenu">
+          <li class="nav-item">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaGruposUsuarios']">Grupos de Usuários</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaMesas']">Mesas</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaPessoas']">Pessoas</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaProdutos']">Produtos</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaTiposPagamento']">Tipos de Pagamento</a>
+          </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaUsuarios']">Usuários</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="nav-item has-submenu" [class.submenu-active]="subMenuAberto.movimentos">
+      <a data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false" class="nav-link text-light" (click)="toggleSubMenu('movimentos')">
+        Movimentos
+        <span class="submenu-icon" [ngClass]="{'rotate-icon': subMenuAberto.movimentos}"><i class="bi bi-chevron-right"></i></span>
+      </a>
+      <div class="collapse" id="home-collapse" style="">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small submenu">
+        </ul>
+      </div>
+    </li>
+  </ul>
+</div>
+<div class="menu-button-background">
+  <div class="menu-button">
+    <label class="hamburger">
+      <input type="checkbox" [(ngModel)]="menuAberto" (click)="alternarMenu()">
+      <svg viewBox="0 0 32 32">
+        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+        <path class="line" d="M7 16 27 16"></path>
+      </svg>
+    </label>
+  </div>
+</div>
+
+

@@ -1,18 +1,21 @@
 package com.example.lanchonet.entidades;
+import com.example.lanchonet.enums.StatusPedido;
 import com.example.lanchonet.enums.StatusVenda;
-import com.example.lanchonet.enums.TipoCompra;
+import com.example.lanchonet.enums.TipoPedido;
 import com.example.lanchonet.enums.TipoVenda;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "venda")
-public class Venda {
+@Table(name = "pedido")
+public class Pedido {
     @Getter
     @Setter
     @Id
@@ -22,7 +25,12 @@ public class Venda {
     @Getter
     @Setter
     @Temporal(TemporalType.DATE)
-    private Date dataVenda;
+    private Date dataPedido = new Date();
+
+    @Getter
+    @Setter
+    @Temporal(TemporalType.DATE)
+    private Date dataFechamentoPedido;
 
     @Getter
     @Setter
@@ -30,29 +38,28 @@ public class Venda {
 
     @Getter
     @Setter
-    private Double valorTotal;
+    private BigDecimal valorTotal;
 
     @Getter
     @Setter
-    private Boolean vendaFiado;
-
-    @Getter
-    @Setter
-    private Boolean vendaBalcao;
-
-    @Getter
-    @Setter
-    private String nomeCliente = "Venda Balção";
+    private String nomeCliente;
 
     @Getter
     @Setter
     @Enumerated(EnumType.STRING)
-    private TipoVenda tipoVenda;
+    private StatusPedido statusPedido;
 
     @Getter
     @Setter
-    @Enumerated(EnumType.STRING)
-    private StatusVenda statusVenda;
+    @Enumerated
+    private TipoPedido tipoPedido;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @Column(name = "id_pedido")
+    private Venda venda;
 
     @JsonIgnore
     @Getter
@@ -65,7 +72,7 @@ public class Venda {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", nullable = false)
+    @JoinColumn(name = "id_pessoa")
     private Pessoa pessoa;
 
     @JsonIgnore
@@ -75,21 +82,52 @@ public class Venda {
     @JoinColumn(name = "id_mesa", nullable = false)
     private Mesa mesa;
 
-    @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "id_tipo_pagamento", nullable = false)
-    private TipoPagamento tipoPagamento;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItensPedido> itensPedido;
 
-    @JsonIgnore
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ContasAReceber> contasAReceber;
+    @Transient
+    private Date dataPermanencia;
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItensVenda> itensVenda;
+    @Transient
+    @JsonProperty
+    private Boolean pedidoFechado;
+
+    @Getter
+    @Setter
+    @Transient
+    @JsonProperty
+    private Boolean pedidoPago;
+
+
+    @JsonProperty
+    @Transient
+    @Getter
+    @Setter
+    private Long pessoaId;
+
+    @JsonProperty
+    @Transient
+    @Getter
+    @Setter
+    private Long usuarioId;
+
+    @JsonProperty
+    @Transient
+    @Getter
+    @Setter
+    private Long mesaId;
+
+    @JsonProperty
+    @Transient
+    @Getter
+    @Setter
+    private Long vendaId;
+
+    public Date getDataPermanencia() {
+        return dataPermanencia;
+    }
 }

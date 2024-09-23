@@ -1,0 +1,31 @@
+<div class="comandas-container">
+  <div class="comanda-column"
+       *ngFor="let column of columns; let i = index"
+       cdkDropList
+       [cdkDropListData]="column.items"
+       [cdkDropListConnectedTo]="connectedDropLists"
+       (cdkDropListDropped)="drop($event)"
+       id="cdk-drop-list-{{i}}">
+    <h3>{{ column.title }}</h3>
+    <div class="comanda-item"
+         *ngFor="let item of column.items"
+         cdkDrag
+         (click)="toggleExpand(item)"
+         (cdkDragStarted)="onDragStarted($event)"
+         (cdkDragEnded)="onDragEnded($event)"
+         [ngClass]="{ 'expanded': item.expanded }"
+         [ngStyle]="{ 'visibility': item.dragging ? 'hidden' : 'visible' }">
+      <div class="comanda-title">{{ item.title }}</div>
+      <div *ngIf="item.expanded" class="comanda-details">
+        {{ item.details }}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="menu-button-background">
+  <div class="menu-button">
+    <label class="hamburger">
+      <input type="checkbox">
+    </label>
+  </div>
+</div>
