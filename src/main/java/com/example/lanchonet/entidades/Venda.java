@@ -59,8 +59,8 @@ public class Venda {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne
-    @Column(name = "id_pedido")
+    @OneToOne(cascade = {CascadeType.MERGE , CascadeType.PERSIST})
+    @JoinColumn(name = "id_pedido")
     private Pedido pedido;
 
     @JsonIgnore
@@ -83,6 +83,13 @@ public class Venda {
     @ManyToOne
     @JoinColumn(name = "id_tipo_pagamento", nullable = false)
     private TipoPagamento tipoPagamento;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_movimento_caixa")
+    private MovimentoCaixa movimentoCaixa;
 
     @JsonIgnore
     @Getter
@@ -117,4 +124,6 @@ public class Venda {
     public String toString() {
         return id.toString();
     }
+
+
 }

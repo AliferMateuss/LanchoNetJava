@@ -37,5 +37,5 @@ public class Mesa {
     @Getter
     @Setter
     @OneToMany(mappedBy = "mesa")
-    private List<Venda> vendas = new ArrayList<>();
+    private List<Pedido> pedidos = new ArrayList<>();
 }

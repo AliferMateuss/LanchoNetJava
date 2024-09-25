@@ -1,8 +1,11 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "itens_compra")
@@ -37,4 +40,10 @@ public class ItensCompra {
     @Getter
     @Setter
     private BigDecimal subTotal;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long produtoId;
 }

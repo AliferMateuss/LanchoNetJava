@@ -42,18 +42,14 @@ public class PedidoNegocio {
         }
     }
 
-    public Venda fecharPedidoParaPagar(Pedido pedido){
+    public Venda fecharPedidoPago(Pedido pedido){
         try{
             setPessoa(pedido);
             abreFechaMesa(pedido, false);
             setUsuario(pedido);
             pedido.setDataFechamentoPedido(null);
             pedido.setStatusPedido(StatusPedido.FECHADO);
-            if(pedido.getPedidoPago()){
-                pedido.setTipoPedido(TipoPedido.PAGO);
-            } else {
-                pedido.setTipoPedido(TipoPedido.FIADO);
-            }
+            pedido.setTipoPedido(TipoPedido.PAGO);
             pedidoFacade.save(pedido);
             return criaVenda(pedido);
         }catch (Exception e){
@@ -68,13 +64,10 @@ public class PedidoNegocio {
             setUsuario(pedido);
             pedido.setDataFechamentoPedido(null);
             pedido.setStatusPedido(StatusPedido.FECHADO);
-            if(pedido.getPedidoPago()){
-                pedido.setTipoPedido(TipoPedido.PAGO);
-            } else {
-                pedido.setTipoPedido(TipoPedido.FIADO);
-            }
-            vendaNegocio.salvarVendaPedido(criaVenda(pedido), true);
-            pedidoFacade.save(pedido);
+            pedido.setTipoPedido(TipoPedido.PAGO);
+            Venda venda = criaVenda(pedido);
+            venda.setPedido(pedido);
+            vendaNegocio.salvarVendaPedido(venda);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -87,7 +80,7 @@ public class PedidoNegocio {
             setUsuario(pedido);
             pedido.setStatusPedido(StatusPedido.ABERTO);
             pedido.setTipoPedido(null);
-            pedido.setPedidoFechado(null);
+            pedido.setPedidoFechado(false);
             pedidoFacade.save(pedido);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage(), e);

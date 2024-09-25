@@ -36,14 +36,19 @@ public class MovimentoCaixa {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne
-    @Column(name = "id_venda")
+    @OneToOne(mappedBy = "movimentoCaixa")
+    @JoinColumn(name = "id_venda")
     private Venda venda;
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne
-    @Column(name = "id_compra")
+    @OneToOne(mappedBy = "movimentoCaixa")
+    @JoinColumn(name = "id_compra")
     private Compra compra;
+
+    @Getter
+    @Setter
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Caixa caixa;
 }

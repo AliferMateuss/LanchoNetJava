@@ -1,5 +1,7 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,12 +18,14 @@ public class ItensVenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
     @JoinColumn(name = "id_venda", nullable = false)
     private Venda venda;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
@@ -39,4 +43,10 @@ public class ItensVenda {
     @Getter
     @Setter
     private BigDecimal subTotal;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long produtoId;
 }

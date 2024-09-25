@@ -1,19 +1,23 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy, AfterViewInit, ViewChild } from '@angular/core';
 import {HttpClient, HttpClientModule, provideHttpClient, withFetch, withInterceptors} from '@angular/common/http';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import {MatCell, MatHeaderCell, MatTable, MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {CommonModule} from "@angular/common";
-import {RouterModule} from "@angular/router";
+import {Router, RouterModule} from "@angular/router";
 import {MatSortModule} from "@angular/material/sort";
+import {ModalComponent} from "../modal/modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {NgOptionComponent, NgSelectComponent} from "@ng-select/ng-select";
+import {CurrencyMaskModule} from "ng2-currency-mask";
 
 
 @Component({
   selector: 'app-venda',
   templateUrl: './venda.component.html',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatPaginatorModule,
-    MatSortModule],
+    MatSortModule, NgSelectComponent, NgOptionComponent, CurrencyMaskModule, MatTable, MatHeaderCell, MatCell],
   standalone: true,
   styleUrls: ['./venda.component.css']
 })
@@ -41,11 +45,12 @@ export class VendaComponent {
   @ViewChild('modalContent') modalContent: any;
   @ViewChild('modalVenda') modalFinalizarVenda: any;
 
-  constructor(private http: HttpClient, private fb: FormBuilder, private modalService: NgbModal) { }
+  constructor(private http: HttpClient, private fb: FormBuilder, private modalService: NgbModal,
+              private dialog: MatDialog, private router: Router) { }
 
   ngOnInit() {
-    this.CarregarClientes();
-    this.CarregarProdutos();
+    this.carregarClientes();
+    this.carregarProdutos();
     this.atualizarHora();
     setInterval(() => {
       this.atualizarHora();
@@ -53,83 +58,82 @@ export class VendaComponent {
   }
 
   atualizarHora() {
-    this.venda.DataVenda = new Date();
+    this.venda.dataVenda = new Date();
   }
 
-  CarregarProdutos() {
-    this.http.get<any[]>(this.baseUrl + 'api/Produto/BuscaTodos').subscribe(data => {
+  carregarProdutos() {
+    this.http.get<any[]>(this.baseUrl + 'api/Produto/RecuperarProdutos').subscribe(data => {
       this.Produtos = data;
-    }, error => console.error(error));
+    }, error => this.openDialog("Erro: ", error, "Voltar", true));
 
   }
-  CarregarClientes() {
-    this.http.get<any[]>(this.baseUrl + 'api/Cliente/BuscaTodos').subscribe(data => {
+  carregarClientes() {
+    this.http.get<any[]>(this.baseUrl + 'api/Pessoas/RecuperarPessoas').subscribe(data => {
       this.Clientes = data;
-    }, error => console.error(error));
+    }, error => this.openDialog("Erro: ", error, "Voltar", true));
 
   }
 
-  SelecionarCliente() {
-    if (this.Clientes && this.venda.ClienteId) {
+  selecionarCliente() {
+    if (this.Clientes && this.venda.clienteid) {
 
-      const clienteSelecionadoId = this.venda.ClienteId;
-      this.clienteSelececionado = this.Clientes.find(cliente => cliente.id === clienteSelecionadoId);
+      const clienteSelecionadoid = this.venda.clienteid;
+      this.clienteSelececionado = this.Clientes.find(cliente => cliente.id === clienteSelecionadoid);
 
       if (this.clienteSelececionado) {
       }
     }
   }
 
-  SelecionarProduto() {
-    if (this.Produtos && this.itemVenda.ProdutoId) {
-      this.mapeaDataParaProduto(this.Produtos.find(produto => produto.id === this.itemVenda.ProdutoId));
+  selecionarProduto() {
+    if (this.Produtos && this.itemVenda.produtoid) {
+      this.mapeaDataParaProduto(this.Produtos.find(produto => produto.id === this.itemVenda.produtoid));
       if (this.produtoSelecionado) {
-        this.itemVenda.Produto = this.produtoSelecionado;
-        this.itemVenda.PrecoUnitario = this.produtoSelecionado.Preco;
+        this.itemVenda.produto = this.produtoSelecionado;
+        this.itemVenda.precoUnitario = this.produtoSelecionado.preco;
       }
     }
   }
 
   mapeaDataParaProduto(data: any) {
     this.produtoSelecionado = {} as Produto;
-    this.produtoSelecionado.Descricao = data.descricao;
-    this.produtoSelecionado.Id = data.id;
-    this.produtoSelecionado.Nome = data.nome;
-    this.produtoSelecionado.Preco = data.preco;
-    this.produtoSelecionado.Quantidade = data.quantidade;
+    this.produtoSelecionado.id = data.id;
+    this.produtoSelecionado.nome = data.nome;
+    this.produtoSelecionado.preco = data.preco;
+    this.produtoSelecionado.quantidade = data.quantidade;
   }
 
   validarEntrada(): boolean {
     return (
-      this.itemVenda.ProdutoId !== null &&
-      this.itemVenda.Quantidade !== null &&
-      this.itemVenda.PrecoUnitario !== null &&
-      this.itemVenda.ProdutoId > 0 &&
-      this.itemVenda.Quantidade > 0 &&
-      this.itemVenda.PrecoUnitario > 0
+      this.itemVenda.produtoid !== null &&
+      this.itemVenda.quantidade !== null &&
+      this.itemVenda.precoUnitario !== null &&
+      this.itemVenda.produtoid > 0 &&
+      this.itemVenda.quantidade > 0 &&
+      this.itemVenda.precoUnitario > 0
     );
   }
 
   temEstoqueSuficiente(): boolean {
-    return this.produtoSelecionado.Quantidade >= this.itemVenda.Quantidade;
+    return this.produtoSelecionado.quantidade >= this.itemVenda.quantidade;
   }
 
-  AdicionarItem() {
+  adicionarItem() {
     this.mostrarMensagem = false;
     if (this.validarEntrada()) {
       if (this.temEstoqueSuficiente()) {
-        this.produtoSelecionado.Quantidade -= this.itemVenda.Quantidade;
-        this.itemVenda.SubTotal = this.itemVenda.Quantidade * this.itemVenda.PrecoUnitario;
+        this.produtoSelecionado.quantidade -= this.itemVenda.quantidade;
+        this.itemVenda.subTotal = this.itemVenda.quantidade * this.itemVenda.precoUnitario;
 
         const produtoExistente = this.itensVenda.find(
           (item) =>
-            item.ProdutoId === this.itemVenda.ProdutoId &&
-            item.PrecoUnitario === this.itemVenda.PrecoUnitario
+            item.produtoid === this.itemVenda.produtoid &&
+            item.precoUnitario === this.itemVenda.precoUnitario
         );
 
         if (produtoExistente) {
-          produtoExistente.Quantidade += this.itemVenda.Quantidade;
-          produtoExistente.SubTotal += this.itemVenda.SubTotal;
+          produtoExistente.quantidade += this.itemVenda.quantidade;
+          produtoExistente.subTotal += this.itemVenda.subTotal;
         } else {
           this.itensVenda.push({ ...this.itemVenda });
         }
@@ -138,8 +142,8 @@ export class VendaComponent {
         this.itemVenda = new ItensVenda();
         console.log(this.itensVenda);
       } else {
-        this.tituloMensagem = "Estoque insuficiente para o item: " + this.itemVenda.Produto.Nome;
-        this.textoMensagem = "Quantidade em estoque: " + this.itemVenda.Produto.Quantidade;
+        this.tituloMensagem = "Estoque insuficiente para o item: " + this.itemVenda.produto.nome;
+        this.textoMensagem = "Quantidade em estoque: " + this.itemVenda.produto.quantidade;
         this.mostrarMensagem = true;
       }
     } else {
@@ -154,11 +158,11 @@ export class VendaComponent {
     return `R$ ${parteInteira},${parteDecimal}`;
   }
 
-  CalcularValorTotal() {
-    return this.formatarValorParaExibicao(this.itensVenda.reduce((total, item) => total + item.SubTotal, 0));
+  calcularValorTotal() {
+    return this.formatarValorParaExibicao(this.itensVenda.reduce((total, item) => total + item.subTotal, 0));
   }
 
-  ChangeFormaPagamento() {
+  changeFormaPagamento() {
     if (this.PgtoSelececionado === 3) {
       this.parcelar = true;
     } else {
@@ -166,13 +170,13 @@ export class VendaComponent {
     }
   }
 
-  AbrirModalFormaPagamento() {
+  abrirModalFormaPagamento() {
     this.modalService.open(this.modalFinalizarVenda, { centered: true });
   }
 
-  FinalizarVenda() {
-    this.venda.ItensVenda = this.itensVenda;
-    this.venda.ValorTotal = this.itensVenda.reduce((total, item) => total + item.SubTotal, 0);
+  finalizarVenda() {
+    this.venda.itensVenda = this.itensVenda;
+    this.venda.valorTotal = this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
     this.http.post<Venda>(this.baseUrl + 'api/Venda/Salvar', this.venda).subscribe(
       result => {
         this.tituloMensagem = "Venda";
@@ -191,41 +195,53 @@ export class VendaComponent {
   openModal() {
     this.modalService.open(this.modalContent, { centered: true });
   }
+
+  openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {
+    const dialogRef = this.dialog.open(ModalComponent, {
+      panelClass: 'top10ClassesFodas',
+      hasBackdrop: true,
+      data: { titulo: titulo, mensagem: mensagem, botao: botao, erro: erro }
+    });
+    if (!erro) {
+      dialogRef.afterClosed().subscribe(() => {
+        this.router.navigate(['/../listaMesas']);
+      });
+    }
+  }
 }
 
 interface Venda {
-  Id: number;
-  DataVenda: Date;
-  ValorTotal: number;
-  ClienteId: number;
-  Parcelas: number;
-  UsuarioId: number;
-  ItensVenda: ItensVenda[];
+  id: number;
+  dataVenda: Date;
+  valorTotal: number;
+  clienteid: number;
+  parcelas: number;
+  usuarioid: number;
+  nomeCliente: string;
+  vendaBalcao: boolean;
+  vendaFiado: boolean
+  itensVenda: ItensVenda[];
 }
 
 interface Produto {
-  Id: number;
-  Nome: string;
-  Descricao?: string;
-  Quantidade: number;
-  Preco: number;
+  id: number;
+  nome: string;
+  quantidade: number;
+  preco: number;
 }
 
 class ItensVenda {
-  Id: number;
-  VendaId: number;
-  PrecoUnitario: number;
-  SubTotal: number;
-  Quantidade: number;
-  ProdutoId!: number;
-  Produto: Produto
+  precoUnitario: number;
+  subTotal: number;
+  quantidade: number;
+  produtoid!: number;
+  produto: Produto;
 
   constructor() {
-    this.Id = 0;
-    this.VendaId = 0;
-    this.PrecoUnitario = 0;
-    this.SubTotal = 0;
-    this.Quantidade = 0;
-    this.Produto = {} as Produto;
+    this.precoUnitario = 0;
+    this.subTotal = 0;
+    this.quantidade = 0;
+    this.produto = {} as Produto;
+    this.produtoid = 0
   }
 }

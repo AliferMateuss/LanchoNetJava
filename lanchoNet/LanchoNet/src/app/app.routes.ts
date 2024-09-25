@@ -18,6 +18,7 @@ import {
 } from "./grupo-usuarios/cadastro-grupo-usuarios/cadastro-grupo-usuarios.component";
 import {ListaUsuariosComponent} from "./usuarios/lista-usuarios/lista-usuarios.component";
 import {CadastroUsuariosComponent} from "./usuarios/cadastro-usuarios/cadastro-usuarios.component";
+import { VendaComponent } from "./venda/venda.component";
 
 export const routes: Routes = [
   { path: '', component: ComandasComponent, pathMatch: 'full' },
@@ -35,6 +36,7 @@ export const routes: Routes = [
   { path: 'cadastroGruposUsuarios/:id?', component: CadastroGrupoUsuariosComponent },
   { path: 'listaUsuarios', component: ListaUsuariosComponent },
   { path: 'cadastroUsuarios/:id?', component: CadastroUsuariosComponent },
+  { path: 'venda', component: VendaComponent },
 ];
 
 export const appRoutingProviders = [

@@ -58,7 +58,7 @@ public class Pedido {
     @Getter
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
-    @Column(name = "id_pedido")
+    @JoinColumn(name = "id_venda")
     private Venda venda;
 
     @JsonIgnore

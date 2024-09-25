@@ -1,5 +1,6 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.ProdutoDto;
 import com.example.lanchonet.entidades.Produto;
 import com.example.lanchonet.negocio.ProdutoNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,25 +17,21 @@ public class ProdutoController {
     private ProdutoNegocio produtoNegocio;
 
     @GetMapping("/RecuperarProdutos")
-
-    public List<Produto> recuperarProdutos(){
+    public List<ProdutoDto> recuperarProdutos(){
         return produtoNegocio.buscarProdutos();
     }
 
     @PostMapping("/Salvar")
-
     public void salvar(@RequestBody Produto produto){
         produtoNegocio.salvarProduto(produto);
     }
 
     @PostMapping("/RertornaPorId")
-
     public Produto retornaPorId(@RequestBody Long id){
         return produtoNegocio.buscarProdutoPorId(id);
     }
 
     @PostMapping("Deletar")
-
     public void Deletar(@RequestBody Long id){
         produtoNegocio.excluirProduto(id);
     }

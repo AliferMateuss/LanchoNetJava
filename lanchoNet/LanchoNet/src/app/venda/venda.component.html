@@ -1,33 +1,33 @@
 <div>
   <h2>Tela de Venda</h2>
-  <div style="font-size: 16px;"> {{venda.DataVenda | date: 'dd/MM/yyyy HH:mm:ss'}}</div>
+  <div style="font-size: 16px;"> {{venda.dataVenda | date: 'dd/MM/yyyy HH:mm:ss'}}</div>
   <div class="bodyVenda">
     <div *ngIf="mostrarMensagem" class="alert alert-warning" role="alert">
       <h1>{{tituloMensagem}}</h1>
       <p>{{textoMensagem}}</p>
     </div>
-    <form (ngSubmit)="FinalizarVenda()">
+    <form (ngSubmit)="finalizarVenda()">
       <div class="selects">
         <label for="cliente">Cliente:</label>
-        <ng-select [(ngModel)]="venda.ClienteId" name="cliente" (change)="SelecionarCliente()">
+        <ng-select [(ngModel)]="venda.clienteid" id="cliente" name="cliente" (change)="selecionarCliente()">
           <ng-option *ngFor="let cliente of Clientes" [value]="cliente.id">{{ cliente.nome }}</ng-option>
         </ng-select>
       </div>
       <div class="selects">
         <label for="produto">Produto:</label>
-        <ng-select [(ngModel)]="itemVenda.ProdutoId" name="produto" (change)="SelecionarProduto()">
+        <ng-select [(ngModel)]="itemVenda.produtoid" id="produto" name="produto" (change)="selecionarProduto()">
           <ng-option *ngFor="let produto of Produtos" [value]="produto.id">{{ produto.nome }}</ng-option>
         </ng-select>
       </div>
       <div class="form-input">
         <label for="quantidade">Quantidade:</label>
-        <input type="number" min="0" id="quantidade" [(ngModel)]="itemVenda.Quantidade" name="quantidade" required>
+        <input type="number" min="0" id="quantidade" [(ngModel)]="itemVenda.quantidade" name="quantidade" required>
       </div>
       <div class="form-input">
         <label for="preco">Preço:</label>
-        <input type="text" id="preco" currencyMask [(ngModel)]="itemVenda.PrecoUnitario" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" name="preco" required>
+        <input type="text" id="preco" currencyMask [(ngModel)]="itemVenda.precoUnitario" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" name="preco" required>
       </div>
-      <button class="btn btn-secundary" type="button" (click)="AdicionarItem()">Adicionar Item</button>
+      <button class="btn btn-secundary" type="button" (click)="adicionarItem()">Adicionar Item</button>
     </form>
   </div>
   <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel">
@@ -51,13 +51,13 @@
       <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.SubTotal) }} </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <th *matHeaderRowDef="displayedColumns"></th>
+    <th *matRowDef="let row; columns: displayedColumns"></th>
   </mat-table>
   <div class="ValorTotal">
-    <button type="button" class="btn btn-danger" disabled><label>Valor Total: {{ CalcularValorTotal() }}</label></button>
+    <button type="button" class="btn btn-danger" disabled><label>Valor Total: {{ calcularValorTotal() }}</label></button>
   </div>
-  <button class="btn btn-primary" type="button" (click)="AbrirModalFormaPagamento()">Finalizar Venda</button>
+  <button class="btn btn-primary" type="button" (click)="abrirModalFormaPagamento()">Finalizar Venda</button>
 </div>
 <ng-template #modalContent let-modal>
   <div class="modal-header">
@@ -81,7 +81,7 @@
   <div class="modal-body">
     <div class="selects">
       <label for="pgto">Forma de pagamento:</label>
-      <ng-select [(ngModel)]="PgtoSelececionado" name="pgto" (change)="ChangeFormaPagamento()">
+      <ng-select [(ngModel)]="PgtoSelececionado" name="pgto" id="pgto" (change)="changeFormaPagamento()">
         <ng-option [value]="1">A vista</ng-option>
         <ng-option [value]="2">Débito</ng-option>
         <ng-option [value]="3">Crédito</ng-option>
@@ -89,10 +89,10 @@
     </div>
     <div *ngIf="parcelar" class="form-input">
       <label for="quantidade">Quantidade de parcelas:</label>
-      <input [(ngModel)]="venda.Parcelas" type="number" min="0" name="quantidade" required>
+      <input [(ngModel)]="venda.parcelas" type="number" min="0" name="quantidade" required>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" (click)="FinalizarVenda()">Finalizar Venda</button>
+    <button class="btn btn-primary" type="button" (click)="finalizarVenda()">Finalizar Venda</button>
   </div>
 </ng-template>

@@ -56,16 +56,9 @@ public class VendaNegocio {
         }
     }
 
-    public void salvarVendaPedido(Venda venda, Boolean pago){
+    public void salvarVendaPedido(Venda venda){
         try{
-            if(pago){
-                setPessoa(venda);
-                setUsuario(venda);
-                criaContasAReceber(venda);
-                venda.setTipoVenda(TipoVenda.PEDIDO);
-            }else{
-                venda.setTipoVenda(TipoVenda.FIADO);
-            }
+            venda.setTipoVenda(TipoVenda.FIADO);
             venda.setStatusVenda(StatusVenda.FECHADA);
             venda.setDataVenda(new Date());
             caixaNegocio.gerarMovimentacao(venda);
@@ -75,16 +68,12 @@ public class VendaNegocio {
         }
     }
 
-    public void excluiVendaPorPedido(Long id){
-        vendaFacade.excluiVendaPorPedido(id);
-    }
-
     private void validaEstoque(Venda venda) throws Exception {
         try{
             venda.getItensVenda().forEach(item -> {
                 Produto produto = produtoFacade.findById(item.getProduto().getId());
                 if (produto != null) {
-                    if (produto.getQuantidade() <= item.getQuantidade()) {
+                    if (produto.getQuantidade() < item.getQuantidade()) {
                         throw new RuntimeException(String.format(ERRO_ESTOQUE, item.getProduto().getNome(), item.getQuantidade(), produto.getQuantidade()));
                     } else {
                         produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());

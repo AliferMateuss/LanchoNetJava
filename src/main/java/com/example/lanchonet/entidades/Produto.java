@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Base64;
 import java.util.List;
 
@@ -52,4 +53,5 @@ public class Produto {
     @Setter
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItensVenda> itensVenda;
+
 }

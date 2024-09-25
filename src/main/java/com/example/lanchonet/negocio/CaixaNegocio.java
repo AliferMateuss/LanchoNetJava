@@ -20,6 +20,8 @@ public class CaixaNegocio {
     @Autowired
     private MovimentoCaixaFacade movimentoCaixaFacade;
     private Caixa caixa;
+    @Autowired
+    private CaixaFacade caixaFacade;
 
 
     public void abreCaixa(Caixa caixa){
@@ -39,12 +41,18 @@ public class CaixaNegocio {
             setCaixa();
             MovimentoCaixa movimentacao = new MovimentoCaixa();
             movimentacao.setVenda(venda);
+
             if(venda.getTipoPagamento().getAVista())
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
             else
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.FIADO);
+
             movimentacao.setTipoPagamento(venda.getTipoPagamento());
             movimentacao.setValor(venda.getValorTotal());
+            movimentacao.setCaixa(caixa);
+
+            caixa.getMovimentos().add(movimentacao);
+            caixaFacade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,6 +71,10 @@ public class CaixaNegocio {
 
             movimentacao.setTipoPagamento(compra.getTipoPagamento());
             movimentacao.setValor(compra.getValorTotal());
+            movimentacao.setCaixa(caixa);
+
+            caixa.getMovimentos().add(movimentacao);
+            caixaFacade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

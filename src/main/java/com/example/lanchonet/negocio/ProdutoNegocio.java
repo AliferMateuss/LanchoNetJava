@@ -1,5 +1,8 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ProdutoDto;
+import com.example.lanchonet.entidades.ItensCompra;
+import com.example.lanchonet.entidades.ItensVenda;
 import com.example.lanchonet.entidades.Produto;
 import com.example.lanchonet.facades.ProdutoFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,8 @@ public class ProdutoNegocio {
         return facade.findById(id);
     }
 
-    public List<Produto> buscarProdutos() {
-        return facade.findAll();
+    public List<ProdutoDto> buscarProdutos() {
+        return facade.findAllDto();
     }
 
     public void excluirProduto(Produto produto) {

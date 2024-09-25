@@ -68,6 +68,13 @@ public class Compra {
     @JoinColumn(name = "id_tipo_pagamento", nullable = false)
     private TipoPagamento tipoPagamento;
 
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_movimento_caixa")
+    private MovimentoCaixa movimentoCaixa;
+
     @Getter
     @Setter
     @OneToMany(mappedBy = "compra")

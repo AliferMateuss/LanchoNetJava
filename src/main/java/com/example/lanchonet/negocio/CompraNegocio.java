@@ -30,15 +30,14 @@ public class CompraNegocio {
     private UsuarioFacade usuarioFacade;
     @Autowired
     private CaixaNegocio caixaNegocio;
-    private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da compra: %d, Quantidade em estoque: %d";
 
     public void salvarCompra(Compra compra) {
         try {
+            if(compra.getPessoa() == null && !compra.getCompraBalcao()){
+                throw new Exception("Cliente não definido para compra, selecione o cliente ou clique em compra balção");
+            }
             setPessoa(compra);
             setUsuario(compra);
-            if(compra.getPessoa() == null && !compra.getCompraBalcao()){
-                throw new Exception("Cliente não definida para compra, selecione o cliente ou clique em compra balção");
-            }
             manipulaProdutos(compra);
             criaContasAPagar(compra);
             caixaNegocio.gerarMovimentacao(compra);
@@ -53,12 +52,11 @@ public class CompraNegocio {
             compra.getItensCompra().forEach(item -> {
                 Produto produto = produtoFacade.findById(item.getProduto().getId());
                 if (produto != null) {
-                    produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
+                    produto.setQuantidade(produto.getQuantidade()  + item.getQuantidade());
                     produto.setPrecoCompra(item.getPrecoUnitario());
                     item.setCompra(compra);
-
                 } else {
-                    throw new RuntimeException("Produto inexistente");
+                    throw new RuntimeException("Produto não encontrado!");
                 }
             });
         } catch (Exception e) {

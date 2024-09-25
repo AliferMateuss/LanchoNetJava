@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "caixa")
@@ -39,5 +41,13 @@ public class Caixa {
     @Enumerated(EnumType.STRING)
     private StatusCaixa status = StatusCaixa.ABERTO;
 
+    @Setter
+    @OneToMany(mappedBy = "caixa", cascade = CascadeType.ALL)
+    private List<MovimentoCaixa> movimentos;
 
+    public List<MovimentoCaixa> getMovimentos() {
+        if(movimentos == null)
+            movimentos = new ArrayList<>();
+        return movimentos;
+    }
 }
