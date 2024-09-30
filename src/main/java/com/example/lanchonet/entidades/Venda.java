@@ -108,6 +108,13 @@ public class Venda {
     @Setter
     private Long pessoaId;
 
+
+    @JsonProperty
+    @Transient
+    @Getter
+    @Setter
+    private Long tipoPagamentoId;
+
     @JsonProperty
     @Transient
     @Getter

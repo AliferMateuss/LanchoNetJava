@@ -36,14 +36,14 @@ public class MovimentoCaixa {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne(mappedBy = "movimentoCaixa")
+    @OneToOne(mappedBy = "movimentoCaixa", cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_venda")
     private Venda venda;
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne(mappedBy = "movimentoCaixa")
+    @OneToOne(mappedBy = "movimentoCaixa", cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_compra")
     private Compra compra;
 

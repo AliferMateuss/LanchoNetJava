@@ -29,6 +29,8 @@ public class VendaNegocio {
     @Autowired
     private UsuarioFacade usuarioFacade;
     @Autowired
+    private TipoPagamentoFacade tipoPagamentoFacade;
+    @Autowired
     private CaixaNegocio caixaNegocio;
     private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da venda: %d, Quantidade em estoque: %d";
 
@@ -36,6 +38,7 @@ public class VendaNegocio {
         try {
             setPessoa(venda);
             setUsuario(venda);
+            setTipoPagamento(venda);
             if(venda.getPessoa() == null && !venda.getVendaBalcao()){
                 throw new Exception("Cliente não definida para venda, selecione o cliente ou clique em venda balção");
             }
@@ -49,8 +52,8 @@ public class VendaNegocio {
                 criaContasAReceber(venda);
             }
             venda.setStatusVenda(StatusVenda.FECHADA);
-            caixaNegocio.gerarMovimentacao(venda);
-            vendaFacade.save(venda);
+            Venda vendaSalva = vendaFacade.save(venda);
+            caixaNegocio.gerarMovimentacao(vendaSalva);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -61,8 +64,8 @@ public class VendaNegocio {
             venda.setTipoVenda(TipoVenda.FIADO);
             venda.setStatusVenda(StatusVenda.FECHADA);
             venda.setDataVenda(new Date());
+            venda = vendaFacade.save(venda);
             caixaNegocio.gerarMovimentacao(venda);
-            vendaFacade.save(venda);
         }catch (Exception e){
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -71,7 +74,7 @@ public class VendaNegocio {
     private void validaEstoque(Venda venda) throws Exception {
         try{
             venda.getItensVenda().forEach(item -> {
-                Produto produto = produtoFacade.findById(item.getProduto().getId());
+                Produto produto = produtoFacade.findById(item.getProdutoId());
                 if (produto != null) {
                     if (produto.getQuantidade() < item.getQuantidade()) {
                         throw new RuntimeException(String.format(ERRO_ESTOQUE, item.getProduto().getNome(), item.getQuantidade(), produto.getQuantidade()));
@@ -79,6 +82,7 @@ public class VendaNegocio {
                         produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
                     }
                     item.setVenda(venda);
+                    item.setProduto(produto);
                 } else {
                     throw new RuntimeException("Produto inexistente");
                 }
@@ -126,7 +130,7 @@ public class VendaNegocio {
     }
 
     private void setPessoa(Venda venda)throws Exception{
-        if(venda.getId() != null){
+        if(venda.getPessoaId() != null){
             Pessoa pessoa = pessoaFacade.findById(venda.getPessoaId());
             if(pessoa == null){
                 throw new Exception("Cliente não encontrado!");
@@ -136,12 +140,22 @@ public class VendaNegocio {
     }
 
     private void setUsuario(Venda venda)throws Exception{
-        if(venda.getId() != null){
+        if(venda.getUsuarioId() != null){
             Usuario usuario = usuarioFacade.findById(venda.getUsuarioId());
             if(usuario == null){
                 throw new Exception("Usuário não encontrado!");
             }
             venda.setUsuario(usuario);
+        }
+    }
+
+    private void setTipoPagamento(Venda venda)throws Exception{
+        if(venda.getTipoPagamentoId() != null){
+            TipoPagamento tp = tipoPagamentoFacade.findById(venda.getTipoPagamentoId());
+            if(tp == null){
+                throw new Exception("Cliente não encontrado!");
+            }
+            venda.setTipoPagamento(tp);
         }
     }
 }

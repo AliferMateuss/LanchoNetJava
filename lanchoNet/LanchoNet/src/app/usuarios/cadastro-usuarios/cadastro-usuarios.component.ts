@@ -53,8 +53,8 @@ export class CadastroUsuariosComponent {
     this.formUsuario = new FormGroup({
       usuario: new FormControl(this.usuario.usuario, [Validators.required]),
       senha: new FormControl(this.usuario.senha, [Validators.required]),
-      idPessoa: new FormControl(this.usuario.idPessoa, [Validators.required]),
-      idGrupoUsuario: new FormControl(this.usuario.idGrupoUsuario, [Validators.required])
+      idPessoa: new FormControl(this.usuario.pessoaId, [Validators.required]),
+      idGrupoUsuario: new FormControl(this.usuario.grupoUsuarioId, [Validators.required])
     });
 
     this.carregargrupoUsuario();
@@ -114,7 +114,7 @@ export class Usuario {
   id: number | null = null;
   usuario: string | null = null;
   senha: string | null = null;
-  idPessoa: number | null = null;
-  idGrupoUsuario: number | null = null;
+  pessoaId: number | null = null;
+  grupoUsuarioId: number | null = null;
   dataSenha: Date | null = null;
 }

@@ -12,14 +12,14 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import {MatNativeDateModule} from "@angular/material/core";
 import {provideEnvironmentNgxMask} from "ngx-mask";
-import {provideHttpClient} from "@angular/common/http";
+import {provideHttpClient, withFetch} from "@angular/common/http";
 import {BASE_URL} from "../main";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
     provideClientHydration(),
     provideAnimationsAsync(),
     provideEnvironmentNgxMask(),

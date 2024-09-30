@@ -1,4 +1,5 @@
 package com.example.lanchonet.entidades;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,4 +39,17 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "id_grupo_usuario", nullable = false)
     private GrupoUsuario grupoUsuario;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long pessoaId;
+
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long grupoUsuarioId;
 }

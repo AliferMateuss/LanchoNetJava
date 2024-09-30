@@ -1,4 +1,5 @@
 package com.example.lanchonet.entidades;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,11 +33,13 @@ public class TipoPagamento {
     private Boolean aVista;
 
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Compra> compras = new ArrayList<>();
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

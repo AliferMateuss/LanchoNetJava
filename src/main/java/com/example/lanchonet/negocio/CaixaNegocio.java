@@ -41,6 +41,7 @@ public class CaixaNegocio {
             setCaixa();
             MovimentoCaixa movimentacao = new MovimentoCaixa();
             movimentacao.setVenda(venda);
+            venda.setMovimentoCaixa(movimentacao);
 
             if(venda.getTipoPagamento().getAVista())
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
@@ -63,6 +64,7 @@ public class CaixaNegocio {
             setCaixa();
             MovimentoCaixa movimentacao = new MovimentoCaixa();
             movimentacao.setCompra(compra);
+            compra.setMovimentoCaixa(movimentacao);
 
             if(compra.getTipoPagamento().getAVista())
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.SAIDA);

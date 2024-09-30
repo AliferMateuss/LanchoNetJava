@@ -13,7 +13,7 @@
     </div>
     <div class="col-md-6">
       <label for="idPessoa" class="form-label">Pessoa</label>
-      <ng-select class="customPessoa" name="idPessoa" [(ngModel)]="usuario.idPessoa" [virtualScroll]="true" id="idPessoa"
+      <ng-select class="customPessoa" name="idPessoa" [(ngModel)]="usuario.pessoaId" [virtualScroll]="true" id="idPessoa"
                  (change)="selecionarPessoa($event)" formControlName="idPessoa" required>
         <ng-option *ngFor="let pessoa of pessoas" [value]="pessoa.id">{{ pessoa.nome }}</ng-option>
       </ng-select>
@@ -21,7 +21,7 @@
     </div>
     <div class="col-md-6">
       <label for="idGrupoUsuario" class="form-label">Grupo de Usuário</label>
-      <ng-select class="customGrupoUsuario" name="idGrupoUsuario" [(ngModel)]="usuario.idGrupoUsuario" [virtualScroll]="true" id="idGrupoUsuario"
+      <ng-select class="customGrupoUsuario" name="idGrupoUsuario" [(ngModel)]="usuario.grupoUsuarioId" [virtualScroll]="true" id="idGrupoUsuario"
                  (change)="selecionarGrupoUsuario($event)" formControlName="idGrupoUsuario" required>
         <ng-option *ngFor="let grupo of grupoUsuario" [value]="grupo.id">{{ grupo.nome }}</ng-option>
       </ng-select>
