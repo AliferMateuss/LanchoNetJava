@@ -23,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
     provideEnvironmentNgxMask(),
-    { provide: LOCALE_ID, useValue: 'pt-BR' },  // Corrigido o espaço no 'pt-BR'
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     importProvidersFrom(MatNativeDateModule)
 

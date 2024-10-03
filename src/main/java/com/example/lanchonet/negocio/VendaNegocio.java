@@ -31,6 +31,8 @@ public class VendaNegocio {
     @Autowired
     private TipoPagamentoFacade tipoPagamentoFacade;
     @Autowired
+    private CreditoClienteNegocio creditoClienteNegocio;
+    @Autowired
     private CaixaNegocio caixaNegocio;
     private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da venda: %d, Quantidade em estoque: %d";
 
@@ -39,40 +41,45 @@ public class VendaNegocio {
             setPessoa(venda);
             setUsuario(venda);
             setTipoPagamento(venda);
-            if(venda.getPessoa() == null && !venda.getVendaBalcao()){
+            if (venda.getPessoa() == null && !venda.getVendaBalcao()) {
                 throw new Exception("Cliente não definida para venda, selecione o cliente ou clique em venda balção");
             }
             validaEstoque(venda);
-            if(venda.getVendaBalcao()){
+            if (venda.getVendaBalcao()) {
                 venda.setTipoVenda(TipoVenda.BALCAO);
-            } else if (venda.getVendaFiado()){
+            } else if (venda.getVendaFiado()) {
                 venda.setTipoVenda(TipoVenda.FIADO);
-            }else{
+            } else {
                 venda.setTipoVenda(TipoVenda.CLIENTE);
                 criaContasAReceber(venda);
             }
+
             venda.setStatusVenda(StatusVenda.FECHADA);
             Venda vendaSalva = vendaFacade.save(venda);
             caixaNegocio.gerarMovimentacao(vendaSalva);
+
+            if (venda.getVendaFiado())
+                creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public void salvarVendaPedido(Venda venda){
-        try{
+    public void salvarVendaPedido(Venda venda) {
+        try {
             venda.setTipoVenda(TipoVenda.FIADO);
             venda.setStatusVenda(StatusVenda.FECHADA);
             venda.setDataVenda(new Date());
             venda = vendaFacade.save(venda);
             caixaNegocio.gerarMovimentacao(venda);
-        }catch (Exception e){
+            creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     private void validaEstoque(Venda venda) throws Exception {
-        try{
+        try {
             venda.getItensVenda().forEach(item -> {
                 Produto produto = produtoFacade.findById(item.getProdutoId());
                 if (produto != null) {
@@ -93,7 +100,7 @@ public class VendaNegocio {
     }
 
 
-    private void criaContasAReceber(Venda venda){
+    private void criaContasAReceber(Venda venda) {
         if (venda.getParcelas() != null && venda.getParcelas() != 0) {
             List<ContasAReceber> contasAReceber = new ArrayList<>();
             BigDecimal valorParcela = new BigDecimal(Math.floor(venda.getValorTotal().doubleValue() / venda.getParcelas().doubleValue()));
@@ -129,30 +136,30 @@ public class VendaNegocio {
         }
     }
 
-    private void setPessoa(Venda venda)throws Exception{
-        if(venda.getPessoaId() != null){
+    private void setPessoa(Venda venda) throws Exception {
+        if (venda.getPessoaId() != null) {
             Pessoa pessoa = pessoaFacade.findById(venda.getPessoaId());
-            if(pessoa == null){
+            if (pessoa == null) {
                 throw new Exception("Cliente não encontrado!");
             }
             venda.setPessoa(pessoa);
         }
     }
 
-    private void setUsuario(Venda venda)throws Exception{
-        if(venda.getUsuarioId() != null){
+    private void setUsuario(Venda venda) throws Exception {
+        if (venda.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(venda.getUsuarioId());
-            if(usuario == null){
+            if (usuario == null) {
                 throw new Exception("Usuário não encontrado!");
             }
             venda.setUsuario(usuario);
         }
     }
 
-    private void setTipoPagamento(Venda venda)throws Exception{
-        if(venda.getTipoPagamentoId() != null){
+    private void setTipoPagamento(Venda venda) throws Exception {
+        if (venda.getTipoPagamentoId() != null) {
             TipoPagamento tp = tipoPagamentoFacade.findById(venda.getTipoPagamentoId());
-            if(tp == null){
+            if (tp == null) {
                 throw new Exception("Cliente não encontrado!");
             }
             venda.setTipoPagamento(tp);

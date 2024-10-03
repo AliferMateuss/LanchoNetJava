@@ -1,25 +1,25 @@
 <div>
   <h2>Tela de Venda</h2>
   <div style="font-size: 16px;"> {{ venda.dataVenda | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
-  <div class="bodyVenda">
+  <div class="bodyVenda" *ngIf="vendaForm != undefined">
     <div *ngIf="mostrarMensagem" class="alert alert-warning" role="alert">
       <h1>{{ tituloMensagem }}</h1>
       <p>{{ textoMensagem }}</p>
     </div>
-    <form [formGroup]="vendaForm">
+    <form [formGroup]="vendaForm" #formDir="ngForm">
 
-      <mat-checkbox class="example-margin"  formControlName="vendaBalcao">Venda balcão?</mat-checkbox>
+      <mat-checkbox class="example-margin"  formControlName="vendaBalcao" (change)="vendaBalcaoChange()">Venda balcão?</mat-checkbox>
 
-      <div class="selects" *ngIf="!venda.vendaBalcao">
+      <div class="selects" *ngIf="!getVendaBalcao()">
         <label for="cliente">Cliente:</label>
         <ng-select formControlName="pessoaId" id="cliente" (change)="selecionarCliente()">
           <ng-option *ngFor="let cliente of Clientes" [value]="cliente.id">{{ cliente.nome }}</ng-option>
         </ng-select>
       </div>
 
-      <div class="form-input" *ngIf="venda.vendaBalcao">
-        <label for="quantidade">Nome cliente:</label>
-        <input type="text" id="nomeCliente" formControlName="nomeCliente" name="clienteNome" required>
+      <div class="form-input" *ngIf="getVendaBalcao()">
+        <label for="quantidade">Cliente:</label>
+        <input type="text" id="nomeCliente" formControlName="clienteNome" name="clienteNome" required>
       </div>
 
       <div class="selects">
@@ -34,14 +34,14 @@
       </div>
       <div class="form-input">
         <label for="preco">Preço:</label>
-        <input type="text" id="preco" currencyMask formControlName="precoUnitario"
+        <input type="text" id="preco" currencyMask formControlName="preco"
                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" name="preco" required>
       </div>
       <button class="btn btn-primary" type="button" (click)="adicionarItem()">Adicionar Item</button>
     </form>
   </div>
   <br/>
-  <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel">
+  <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" ngSkipHydration>
     <ng-container matColumnDef="Produto">
       <mat-header-cell *matHeaderCellDef> Produto</mat-header-cell>
       <mat-cell *matCellDef="let item"> {{ item.produto.nome }}</mat-cell>
@@ -55,11 +55,13 @@
     <ng-container matColumnDef="Preço">
       <mat-header-cell *matHeaderCellDef> Preço</mat-header-cell>
       <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.precoUnitario) }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="SubTotal">
       <mat-header-cell *matHeaderCellDef> Subtotal</mat-header-cell>
       <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.subTotal) }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef> {{calcularValorTotal()}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="Acoes">
@@ -73,14 +75,14 @@
                     style="background-color: white;"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
     <tr class="mat-row noDataRow" *matNoDataRow>
-      <td class="mat-cell" colspan="4">Nenhum item adicionado!</td>
+      <td class="mat-cell" colspan="5">Nenhum item adicionado!</td>
     </tr>
   </mat-table>
   <div class="ValorTotal">
     <button type="button" class="btn btn-danger" disabled><label>Valor Total: {{ calcularValorTotal() }}</label>
     </button>
   </div>
-  <button class="btn btn-primary" type="button" (click)="abrirModalFinalizarVenda()">Finalizar Venda</button>
+  <button [disabled]="itensVenda.length === 0"  class="btn btn-primary" type="button" (click)="abrirModalFinalizarVenda()">Finalizar Venda</button>
 </div>
 <ng-template #modalContent let-modal>
   <div class="modal-header">
@@ -95,8 +97,8 @@
 </ng-template>
 
 <ng-template #modalVenda let-modalvenda>
-  <div class="modal-header">
-    <h4 class="modal-title">Finalizar Venda</h4>
+  <div class="modal-header" style="justify-content: space-between;">
+    <h4 class="modal-title" style="margin-top: 16px;">Finalizar Venda</h4>
     <button mat-button (click)="fecharModalFinalizarVenda()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -105,14 +107,13 @@
     <br/>
     <br/>
     <mat-stepper linear #stepper>
-      <mat-step [stepControl]="primeiroStep" [editable]="false">
+      <mat-step [stepControl]="primeiroStep">
         <form [formGroup]="primeiroStep">
+          <ng-template matStepLabel>Forma de pagamento:</ng-template>
 
-          <mat-checkbox *ngIf="venda.pessoaId" formControlName="vendaFiado" class="example-margin" >Venda Fiado?</mat-checkbox>
+          <mat-checkbox *ngIf="venda.pessoaId" formControlName="vendaFiado" class="example-margin" (click)="selecionaVendaFiado()"  >Venda Fiado?</mat-checkbox>
 
-          <div *ngIf="venda.vendaFiado">
-            <ng-template matStepLabel>Forma de pagamento:</ng-template>
-
+          <div *ngIf="!venda.vendaFiado">
             <mat-label>Selecione a forma de pagamento</mat-label>
             <ng-select formControlName="tipoPagamento" [(ngModel)]="tipoPagamentoSelecionado" name="pgto" id="pgto" (change)="changeFormaPagamento()" required>
               <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp">{{ tp.nome }}</ng-option>
@@ -132,24 +133,46 @@
           </div>
         </form>
       </mat-step>
-      <mat-step [stepControl]="segundoStep" [editable]="false">
+      <mat-step [stepControl]="segundoStep">
         <form>
           <ng-template matStepLabel>Finalizar venda</ng-template>
-          <mat-label>Venda para {{ clienteNome }}</mat-label>
-          <mat-label>Forma de pagamento: {{ tipoPagamentoSelecionado?.nome }}</mat-label>
-          <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros" >
-            <mat-label>Total sem juros: {{ venda.valorTotal }}</mat-label>
-            <mat-label>Juros: {{ venda.valorTotal }}</mat-label>
-            <mat-label *ngIf="tipoPagamentoSelecionado?.parcelas">Parcelas:
-              {{tipoPagamentoSelecionado?.parcelas }}x
-              {{ (venda.valorTotal + (venda.valorTotal * tipoPagamentoSelecionado.juros / 100))
-              / tipoPagamentoSelecionado.parcelas }}</mat-label>
+          <mat-label>Venda para {{ venda.nomeCliente }}</mat-label>
+          <mat-label>Forma de pagamento: {{ venda.vendaFiado ? "Fiado" : tipoPagamentoSelecionado?.nome  }}</mat-label>
+
+          <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
+            <mat-label>Total sem juros: {{ calcularValorVenda() | currency }}</mat-label>
+            <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label>
+            <mat-label>Total com juros: {{ calcularValorVenda() + (calcularValorVenda() * tipoPagamentoSelecionado.juros / 100) | currency }}</mat-label>
+
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
+            {{ tipoPagamentoSelecionado.parcelas }}x
+            {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
+            </mat-label>
+
+            <div *ngIf="calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).temResto">
+              <mat-label>Última parcela:
+                {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+              </mat-label>
+            </div>
           </div>
-          <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros" >
-            <mat-label>Total: {{ venda.valorTotal }}</mat-label>
-            <mat-label *ngIf="tipoPagamentoSelecionado?.parcelas">Parcelas:
-              {{tipoPagamentoSelecionado?.parcelas }}x
-              {{ venda.valorTotal / tipoPagamentoSelecionado.parcelas }}</mat-label>
+
+          <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros">
+            <mat-label>Total: {{ calcularValorVenda()| currency }}</mat-label>
+
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
+              {{ tipoPagamentoSelecionado.parcelas }}x
+              {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
+            </mat-label>
+
+            <div *ngIf="calcularParcelas( calcularValorVenda(), tipoPagamentoSelecionado.parcelas).temResto">
+              <mat-label>Última parcela:
+                {{ calcularParcelas( calcularValorVenda(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+              </mat-label>
+            </div>
+          </div>
+
+          <div *ngIf="venda.vendaFiado">
+            <mat-label>Total (Venda fiado): {{ calcularValorVenda() | currency }}</mat-label>
           </div>
           <div>
             <button mat-button matStepperPrevious>Voltar</button>

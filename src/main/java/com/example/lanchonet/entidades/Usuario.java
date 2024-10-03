@@ -1,4 +1,5 @@
 package com.example.lanchonet.entidades;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,12 +29,14 @@ public class Usuario {
     @Setter
     private Date dataSenha;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToOne
     @JoinColumn(name = "id_pessoa", nullable = false, referencedColumnName = "id")
     private Pessoa pessoa;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne

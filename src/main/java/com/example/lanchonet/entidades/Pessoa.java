@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,16 +87,25 @@ public class Pessoa {
     @Setter
     private String pis;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "pessoa")
     private List<Compra> compras;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Endereco> enderecos;
 
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private CreditoCliente creditoCliente;
+
+    @JsonIgnore
     @Getter
     @Setter
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)

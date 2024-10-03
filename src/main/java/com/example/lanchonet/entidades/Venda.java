@@ -74,14 +74,14 @@ public class Venda {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", nullable = false)
+    @JoinColumn(name = "id_pessoa")
     private Pessoa pessoa;
 
     @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_tipo_pagamento", nullable = false)
+    @JoinColumn(name = "id_tipo_pagamento")
     private TipoPagamento tipoPagamento;
 
     @JsonIgnore
@@ -90,6 +90,13 @@ public class Venda {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_movimento_caixa")
     private MovimentoCaixa movimentoCaixa;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_credito_cliente")
+    private CreditoCliente creditoCliente;
 
     @JsonIgnore
     @Getter

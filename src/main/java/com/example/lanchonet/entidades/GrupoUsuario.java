@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class GrupoUsuario {
     @Setter
     private String nome;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "grupoUsuario")

@@ -13,10 +13,10 @@ import {
 } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatCell, MatHeaderCell, MatTableModule , MatTableDataSource} from '@angular/material/table';
+import {MatCell, MatHeaderCell, MatTableModule, MatTableDataSource} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {CommonModule, registerLocaleData } from "@angular/common";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {CommonModule, registerLocaleData} from "@angular/common";
 import {Router, RouterModule} from "@angular/router";
 import {MatSortModule} from "@angular/material/sort";
 import {ModalComponent} from "../modal/modal.component";
@@ -28,7 +28,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatStep, MatStepperModule} from '@angular/material/stepper';
 import {MatButtonModule} from '@angular/material/button';
-import { interval, Subscription } from 'rxjs';
+import {interval, Subscription} from 'rxjs';
 import {MatCheckbox} from "@angular/material/checkbox";
 
 registerLocaleData(ptBr, 'pt-BR');
@@ -41,10 +41,10 @@ registerLocaleData(ptBr, 'pt-BR');
     MatFormFieldModule, MatInputModule, MatStepperModule, MatButtonModule, MatCheckbox],
   standalone: true,
   styleUrls: ['./venda.component.css'],
-  providers: [{ provide: LOCALE_ID, useValue: 'pt-BR' }]
+  providers: [{provide: LOCALE_ID, useValue: 'pt-BR'}]
 })
-export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
-  public venda: Venda = {} as Venda;
+export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
+  public venda: Venda = {vendaBalcao: false, vendaFiado:false} as Venda;
   public itemVenda: ItensVenda = new ItensVenda();
   public itensVenda: ItensVenda[] = [];
   public Clientes?: any[];
@@ -61,12 +61,12 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
   tituloMensagem: string = "";
   dataSource = new MatTableDataSource<ItensVenda>(this.itensVenda);
   displayedColumns: string[] = ['Produto', 'Quantidade', 'Preço', 'SubTotal', 'Acoes'];
-  clienteSelececionado!: any;
+  clienteSelececionado: any = null;
   clienteNome!: string;
   produtoSelecionado!: Produto;
   private _formBuilder = inject(FormBuilder);
-  primeiroStep! :FormGroup;
-  segundoStep! :FormGroup;
+  primeiroStep!: FormGroup;
+  segundoStep!: FormGroup;
   private intervalo$!: Subscription;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -76,24 +76,24 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
 
   constructor(private http: HttpClient, private fb: FormBuilder, private modalService: NgbModal,
               private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef, private zone: NgZone) {
+    this.vendaForm = new FormGroup({
+      pessoaId: new FormControl('', [Validators.required]),
+      vendaBalcao: new FormControl(this.venda.vendaBalcao, [Validators.required]),
+      // vendaFiado: new FormControl(this.venda.vendaFiado, [Validators.required]),
+      clienteNome: new FormControl(''),
+      produtoId: new FormControl('', [Validators.required]),
+      quantidade: new FormControl('', [Validators.required]),
+      preco: new FormControl('', [Validators.required])
+    });
   }
 
   ngOnInit(): void {
     this.carregarClientes();
     this.carregarProdutos();
-    this.vendaForm = new FormGroup({
-      pessoaId: new FormControl(this.venda.pessoaId, [Validators.required]),
-      vendaBalcao: new FormControl(this.venda.vendaBalcao, [Validators.required]),
-      // vendaFiado: new FormControl(this.venda.vendaFiado, [Validators.required]),
-      clienteNome: new FormControl(this.venda.nomeCliente, [Validators.required]),
-      produtoId: new FormControl(this.itemVenda.produtoId, [Validators.required]),
-      quantidade: new FormControl(this.itemVenda.quantidade, [Validators.required]),
-      preco: new FormControl(this.itemVenda.quantidade, [Validators.required])
-    });
   }
 
   ngAfterViewInit(): void {
-    this.atualizarHora();
+    // this.atualizarHora();
   }
 
   ngOnDestroy(): void {
@@ -106,6 +106,39 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
     this.intervalo$ = interval(1000).subscribe(() => {
       this.venda.dataVenda = new Date();
     });
+  }
+
+  vendaBalcaoChange() {
+    if (this.getVendaBalcao()) {
+      this.vendaForm.get('pessoaId')?.clearValidators();
+      this.vendaForm.get('pessoaId')?.reset();
+      this.vendaForm.get('clienteNome')?.clearValidators();
+      this.vendaForm.get('clienteNome')?.reset();
+      this.vendaForm.get('clienteNome')?.setValidators([Validators.required]);
+      this.vendaForm.get('clienteNome')?.updateValueAndValidity();
+    } else {
+      this.vendaForm.get('clienteNome')?.clearValidators();
+      this.vendaForm.get('clienteNome')?.reset();
+      this.vendaForm.get('pessoaId')?.clearValidators();
+      this.vendaForm.get('pessoaId')?.reset();
+      this.vendaForm.get('pessoaId')?.setValidators([Validators.required]);
+      this.vendaForm.get('pessoaId')?.updateValueAndValidity();
+    }
+    this.cdr.detectChanges();
+  }
+
+  selecionaVendaFiado() : void{
+    this.venda.vendaFiado = this.primeiroStep.get('vendaFiado')?.value;
+    if(this.primeiroStep.get('vendaFiado')?.value){
+      this.primeiroStep.get('tipoPagamento')?.clearValidators();
+      this.primeiroStep.get('tipoPagamento')?.reset();
+      this.primeiroStep.get('tipoPagamento')?.updateValueAndValidity();
+    } else {
+      this.primeiroStep.get('tipoPagamento')?.reset();
+      this.primeiroStep.get('tipoPagamento')?.setValidators([Validators.required]);
+      this.primeiroStep.get('tipoPagamento')?.updateValueAndValidity();
+    }
+    this.cdr.detectChanges();
   }
 
   carregarProdutos() {
@@ -122,24 +155,29 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
   }
 
   selecionarCliente() {
-    if (this.Clientes && this.venda.pessoaId) {
+    if (this.Clientes && this.vendaForm.get('pessoaId')?.value) {
 
-      const clienteSelecionadoid = this.venda.pessoaId;
+      const clienteSelecionadoid = this.vendaForm.get('pessoaId')?.value;
       this.clienteSelececionado = this.Clientes.find(cliente => cliente.id === clienteSelecionadoid);
 
-      if (this.clienteSelececionado) {
+      if (this.clienteSelececionado != null) {
         this.clienteNome = this.clienteSelececionado.nome;
       }
+    } else {
+      this.clienteSelececionado = null;
     }
   }
 
   selecionarProduto() {
-    if (this.Produtos && this.itemVenda.produtoId) {
-      this.mapeaDataParaProduto(this.Produtos.find(produto => produto.id === this.itemVenda.produtoId));
-      if (this.produtoSelecionado) {
-        this.itemVenda.produto = this.produtoSelecionado;
-        this.itemVenda.precoUnitario = this.produtoSelecionado.preco;
+    if (this.Produtos && this.vendaForm.get('produtoId')?.value) {
+      const prod = this.Produtos.find(produto => produto.id === this.vendaForm.get('produtoId')?.value);
+      if (!prod) {
+        this.openDialog("Erro ", "Ocorreu um erro ao selecionar o produto", "Ok", true);
+        return;
       }
+      this.mapeaDataParaProduto(prod);
+      this.vendaForm.get('preco')?.setValue(this.produtoSelecionado.preco)
+      this.itemVenda.produto = this.produtoSelecionado;
     }
   }
 
@@ -151,24 +189,17 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
     this.produtoSelecionado.quantidade = data.quantidade;
   }
 
-  validarEntrada(): boolean {
-    return (
-      this.itemVenda.produtoId !== null &&
-      this.itemVenda.quantidade !== null &&
-      this.itemVenda.precoUnitario !== null &&
-      this.itemVenda.produtoId > 0 &&
-      this.itemVenda.quantidade > 0 &&
-      this.itemVenda.precoUnitario > 0
-    );
-  }
-
   temEstoqueSuficiente(): boolean {
     return this.produtoSelecionado.quantidade >= this.itemVenda.quantidade;
   }
 
   adicionarItem() {
     this.mostrarMensagem = false;
-    if (this.validarEntrada()) {
+    console.log(this.vendaForm)
+    if (this.vendaForm.valid) {
+      this.itemVenda.quantidade = this.getQuantidade();
+      this.itemVenda.precoUnitario = this.getPreco();
+      this.itemVenda.produtoId = this.getProdutoId()
       if (this.temEstoqueSuficiente()) {
         this.produtoSelecionado.quantidade -= this.itemVenda.quantidade;
         this.itemVenda.subTotal = this.itemVenda.quantidade * this.itemVenda.precoUnitario;
@@ -183,7 +214,7 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
           produtoExistente.quantidade += this.itemVenda.quantidade;
           produtoExistente.subTotal += this.itemVenda.subTotal;
         } else {
-          this.itensVenda.push({ ...this.itemVenda });
+          this.itensVenda.push({...this.itemVenda});
         }
 
         this.dataSource.data = this.itensVenda;
@@ -194,13 +225,12 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
         this.mostrarMensagem = true;
       }
     } else {
-      this.tituloMensagem = "Prencha corretamente os campos!" + this.itemVenda.produto.nome;
-      this.textoMensagem = "Quantidade em estoque: " + this.itemVenda.produto.quantidade;
+      this.tituloMensagem = "Prencha corretamente os campos!";
       this.mostrarMensagem = true;
     }
   }
 
-  removerItem(itemVenda : ItensVenda) {
+  removerItem(itemVenda: ItensVenda) {
     const itemIndex = this.itensVenda.findIndex(
       (item) => item.produtoId === itemVenda.produtoId && item.precoUnitario === itemVenda.precoUnitario
     );
@@ -238,17 +268,18 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
   }
 
   abrirModalFinalizarVenda() {
+    this.formToVenda();
     this.primeiroStep = this._formBuilder.group({
-      tipoPagamento: new FormControl(this.tipoPagamentoSelecionado),
+      tipoPagamento: new FormControl(this.tipoPagamentoSelecionado, [Validators.required]),
       parcelas: new FormControl(this.venda.parcelas),
       vendaFiado: new FormControl(this.venda.vendaFiado, [Validators.required]),
     });
     this.segundoStep = this._formBuilder.group({});
     this.carregarTiposPagamentos();
-    this.modalService.open(this.modalFinalizarVenda, { centered: true });
+    this.modalService.open(this.modalFinalizarVenda, {centered: true});
   }
 
-  fecharModalFinalizarVenda(){
+  fecharModalFinalizarVenda() {
     this.TiposPagamentos = null;
     this.tipoPagamentoSelecionado = null;
     this.stepper.reset();
@@ -257,11 +288,9 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
 
   finalizarVenda() {
     this.venda.itensVenda = this.itensVenda;
-    this.venda.valorTotal = this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
-    this.venda.vendaBalcao = false;
-    this.venda.vendaFiado = false;
+    this.venda.valorTotal = this.calcularValorVenda();
     this.venda.usuarioId = 1;
-    if(this.tipoPagamentoSelecionado)
+    if (this.tipoPagamentoSelecionado)
       this.venda.tipoPagamentoId = this.tipoPagamentoSelecionado.id;
 
 
@@ -272,10 +301,10 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
         this.dataSource = new MatTableDataSource<ItensVenda>(this.itensVenda);
         this.venda = {} as Venda;
         this.modalService.dismissAll();
-        this.openDialog("Venda: ", "Venda realizada com sucesso", "Ok", true);
+        this.openDialog("Venda: ", "Venda realizada com sucesso", "Ok", false);
 
       },
-      error => this.openDialog("Erro: ", error.mensage, "Voltar", false));
+      error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
   }
 
   carregarTiposPagamentos() {
@@ -285,26 +314,73 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy{
 
   }
 
+  calcularValorVenda(): number{
+    return this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
+  }
+
+  calcularParcelas(valorTotal: number, parcelas: number, juros?: number) {
+    let totalComJuros = valorTotal;
+    if (juros) {
+      totalComJuros += valorTotal * juros / 100;
+    }
+
+    const valorParcela = Math.floor((totalComJuros / parcelas) * 100) / 100;
+    const resto =  parseFloat((totalComJuros % parcelas).toFixed(2));
+    const temResto = resto > 0;
+    const ultimaParcela = temResto ? parseFloat((valorParcela + resto).toFixed(2)) : valorParcela;
+
+    return {
+      valorParcela: parseFloat(valorParcela.toFixed(2)),
+      ultimaParcela: ultimaParcela,
+      temResto: temResto
+    };
+  }
+
   openModal() {
-    this.modalService.open(this.modalContent, { centered: true });
+    this.modalService.open(this.modalContent, {centered: true});
   }
 
   openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {
     const dialogRef = this.dialog.open(ModalComponent, {
       panelClass: 'top10ClassesFodas',
       hasBackdrop: true,
-      data: { titulo: titulo, mensagem: mensagem, botao: botao, erro: erro }
+      data: {titulo: titulo, mensagem: mensagem, botao: botao, erro: erro}
     });
     if (!erro) {
       dialogRef.afterClosed().subscribe(() => {
-        this.router.navigate(['/../listaMesas']);
+        this.router.navigate(['/../']);
       });
     }
   }
 
-  getVendaBalcaoValue(): boolean {
-    const vendaBalcaoControl = this.vendaForm.get('vendaBalcao');
-    return vendaBalcaoControl?.value;  // Retorna o valor do controle 'vendaBalcao'
+  formToVenda(): void {
+    this.venda.pessoaId = this.getPessoaId();
+    this.venda.vendaBalcao = this.getVendaBalcao();
+    this.venda.nomeCliente = this.clienteSelececionado == null ? this.getClienteNome() : this.clienteSelececionado.nome;
+  }
+
+  getPessoaId(): number {
+    return this.vendaForm.get('pessoaId')?.value;
+  }
+
+  getVendaBalcao(): boolean {
+    return this.vendaForm.get('vendaBalcao')?.value;
+  }
+
+  getClienteNome(): string {
+    return this.vendaForm.get('clienteNome')?.value;
+  }
+
+  getProdutoId(): number {
+    return this.vendaForm.get('produtoId')?.value;
+  }
+
+  getQuantidade(): number {
+    return this.vendaForm.get('quantidade')?.value;
+  }
+
+  getPreco(): number {
+    return this.vendaForm.get('preco')?.value;
   }
 }
 
