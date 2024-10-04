@@ -21,7 +21,7 @@ public class CreditoCliente {
 
     @Getter
     @Setter
-    private BigDecimal valorTotal;
+    private BigDecimal valorTotal = BigDecimal.ZERO;
 
     @JsonIgnore
     @Getter
@@ -33,12 +33,12 @@ public class CreditoCliente {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "movimentoCreditoCliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "creditoCliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovimentoCreditoCliente> movimentoCreditoClientes = new ArrayList<>();
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "movimentoCreditoCliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "creditoCliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PagamentoCreditoCliente> pagamentoCreditoClientes = new ArrayList<>();
 }

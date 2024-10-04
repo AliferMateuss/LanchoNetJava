@@ -190,17 +190,16 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   temEstoqueSuficiente(): boolean {
-    return this.produtoSelecionado.quantidade >= this.itemVenda.quantidade;
+    return this.produtoSelecionado.quantidade >= this.getQuantidade();
   }
 
   adicionarItem() {
     this.mostrarMensagem = false;
-    console.log(this.vendaForm)
     if (this.vendaForm.valid) {
-      this.itemVenda.quantidade = this.getQuantidade();
-      this.itemVenda.precoUnitario = this.getPreco();
-      this.itemVenda.produtoId = this.getProdutoId()
       if (this.temEstoqueSuficiente()) {
+        this.itemVenda.quantidade = this.getQuantidade();
+        this.itemVenda.precoUnitario = this.getPreco();
+        this.itemVenda.produtoId = this.getProdutoId()
         this.produtoSelecionado.quantidade -= this.itemVenda.quantidade;
         this.itemVenda.subTotal = this.itemVenda.quantidade * this.itemVenda.precoUnitario;
 
@@ -220,8 +219,8 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
         this.dataSource.data = this.itensVenda;
         this.itemVenda = new ItensVenda();
       } else {
-        this.tituloMensagem = "Estoque insuficiente para o item: " + this.itemVenda.produto.nome;
-        this.textoMensagem = "Quantidade em estoque: " + this.itemVenda.produto.quantidade;
+        this.tituloMensagem = "Estoque insuficiente para o item: " + this.produtoSelecionado.nome;
+        this.textoMensagem = "Quantidade em estoque: " + this.produtoSelecionado.quantidade;
         this.mostrarMensagem = true;
       }
     } else {
@@ -236,11 +235,22 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     );
 
     if (itemIndex > -1) {
-      this.itensVenda.splice(itemIndex, 1);
 
+      const indexProd = this.Produtos?.findIndex(
+        (prod) => prod.id === itemVenda.produtoId && prod.preco === itemVenda.precoUnitario
+      );
+
+      if(indexProd && this.Produtos){
+        this.Produtos[indexProd].quantidade = itemVenda.quantidade;
+
+        if(this.Produtos[indexProd].id === this.produtoSelecionado.id){
+          this.produtoSelecionado.quantidade = this.Produtos[indexProd].quantidade;
+        }
+
+      }
+      this.itensVenda.splice(itemIndex, 1);
       this.dataSource.data = this.itensVenda;
 
-      this.produtoSelecionado.quantidade += this.itensVenda[itemIndex].quantidade;
     } else {
       this.tituloMensagem = "Item não encontrado";
       this.textoMensagem = "O item selecionado não está na lista de vendas.";

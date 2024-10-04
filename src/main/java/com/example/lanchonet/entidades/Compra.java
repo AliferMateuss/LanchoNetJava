@@ -40,7 +40,7 @@ public class Compra {
 
     @Getter
     @Setter
-    private String nomeFornecedor = "Venda Balção";
+    private String nomeFornecedor = "Venda Balcão";
 
     @Getter
     @Setter
@@ -75,11 +75,13 @@ public class Compra {
     @JoinColumn(name = "id_movimento_caixa")
     private MovimentoCaixa movimentoCaixa;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "compra")
     private List<ContasAPagar> contasAPagar;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "compra")
@@ -101,7 +103,7 @@ public class Compra {
     @Transient
     @Getter
     @Setter
-    private Long pedidoId;
+    private Long tipoPagamentoId;
 
     @Override
     public String toString() {

@@ -34,6 +34,7 @@ public class VendaNegocio {
     private CreditoClienteNegocio creditoClienteNegocio;
     @Autowired
     private CaixaNegocio caixaNegocio;
+
     private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da venda: %d, Quantidade em estoque: %d";
 
     public void salvarVenda(Venda venda) {

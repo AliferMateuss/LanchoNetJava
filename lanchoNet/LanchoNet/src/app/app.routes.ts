@@ -19,6 +19,7 @@ import {
 import {ListaUsuariosComponent} from "./usuarios/lista-usuarios/lista-usuarios.component";
 import {CadastroUsuariosComponent} from "./usuarios/cadastro-usuarios/cadastro-usuarios.component";
 import { VendaComponent } from "./venda/venda.component";
+import {CompraComponent} from "./compra/compra.component";
 
 export const routes: Routes = [
   { path: '', component: ComandasComponent, pathMatch: 'full' },
@@ -37,6 +38,7 @@ export const routes: Routes = [
   { path: 'listaUsuarios', component: ListaUsuariosComponent },
   { path: 'cadastroUsuarios/:id?', component: CadastroUsuariosComponent },
   { path: 'venda', component: VendaComponent },
+  { path: 'compra', component: CompraComponent },
 ];
 
 export const appRoutingProviders = [

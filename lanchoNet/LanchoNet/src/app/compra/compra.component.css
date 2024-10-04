@@ -36,7 +36,7 @@ label {
   padding-right: 10px;
 }
 
-.bodyVenda {
+.bodyCompra {
   width: 100%;
   display: flex;
   align-content: center;
@@ -44,6 +44,7 @@ label {
   justify-content: center;
   flex-direction: column;
 }
+
 form {
   max-width: 500px;
   display: flex;

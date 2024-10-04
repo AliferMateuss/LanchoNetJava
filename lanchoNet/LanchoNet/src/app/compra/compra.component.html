@@ -1,0 +1,165 @@
+<div>
+  <h2>Tela de Compra</h2>
+  <div style="font-size: 16px;"> {{ compra.dataCompra | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
+  <div class="bodyCompra" *ngIf="compraForm != undefined">
+    <div *ngIf="mostrarMensagem" class="alert alert-warning" role="alert">
+      <h1>{{ tituloMensagem }}</h1>
+      <p>{{ textoMensagem }}</p>
+    </div>
+    <form [formGroup]="compraForm" #formDir="ngForm">
+
+        <label for="fornecedor">Fornecedor:</label>
+        <ng-select formControlName="fornecedorId" id="fornecedor" (change)="selecionarFornecedor()">
+          <ng-option *ngFor="let fornecedor of Fornecedores" [value]="fornecedor.id">{{ fornecedor.nome }}</ng-option>
+        </ng-select>
+
+      <div class="selects">
+        <label for="produto">Produto:</label>
+        <ng-select formControlName="produtoId" id="produto" (change)="selecionarProduto()">
+          <ng-option *ngFor="let produto of Produtos" [value]="produto.id">{{ produto.nome }}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-input">
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" min="0" id="quantidade" formControlName="quantidade" name="quantidade" required>
+      </div>
+      <div class="form-input">
+        <label for="preco">Preço:</label>
+        <input type="text" id="preco" currencyMask formControlName="preco"
+               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" name="preco" required>
+      </div>
+      <button class="btn btn-primary" type="button" (click)="adicionarItem()">Adicionar Item</button>
+    </form>
+  </div>
+  <br/>
+  <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" ngSkipHydration>
+    <ng-container matColumnDef="Produto">
+      <mat-header-cell *matHeaderCellDef> Produto</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.produto.nome }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Quantidade">
+      <mat-header-cell *matHeaderCellDef> Quantidade</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.quantidade }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Preço">
+      <mat-header-cell *matHeaderCellDef> Preço</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.precoUnitario) }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="SubTotal">
+      <mat-header-cell *matHeaderCellDef> Subtotal</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.subTotal) }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef> {{calcularValorCompra()}} </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Acoes">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let item" style="display:flex; align-items:center; justify-content:center;">
+        <button class="btn btn-danger" type="button" style="margin-right:8px" (click)="removerItem(item)"> <i class="bi bi-trash-fill"></i> </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
+                    style="background-color: white;"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <tr class="mat-row noDataRow" *matNoDataRow>
+      <td class="mat-cell" colspan="5">Nenhum item adicionado!</td>
+    </tr>
+  </mat-table>
+  <div class="ValorTotal">
+    <button type="button" class="btn btn-danger" disabled><label>Valor Total: {{ calcularValorCompra() }}</label>
+    </button>
+  </div>
+  <button [disabled]="itensCompra.length === 0"  class="btn btn-primary" type="button" (click)="abrirModalFinalizarCompra()">Finalizar Compra</button>
+</div>
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ tituloMensagem }}</h4>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ textoMensagem }}</p>
+  </div>
+</ng-template>
+
+<ng-template #modalCompra let-modalcompra>
+  <div class="modal-header" style="justify-content: space-between;">
+    <h4 class="modal-title" style="margin-top: 16px;">Finalizar Compra</h4>
+    <button mat-button (click)="fecharModalFinalizarCompra()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <br/>
+    <br/>
+    <mat-stepper linear #stepper>
+      <mat-step [stepControl]="primeiroStep">
+        <form [formGroup]="primeiroStep">
+          <ng-template matStepLabel>Forma de pagamento:</ng-template>
+            <mat-label>Selecione a forma de pagamento</mat-label>
+            <ng-select formControlName="tipoPagamento" [(ngModel)]="tipoPagamentoSelecionado" name="pgto" id="pgto" (change)="changeFormaPagamento()" required>
+              <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp">{{ tp.nome }}</ng-option>
+            </ng-select>
+
+            <div *ngIf="parcelar">
+              <ng-template matStepLabel>Quantidade parcelas:</ng-template>
+              <ng-select formControlName="parcelas" [(ngModel)]="compra.parcelas" id="parcelas">
+                <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado?.parcelas); let i = index">
+                  [value]="i">{{ i }}
+                </ng-option>
+              </ng-select>
+            </div>
+          <div>
+            <button mat-button matStepperNext>Próximo</button>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="segundoStep">
+        <form>
+          <ng-template matStepLabel>Finalizar compra</ng-template>
+          <mat-label>Compra de {{ compra.nomeFornecedor }}</mat-label>
+          <mat-label>Forma de pagamento: {{ compra.compraFiado ? "Fiado" : tipoPagamentoSelecionado?.nome  }}</mat-label>
+
+          <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
+            <mat-label>Total sem juros: {{ calcularValorCompra() | currency }}</mat-label>
+            <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label>
+            <mat-label>Total com juros: {{ calcularValorCompra() + (calcularValorCompra() * tipoPagamentoSelecionado.juros / 100) | currency }}</mat-label>
+
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
+              {{ tipoPagamentoSelecionado.parcelas }}x
+              {{ calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
+            </mat-label>
+
+            <div *ngIf="calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).temResto">
+              <mat-label>Última parcela:
+                {{ calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+              </mat-label>
+            </div>
+          </div>
+
+          <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros">
+            <mat-label>Total: {{ calcularValorCompra() | currency }}</mat-label>
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
+              {{ tipoPagamentoSelecionado.parcelas }}x
+              {{ calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
+            </mat-label>
+
+            <div *ngIf="calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).temResto">
+              <mat-label>Última parcela:
+                {{ calcularParcelas(calcularValorCompra(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+              </mat-label>
+            </div>
+          </div>
+
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button mat-button matStepperNext (click)="finalizarCompra()">Finalizar</button>
+        </form>
+      </mat-step>
+    </mat-stepper>
+  </div>
+</ng-template>

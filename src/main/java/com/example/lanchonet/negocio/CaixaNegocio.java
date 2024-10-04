@@ -43,7 +43,7 @@ public class CaixaNegocio {
             movimentacao.setVenda(venda);
             venda.setMovimentoCaixa(movimentacao);
 
-            if(venda.getTipoPagamento().getAVista())
+            if(venda.getVendaFiado())
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
             else
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.FIADO);

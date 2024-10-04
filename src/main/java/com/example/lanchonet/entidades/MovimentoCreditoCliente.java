@@ -38,7 +38,7 @@ public class MovimentoCreditoCliente {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne(mappedBy = "creditoCliente", cascade = CascadeType.MERGE)
+    @OneToOne(mappedBy = "movimentoCreditoCliente", cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_venda")
     private Venda venda;
 }

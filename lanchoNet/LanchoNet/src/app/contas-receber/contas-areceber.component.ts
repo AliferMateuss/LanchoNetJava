@@ -1,23 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import {CommonModule} from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
-import {MatSortModule} from "@angular/material/sort";
 
 @Component({
   selector: 'app-contas-areceber',
   templateUrl: './contas-areceber.component.html',
-  imports: [CommonModule, FormsModule , ReactiveFormsModule, RouterModule, MatTableModule, MatPaginatorModule,
-    MatSortModule ],
-  standalone: true,
   styleUrls: ['./contas-areceber.component.css']
 })
 export class ContasAReceberComponent {
-  baseUrl: string = 'http://localhost:8080/';
   public contaAReceber!: any;
   public contasAReceber: ContasAReceber[] = [];
   dataSource = new MatTableDataSource<ContasAReceber>(this.contasAReceber);
@@ -40,7 +32,7 @@ export class ContasAReceberComponent {
     }, error => console.error(error));
   }
 
-  constructor(private http: HttpClient, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
 
   baixaParcial(conta: ContasAReceber) {
     this.contaAReceber = {} as ContasAReceber;

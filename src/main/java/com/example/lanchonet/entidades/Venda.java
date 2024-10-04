@@ -95,8 +95,8 @@ public class Venda {
     @Getter
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_credito_cliente")
-    private CreditoCliente creditoCliente;
+    @JoinColumn(name = "id_movimento_credito_cliente")
+    private MovimentoCreditoCliente movimentoCreditoCliente;
 
     @JsonIgnore
     @Getter
