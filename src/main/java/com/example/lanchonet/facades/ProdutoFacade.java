@@ -16,7 +16,7 @@ public class ProdutoFacade extends AbstractFacade<Produto, Long>{
 
     public List<ProdutoDto> findAllDto(){
         return entityManager.createQuery("SELECT new  com.example.lanchonet.dtos.ProdutoDto(" +
-                " p.id, p.nome, p.preco, p.quantidade)" +
+                " p.id, p.nome, p.preco, p.precoCompra, p.quantidade)" +
                 " FROM Produto p", ProdutoDto.class).getResultList();
     }
 }

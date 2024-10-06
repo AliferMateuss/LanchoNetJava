@@ -286,7 +286,7 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     });
     this.segundoStep = this._formBuilder.group({});
     this.carregarTiposPagamentos();
-    this.modalService.open(this.modalFinalizarVenda, {centered: true});
+    this.modalService.open(this.modalFinalizarVenda, {centered: true, size: "xl" });
   }
 
   fecharModalFinalizarVenda() {
@@ -333,14 +333,15 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     if (juros) {
       totalComJuros += valorTotal * juros / 100;
     }
+    const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
+    const total = parseFloat((valorParcela * parcelas).toFixed(2));
+    const resto = parseFloat((valorTotal - total).toFixed(2));
+    const temResto = resto > 0
+    const ultimaParcela = parseFloat((valorParcela + resto).toFixed(2));
 
-    const valorParcela = Math.floor((totalComJuros / parcelas) * 100) / 100;
-    const resto =  parseFloat((totalComJuros % parcelas).toFixed(2));
-    const temResto = resto > 0;
-    const ultimaParcela = temResto ? parseFloat((valorParcela + resto).toFixed(2)) : valorParcela;
 
     return {
-      valorParcela: parseFloat(valorParcela.toFixed(2)),
+      valorParcela: valorParcela,
       ultimaParcela: ultimaParcela,
       temResto: temResto
     };

@@ -96,7 +96,7 @@
   </div>
 </ng-template>
 
-<ng-template #modalVenda let-modalvenda>
+<ng-template #modalVenda let-modalvenda class="modal fade bd-example-modal-lg">
   <div class="modal-header" style="justify-content: space-between;">
     <h4 class="modal-title" style="margin-top: 16px;">Finalizar Venda</h4>
     <button mat-button (click)="fecharModalFinalizarVenda()">
@@ -104,9 +104,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <br/>
-    <br/>
-    <mat-stepper linear #stepper>
+    <mat-stepper linear #stepper >
       <mat-step [stepControl]="primeiroStep">
         <form [formGroup]="primeiroStep">
           <ng-template matStepLabel>Forma de pagamento:</ng-template>
@@ -119,11 +117,11 @@
               <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp">{{ tp.nome }}</ng-option>
             </ng-select>
 
-            <div *ngIf="parcelar">
+            <div *ngIf="parcelar" style="margin-top: 10px">
               <ng-template matStepLabel>Quantidade parcelas:</ng-template>
               <ng-select formControlName="parcelas" [(ngModel)]="venda.parcelas" id="parcelas">
                 <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado?.parcelas); let i = index">
-                  [value]="i">{{ i }}
+                  {{ i + 1 }}
                 </ng-option>
               </ng-select>
             </div>
@@ -132,6 +130,11 @@
             <button mat-button matStepperNext>Próximo</button>
           </div>
         </form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
       </mat-step>
       <mat-step [stepControl]="segundoStep">
         <form>
@@ -179,10 +182,13 @@
             <button mat-button (click)="finalizarVenda()"> Finalizar venda</button>
           </div>
         </form>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
       </mat-step>
     </mat-stepper>
-    <br/>
-    <br/>
   </div>
 </ng-template>
 

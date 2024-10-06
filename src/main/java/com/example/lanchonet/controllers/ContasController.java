@@ -22,27 +22,34 @@ public class ContasController {
     @Autowired
     private ContaAReceberNegocio contaAReceberNegocio;
 
-    @GetMapping("/RecuperarContasPagar")
+    @PostMapping("/BaixarContasAPagar")
+    public void baixar(@RequestBody ContasAPagar conta){
+        contaAPagarNegocio.baixar(conta);
+    }
 
+    @GetMapping("/RecuperarContasPagar")
     public List<ContasAPagar> RecuperarContasPagar(){
         return contaAPagarNegocio.buscarContaAPagar();
     }
 
     @PostMapping("/SalvarContaPagar")
-
     public void SalvarContaPagar(@RequestBody ContasAPagar conta){
         contaAPagarNegocio.salvarContaAReceber(conta);
     }
 
     @PostMapping("/RertornaContaPagarPorId")
-
     public ContasAPagar RertornaContaPagarPorId(@RequestBody Long id){
         return contaAPagarNegocio.buscarContaAReceberPorId(id);
     }
 
-    @PostMapping("DeletarContaAPagar")
+    @PostMapping("/DeletarContaAPagar")
     public void DeletarContaAPagar(@RequestBody Long id){
         contaAPagarNegocio.excluirContaAReceber(id);
+    }
+
+    @PostMapping("/BaixarContasAReceber")
+    public void baixar(@RequestBody ContasAReceber conta){
+        contaAReceberNegocio.baixar(conta);
     }
 
     @GetMapping("/RecuperarContasReceber")
@@ -60,7 +67,7 @@ public class ContasController {
         return contaAReceberNegocio.buscarContaAReceberPorId(id);
     }
 
-    @PostMapping("DeletarContaReceber")
+    @PostMapping("/DeletarContaReceber")
     public void DeletarContaReceber(@RequestBody Long id){
         contaAReceberNegocio.excluirContaAReceber(id);
     }

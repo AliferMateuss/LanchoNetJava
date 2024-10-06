@@ -18,7 +18,9 @@ export class NavMenuComponent {
   menuAberto: boolean = false;
   subMenuAberto: SubMenuAberto = {
     cadastros: false,
-    movimentos: false
+    movimentos: false,
+    financeiro: false,
+    relatorio: false
   };
 
   alternarMenu() {
@@ -45,6 +47,8 @@ export class NavMenuComponent {
 interface SubMenuAberto {
   movimentos: boolean;
   cadastros: boolean;
+  financeiro: boolean;
+  relatorio: boolean;
 }
 
 type SubMenuKey = keyof SubMenuAberto;

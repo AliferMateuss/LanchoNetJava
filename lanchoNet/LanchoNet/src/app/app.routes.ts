@@ -22,7 +22,7 @@ import { VendaComponent } from "./venda/venda.component";
 import {CompraComponent} from "./compra/compra.component";
 
 export const routes: Routes = [
-  { path: '', component: ComandasComponent, pathMatch: 'full' },
+  { path: 'pedidos', component: ComandasComponent, pathMatch: 'full' },
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
   { path: 'cadastroPessoas/:id?', component: PessoasComponent },

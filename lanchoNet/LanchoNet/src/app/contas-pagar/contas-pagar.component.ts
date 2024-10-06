@@ -1,15 +1,14 @@
-import { HttpClient } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import {MatCell, MatHeaderCell, MatHeaderRow, MatRow, MatTable, MatTableDataSource} from '@angular/material/table';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import {ChangeDetectorRef, Component, Inject, ViewChild, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {CurrencyMaskModule} from "ng2-currency-mask";
 import {DatePipe} from "@angular/common";
+import {MatCell, MatHeaderCell, MatHeaderRow, MatRow, MatTable, MatTableDataSource} from "@angular/material/table";
+import {MatPaginator} from "@angular/material/paginator";
+import {HttpClient} from "@angular/common/http";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-  selector: 'app-contas-areceber',
-  templateUrl: './contas-areceber.component.html',
+  selector: 'app-contas-pagar',
   standalone: true,
   imports: [
     FormsModule,
@@ -21,12 +20,13 @@ import {DatePipe} from "@angular/common";
     MatHeaderRow,
     MatRow
   ],
-  styleUrls: ['./contas-areceber.component.css']
+  templateUrl: './contas-pagar.component.html',
+  styleUrl: './contas-pagar.component.css'
 })
-export class ContasAReceberComponent {
-  public contaAReceber!: any;
-  public contasAReceber: ContasAReceber[] = [];
-  dataSource = new MatTableDataSource<ContasAReceber>(this.contasAReceber);
+export class ContasPagarComponent implements OnInit {
+  public contaAPagar!: any;
+  public contasAPagar: ContasAReceber[] = [];
+  dataSource = new MatTableDataSource<ContasAReceber>(this.contasAPagar);
   displayedColumns: string[] = ['VendaId', 'Cliente', 'DataCompetencia', 'DataVencimento', 'DataConta', 'Parcela', 'Valor', 'Botoes'];
   clienteSelececionado: string = "";
   produtoSelecionado: string = "";
@@ -42,42 +42,42 @@ export class ContasAReceberComponent {
   }
 
   buscaTodasContas() {
-    this.http.get<ContasAReceber[]>(this.baseUrl + 'api/Contas/RecuperarContasReceber').subscribe(data => {
-      this.contasAReceber = data;
-      this.dataSource = new MatTableDataSource<ContasAReceber>(this.contasAReceber);
+    this.http.get<ContasAReceber[]>(this.baseUrl + 'api/Contas/RecuperarContasPagar').subscribe(data => {
+      this.contasAPagar = data;
+      this.dataSource = new MatTableDataSource<ContasAReceber>(this.contasAPagar);
     }, error => console.error(error));
   }
 
   baixaParcial(conta: ContasAReceber) {
-    this.contaAReceber = {} as ContasAReceber;
-    this.contaAReceber = conta;
+    this.contaAPagar = {} as ContasAReceber;
+    this.contaAPagar = conta;
 
     this.modalService.open(this.modalBaixa, { centered: true });
   }
 
   baixaTotal(conta: ContasAReceber) {
-    this.contaAReceber = {} as ContasAReceber;
-    this.contaAReceber = conta;
-    this.valorAbate = this.contaAReceber.valor;
+    this.contaAPagar = {} as ContasAReceber;
+    this.contaAPagar = conta;
+    this.valorAbate = this.contaAPagar.valor;
     this.modalService.open(this.modalBaixa, { centered: true });
   }
   baixa() {
-    this.http.post<any[]>(this.baseUrl + 'api/Contas/BaixarContasAReceber', this.contaAReceber).subscribe(data => {
+    this.http.post<any[]>(this.baseUrl + 'api/Contas/BaixarContasAPagar', this.contaAPagar).subscribe(data => {
       this.reload();
     }, error => console.error(error));
   }
 
   excluir(id: number) {
-    this.http.post<any[]>(this.baseUrl + 'api/Contas/DeletarContaReceber', id).subscribe(data => {
+    this.http.post<any[]>(this.baseUrl + 'api/Contas/DeletarContaAPagar', id).subscribe(data => {
       this.reload();
     }, error => console.error(error));
   }
 
   abaterValor() {
-    if (this.contaAReceber.valor < this.valorAbate) {
+    if (this.contaAPagar.valor < this.valorAbate) {
       console.log("valor baixo")
     } else {
-      this.contaAReceber.valor -= Number(this.valorAbate);
+      this.contaAPagar.valor -= Number(this.valorAbate);
     }
   }
 

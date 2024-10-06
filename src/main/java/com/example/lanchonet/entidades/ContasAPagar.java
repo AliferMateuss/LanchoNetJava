@@ -1,6 +1,7 @@
 package com.example.lanchonet.entidades;
 
 import com.example.lanchonet.enums.StatusConta;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,4 +63,22 @@ public class ContasAPagar {
     @ManyToOne
     @JoinColumn(name = "id_pessoa", nullable = false)
     private Pessoa fornecedor;
+
+    @Transient
+    @JsonProperty
+    @Getter
+    @Setter
+    private String clienteNome;
+
+    @Transient
+    @JsonProperty
+    @Getter
+    @Setter
+    private Long idFornecedor;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long idCompra;
 }

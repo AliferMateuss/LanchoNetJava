@@ -1,7 +1,7 @@
 <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel">
   <ng-container matColumnDef="VendaId">
     <mat-header-cell *matHeaderCellDef> Nº da Venda </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.vendaId }} </mat-cell>
+    <mat-cell *matCellDef="let conta"> {{ conta.compraId }} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="Cliente">
@@ -49,9 +49,9 @@
 
 <ng-template #modalBaixa let-modalBaixa>
 
-  <div *ngIf="contaAReceber">
+  <div *ngIf="contaAPagar">
     <div class="modal-header">
-      <h4 class="modal-title">Conta Nº- {{contaAReceber.id}} </h4>
+      <h4 class="modal-title">Conta Nº- {{contaAPagar.id}} </h4>
       <button type="button" class="close" (click)="modalBaixa.dismiss('Cross click')">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -65,7 +65,7 @@
         <button class="btn btn-secundary" type="button" (click)="abaterValor()">Dar Baixa</button>
       </div>
       <div class="form-input" style="margin-bottom:10px">
-        <label>Valor da conta: {{formatarValorParaExibicao(contaAReceber.valor)}}</label>
+        <label>Valor da conta: {{formatarValorParaExibicao(contaAPagar.valor)}}</label>
       </div>
     </div>
     <div class="modal-footer">

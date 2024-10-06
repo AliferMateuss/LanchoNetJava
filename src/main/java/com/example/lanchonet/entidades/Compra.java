@@ -81,7 +81,7 @@ public class Compra {
     @OneToMany(mappedBy = "compra")
     private List<ContasAPagar> contasAPagar;
 
-    @JsonIgnore
+
     @Getter
     @Setter
     @OneToMany(mappedBy = "compra")

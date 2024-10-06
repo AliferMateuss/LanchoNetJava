@@ -136,7 +136,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
         return;
       }
       this.mapeaDataParaProduto(prod);
-      this.compraForm.get('preco')?.setValue(this.produtoSelecionado.preco);
+      this.compraForm.get('preco')?.setValue(this.produtoSelecionado.precoCompra);
       this.itemCompra.produto = this.produtoSelecionado;
     }
   }
@@ -145,7 +145,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
     this.produtoSelecionado = {} as Produto;
     this.produtoSelecionado.id = data.id;
     this.produtoSelecionado.nome = data.nome;
-    this.produtoSelecionado.preco = data.preco;
+    this.produtoSelecionado.precoCompra = data.precoCompra;
   }
 
   adicionarItem() {
@@ -195,7 +195,6 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
     this.primeiroStep = this._formBuilder.group({
       tipoPagamento: new FormControl(this.tipoPagamentoSelecionado, [Validators.required]),
       parcelas: new FormControl(this.compra.parcelas),
-      compraFiado: new FormControl(this.compra.compraFiado, [Validators.required]),
     });
     this.segundoStep = this._formBuilder.group({});
     this.carregarTiposPagamentos();
@@ -210,7 +209,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
   }
 
   finalizarCompra() {
-    this.compra.itensCompras = this.itensCompra;
+    this.compra.itensCompra = this.itensCompra;
     this.compra.valorTotal = this.calcularValorCompra();
     this.compra.usuarioId = 1;
     if (this.tipoPagamentoSelecionado)
@@ -218,7 +217,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
 
 
     this.http.post<Compra>(this.baseUrl + 'api/Compra/Salvar', this.compra).subscribe(
-      result => {
+      data => {
         this.itemCompra = new ItensCompra();
         this.itensCompra = [];
         this.dataSource = new MatTableDataSource<ItensCompra>(this.itensCompra);
@@ -271,8 +270,9 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
       totalComJuros += valorTotal * juros / 100;
     }
 
-    const valorParcela = Math.floor((totalComJuros / parcelas) * 100) / 100;
-    const resto =  parseFloat((totalComJuros % parcelas).toFixed(2));
+    let valorParcela = Math.floor((totalComJuros / parcelas) * 100) / 100;
+    let somaParcelas = valorParcela * parcelas;
+    let resto = Math.round((totalComJuros - somaParcelas) * 100) / 100;
     const temResto = resto > 0;
     const ultimaParcela = temResto ? parseFloat((valorParcela + resto).toFixed(2)) : valorParcela;
 
@@ -326,13 +326,13 @@ export class Compra {
   nomeFornecedor!: string;
   compraBalcao!: boolean;
   compraFiado!: boolean
-  itensCompras!: ItensCompra[];
+  itensCompra!: ItensCompra[];
 }
 
 export class Produto {
   id!: number;
   nome!: string;
-  preco!: number;
+  precoCompra!: number;
 }
 
 export class ItensCompra {

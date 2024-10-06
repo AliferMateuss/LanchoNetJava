@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum StatusConta {
     FECHADA("Fechada"),
+    PARCIAL("Pagamento Parcial"),
     ABERTA("Aberta");
 
     @Getter

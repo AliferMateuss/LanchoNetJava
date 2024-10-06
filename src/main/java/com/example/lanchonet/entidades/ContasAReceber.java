@@ -1,9 +1,12 @@
 package com.example.lanchonet.entidades;
 
 import com.example.lanchonet.enums.StatusConta;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -63,4 +66,22 @@ public class ContasAReceber {
     @ManyToOne
     @JoinColumn(name = "id_pessoa", nullable = false)
     private Pessoa pessoa;
+
+    @Transient
+    @JsonProperty
+    @Getter
+    @Setter
+    private String clienteNome;
+
+    @Transient
+    @JsonProperty
+    @Getter
+    @Setter
+    private Long idCliente;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long idVenda;
 }
