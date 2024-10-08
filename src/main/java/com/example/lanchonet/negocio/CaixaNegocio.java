@@ -3,9 +3,7 @@ package com.example.lanchonet.negocio;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.StatusCaixa;
 import com.example.lanchonet.enums.TipoMovimentoCaixa;
-import com.example.lanchonet.facades.CaixaFacade;
-import com.example.lanchonet.facades.MesaFacade;
-import com.example.lanchonet.facades.MovimentoCaixaFacade;
+import com.example.lanchonet.facades.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +17,12 @@ public class CaixaNegocio {
     private CaixaFacade facade;
     @Autowired
     private MovimentoCaixaFacade movimentoCaixaFacade;
-    private Caixa caixa;
     @Autowired
-    private CaixaFacade caixaFacade;
+    private VendaFacade vendaFacade;
+    @Autowired
+    private CompraFacade compraFacade;
+
+    private Caixa caixa;
 
 
     public void abreCaixa(Caixa caixa){
@@ -53,7 +54,7 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
-            caixaFacade.save(caixa);
+            facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +77,55 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
-            caixaFacade.save(caixa);
+            facade.save(caixa);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void gerarMovimentacao(ContasAReceber conta){
+        try {
+            setCaixa();
+            MovimentoCaixa movimentacao = new MovimentoCaixa();
+
+            Venda venda = vendaFacade.findById(conta.getVendaId());
+
+            if(venda == null)
+                throw new Exception("Venda não encontrada!");
+
+            movimentacao.setContasAReceber(conta);
+            conta.setMovimentoCaixa(movimentacao);
+            movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
+
+            movimentacao.setTipoPagamento(conta.getTipoPagamento());
+            movimentacao.setValor(conta.getValor());
+            movimentacao.setCaixa(caixa);
+
+            caixa.getMovimentos().add(movimentacao);
+            facade.save(caixa);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void gerarMovimentacao(ContasAPagar conta){
+        try {
+            setCaixa();
+            MovimentoCaixa movimentacao = new MovimentoCaixa();
+            Compra compra = compraFacade.findById(conta.getCompraId());
+
+            if(compra == null)
+                throw new Exception("Compra não encontrada!");
+
+            movimentacao.setContasAPagar(conta);
+            conta.setMovimentoCaixa(movimentacao);
+            movimentacao.setTipoMovimento(TipoMovimentoCaixa.SAIDA);
+            movimentacao.setTipoPagamento(conta.getTipoPagamento());
+            movimentacao.setValor(conta.getValor());
+            movimentacao.setCaixa(caixa);
+
+            caixa.getMovimentos().add(movimentacao);
+            facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

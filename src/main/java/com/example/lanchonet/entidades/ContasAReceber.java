@@ -58,14 +58,22 @@ public class ContasAReceber {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_pessoa", nullable = false)
+    private Pessoa pessoa;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", nullable = false)
-    private Pessoa pessoa;
+    @JoinColumn(name = "id_tipo_pagamento")
+    private TipoPagamento tipoPagamento;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_movimento_caixa")
+    private MovimentoCaixa movimentoCaixa;
 
     @Transient
     @JsonProperty
@@ -77,11 +85,17 @@ public class ContasAReceber {
     @JsonProperty
     @Getter
     @Setter
-    private Long idCliente;
+    private Long clienteId;
 
     @JsonProperty
     @Getter
     @Setter
     @Transient
-    private Long idVenda;
+    private Long vendaId;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long tipoPagamentoId;
 }

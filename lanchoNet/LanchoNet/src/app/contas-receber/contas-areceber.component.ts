@@ -1,11 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Inject, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import {MatCell, MatHeaderCell, MatHeaderRow, MatRow, MatTable, MatTableDataSource} from '@angular/material/table';
+import {
+  MatCell, MatCellDef, MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef, MatNoDataRow,
+  MatRow, MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from '@angular/material/table';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from "@angular/forms";
 import {CurrencyMaskModule} from "ng2-currency-mask";
-import {DatePipe} from "@angular/common";
+import {DatePipe, NgIf} from "@angular/common";
+import {MatSort, MatSortHeader} from "@angular/material/sort";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-contas-areceber',
@@ -19,7 +29,18 @@ import {DatePipe} from "@angular/common";
     MatHeaderCell,
     MatCell,
     MatHeaderRow,
-    MatRow
+    MatRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatNoDataRow,
+    MatHeaderCellDef,
+    MatCellDef,
+    NgIf,
+    MatColumnDef,
+    MatPaginator,
+    MatSort,
+    MatSortHeader,
+    RouterLink
   ],
   styleUrls: ['./contas-areceber.component.css']
 })
@@ -31,11 +52,12 @@ export class ContasAReceberComponent {
   clienteSelececionado: string = "";
   produtoSelecionado: string = "";
   valorAbate!: number;
+  baseUrl: string = 'http://localhost:8080/';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("modalBaixa") modalBaixa!: any;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.buscaTodasContas();
@@ -61,6 +83,7 @@ export class ContasAReceberComponent {
     this.valorAbate = this.contaAReceber.valor;
     this.modalService.open(this.modalBaixa, { centered: true });
   }
+
   baixa() {
     this.http.post<any[]>(this.baseUrl + 'api/Contas/BaixarContasAReceber', this.contaAReceber).subscribe(data => {
       this.reload();

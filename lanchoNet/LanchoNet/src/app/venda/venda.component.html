@@ -113,21 +113,21 @@
 
           <div *ngIf="!venda.vendaFiado">
             <mat-label>Selecione a forma de pagamento</mat-label>
-            <ng-select formControlName="tipoPagamento" [(ngModel)]="tipoPagamentoSelecionado" name="pgto" id="pgto" (change)="changeFormaPagamento()" required>
-              <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp">{{ tp.nome }}</ng-option>
+            <ng-select formControlName="tipoPagamento" name="pgto" id="pgto" (change)="changeFormaPagamento()" required>
+              <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp"> {{ tp.nome }} </ng-option>
             </ng-select>
 
-            <div *ngIf="parcelar" style="margin-top: 10px">
+            <div *ngIf="parcelar && tipoPagamentoSelecionado" style="margin-top: 10px">
               <ng-template matStepLabel>Quantidade parcelas:</ng-template>
-              <ng-select formControlName="parcelas" [(ngModel)]="venda.parcelas" id="parcelas">
-                <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado?.parcelas); let i = index">
+              <ng-select formControlName="parcelas" id="parcelas" (change)="changeParcelas()">
+                <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado.parcelas); let i = index" [value]="i + 1">
                   {{ i + 1 }}
                 </ng-option>
               </ng-select>
             </div>
           </div>
           <div>
-            <button mat-button matStepperNext>Próximo</button>
+            <button mat-button matStepperNext (click)="avancaStep()">Próximo</button>
           </div>
         </form>
         <br/>
@@ -143,18 +143,18 @@
           <mat-label>Forma de pagamento: {{ venda.vendaFiado ? "Fiado" : tipoPagamentoSelecionado?.nome  }}</mat-label>
 
           <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
-            <mat-label>Total sem juros: {{ calcularValorVenda() | currency }}</mat-label>
-            <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label>
-            <mat-label>Total com juros: {{ calcularValorVenda() + (calcularValorVenda() * tipoPagamentoSelecionado.juros / 100) | currency }}</mat-label>
+            <mat-label>Total sem juros: {{ calcularValorVenda() | currency }}</mat-label><br/>
+            <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label><br/>
+            <mat-label>Total com juros: {{ calcularValorVendaJuros() | currency }}</mat-label><br/>
 
-            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
-            {{ tipoPagamentoSelecionado.parcelas }}x
-            {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
-            </mat-label>
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+            {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+            {{ tipoPagamentoSelecionado.valorParcela | currency }}
+            </mat-label><br/>
 
-            <div *ngIf="calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).temResto">
+            <div *ngIf="tipoPagamentoSelecionado.temResto">
               <mat-label>Última parcela:
-                {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+                {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
               </mat-label>
             </div>
           </div>
@@ -162,14 +162,14 @@
           <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros">
             <mat-label>Total: {{ calcularValorVenda()| currency }}</mat-label>
 
-            <mat-label *ngIf="tipoPagamentoSelecionado.parcelas">Parcelas:
-              {{ tipoPagamentoSelecionado.parcelas }}x
-              {{ calcularParcelas(calcularValorVenda(), tipoPagamentoSelecionado.parcelas).valorParcela | currency }}
-            </mat-label>
+            <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+              {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+              {{ tipoPagamentoSelecionado.valorParcela | currency }}
+            </mat-label><br/>
 
-            <div *ngIf="calcularParcelas( calcularValorVenda(), tipoPagamentoSelecionado.parcelas).temResto">
+            <div *ngIf="tipoPagamentoSelecionado.temResto">
               <mat-label>Última parcela:
-                {{ calcularParcelas( calcularValorVenda(), tipoPagamentoSelecionado.parcelas).ultimaParcela | currency }}
+                {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
               </mat-label>
             </div>
           </div>

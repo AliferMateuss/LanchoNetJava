@@ -1,11 +1,20 @@
 import {ChangeDetectorRef, Component, Inject, ViewChild, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {CurrencyMaskModule} from "ng2-currency-mask";
-import {DatePipe} from "@angular/common";
-import {MatCell, MatHeaderCell, MatHeaderRow, MatRow, MatTable, MatTableDataSource} from "@angular/material/table";
+import {DatePipe, NgIf} from "@angular/common";
+import {
+  MatCell,
+  MatCellDef, MatColumnDef,
+  MatHeaderCell, MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef, MatNoDataRow,
+  MatRow, MatRowDef,
+  MatTable,
+  MatTableDataSource
+} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {HttpClient} from "@angular/common/http";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-contas-pagar',
@@ -18,45 +27,55 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
     MatHeaderCell,
     MatCell,
     MatHeaderRow,
-    MatRow
+    MatRow,
+    MatCellDef,
+    MatHeaderCellDef,
+    MatColumnDef,
+    MatHeaderRowDef,
+    MatRowDef,
+    NgIf,
+    MatNoDataRow,
+    MatPaginator,
+    RouterLink
   ],
   templateUrl: './contas-pagar.component.html',
   styleUrl: './contas-pagar.component.css'
 })
 export class ContasPagarComponent implements OnInit {
   public contaAPagar!: any;
-  public contasAPagar: ContasAReceber[] = [];
-  dataSource = new MatTableDataSource<ContasAReceber>(this.contasAPagar);
+  public contasAPagar: ContasAPagar[] = [];
+  dataSource = new MatTableDataSource<ContasAPagar>(this.contasAPagar);
   displayedColumns: string[] = ['VendaId', 'Cliente', 'DataCompetencia', 'DataVencimento', 'DataConta', 'Parcela', 'Valor', 'Botoes'];
   clienteSelececionado: string = "";
   produtoSelecionado: string = "";
   valorAbate!: number;
+  baseUrl: string = 'http://localhost:8080/';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild("modalBaixa") modalBaixa!: any;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
+  constructor(private http: HttpClient, private modalService: NgbModal, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.buscaTodasContas();
   }
 
   buscaTodasContas() {
-    this.http.get<ContasAReceber[]>(this.baseUrl + 'api/Contas/RecuperarContasPagar').subscribe(data => {
+    this.http.get<ContasAPagar[]>(this.baseUrl + 'api/Contas/RecuperarContasPagar').subscribe(data => {
       this.contasAPagar = data;
-      this.dataSource = new MatTableDataSource<ContasAReceber>(this.contasAPagar);
+      this.dataSource.data = this.contasAPagar;
     }, error => console.error(error));
   }
 
-  baixaParcial(conta: ContasAReceber) {
-    this.contaAPagar = {} as ContasAReceber;
+  baixaParcial(conta: ContasAPagar) {
+    this.contaAPagar = {} as ContasAPagar;
     this.contaAPagar = conta;
 
     this.modalService.open(this.modalBaixa, { centered: true });
   }
 
-  baixaTotal(conta: ContasAReceber) {
-    this.contaAPagar = {} as ContasAReceber;
+  baixaTotal(conta: ContasAPagar) {
+    this.contaAPagar = {} as ContasAPagar;
     this.contaAPagar = conta;
     this.valorAbate = this.contaAPagar.valor;
     this.modalService.open(this.modalBaixa, { centered: true });
@@ -96,7 +115,7 @@ export class ContasPagarComponent implements OnInit {
   }
 }
 
-interface ContasAReceber {
+interface ContasAPagar {
   id: number;
   vendaId: number;
   dataCompetencia: Date;

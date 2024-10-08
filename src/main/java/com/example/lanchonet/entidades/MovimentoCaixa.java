@@ -47,6 +47,20 @@ public class MovimentoCaixa {
     @JoinColumn(name = "id_compra")
     private Compra compra;
 
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(mappedBy = "movimentoCaixa", cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id_conta_receber")
+    private ContasAReceber contasAReceber;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(mappedBy = "movimentoCaixa", cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id_conta_pagar")
+    private ContasAPagar contasAPagar;
+
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.EAGER)

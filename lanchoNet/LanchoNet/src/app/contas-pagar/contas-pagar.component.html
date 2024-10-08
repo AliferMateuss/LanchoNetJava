@@ -1,51 +1,68 @@
-<mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel">
-  <ng-container matColumnDef="VendaId">
-    <mat-header-cell *matHeaderCellDef> Nº da Venda </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.compraId }} </mat-cell>
-  </ng-container>
+<h1 class="text-center" style=" margin-bottom: 60px; ">Contas a Pagar</h1>
+<div class="container-fluid">
+  <div class="container-fluid border border-dark rounded-4" style="margin: 10px 0px 10px 0px; padding-bottom: 10px; max-height: 600px; overflow-y: auto;">
+    <div class="col-md-12">
+      <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" ngSkipHydration>
+        <ng-container matColumnDef="VendaId">
+          <mat-header-cell *matHeaderCellDef> Nº da Venda </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.compraId }} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="Cliente">
-    <mat-header-cell *matHeaderCellDef> Cliente </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.clienteNome }} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="Cliente">
+          <mat-header-cell *matHeaderCellDef> Cliente </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.clienteNome }} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="DataCompetencia">
-    <mat-header-cell *matHeaderCellDef> Data da Competência </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.dataCompetencia | date: 'MM/yyyy'}} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="DataCompetencia">
+          <mat-header-cell *matHeaderCellDef> Data da Competência </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.dataCompetencia | date: 'MM/yyyy'}} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="DataVencimento">
-    <mat-header-cell *matHeaderCellDef> Data de Vencimento </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.dataVencimento | date: 'dd/MM/yyyy' }} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="DataVencimento">
+          <mat-header-cell *matHeaderCellDef> Data de Vencimento </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.dataVencimento | date: 'dd/MM/yyyy' }} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="DataConta">
-    <mat-header-cell *matHeaderCellDef> Data de Conta </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.dataConta | date: 'MM/yyyy'}} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="DataConta">
+          <mat-header-cell *matHeaderCellDef> Data de Conta </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.dataConta | date: 'MM/yyyy'}} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="Parcela">
-    <mat-header-cell *matHeaderCellDef> Parcela </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ conta.parcela }} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="Parcela">
+          <mat-header-cell *matHeaderCellDef> Parcela </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ conta.parcela }} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="Valor">
-    <mat-header-cell *matHeaderCellDef> Valor </mat-header-cell>
-    <mat-cell *matCellDef="let conta"> {{ formatarValorParaExibicao(conta.valor) }} </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="Valor">
+          <mat-header-cell *matHeaderCellDef> Valor </mat-header-cell>
+          <mat-cell *matCellDef="let conta"> {{ formatarValorParaExibicao(conta.valor) }} </mat-cell>
+        </ng-container>
 
-  <ng-container matColumnDef="Botoes">
-    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-    <mat-cell *matCellDef="let conta">
-      <button *ngIf="conta.status !== 'Fechada'" (click)="baixaTotal(conta)" class="btn btn-outline-primary" type="button" style="margin-right:8px"> Dar baixa <i class="bi bi-cash" style="margin-left:3px"></i> </button>
-      <button *ngIf="conta.status !== 'Fechada'" (click)="baixaParcial(conta)" class="btn btn-outline-warning" type="button" style="margin-right: 8px"> Baixa parcial  <i class="bi bi-list" style="margin-left:3px"> </i> </button>
-      <button (click)="excluir(conta.id)" class="btn btn-outline-danger" type="button"> Excluir <i class="bi bi-trash" style="margin-left:3px"></i> </button>
-    </mat-cell>
-  </ng-container>
+        <ng-container matColumnDef="Botoes">
+          <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+          <mat-cell *matCellDef="let conta">
+            <button *ngIf="conta.status !== 'Fechada'" (click)="baixaTotal(conta)" class="btn btn-outline-primary" type="button" style="margin-right:8px"> Dar baixa <i class="bi bi-cash" style="margin-left:3px"></i> </button>
+            <button *ngIf="conta.status !== 'Fechada'" (click)="baixaParcial(conta)" class="btn btn-outline-warning" type="button" style="margin-right: 8px"> Baixa parcial  <i class="bi bi-list" style="margin-left:3px"> </i> </button>
+            <button (click)="excluir(conta.id)" class="btn btn-outline-danger" type="button"> Excluir <i class="bi bi-trash" style="margin-left:3px"></i> </button>
+          </mat-cell>
+        </ng-container>
 
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-</mat-table>
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"
+                        style="background-color: white;"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        <tr class="mat-row noDataRow" *matNoDataRow>
+          <td class="mat-cell" colspan="5">Nenhum conta encontrada!</td>
+        </tr>
+      </mat-table>
+      <mat-paginator #paginator [pageSize]="10" itemsPerPageLabel="" showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: center; flex-wrap: wrap; flex-direction: row; column-gap: 100px; }">
+    <button type="button" class="btn btn-danger" [routerLink]="['/../']">
+      Voltar <i class="bi bi-arrow-bar-left"></i>
+    </button>
+  </div>
+</div>
 
 <ng-template #modalBaixa let-modalBaixa>
 

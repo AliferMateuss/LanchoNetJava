@@ -1,6 +1,7 @@
 package com.example.lanchonet.entidades;
 
 import com.example.lanchonet.enums.StatusConta;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -55,14 +56,22 @@ public class ContasAPagar {
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario usuario;
+    @JoinColumn(name = "id_pessoa", nullable = false)
+    private Pessoa fornecedor;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", nullable = false)
-    private Pessoa fornecedor;
+    @JoinColumn(name = "id_tipo_pagamento")
+    private TipoPagamento tipoPagamento;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_movimento_caixa")
+    private MovimentoCaixa movimentoCaixa;
 
     @Transient
     @JsonProperty
@@ -74,11 +83,18 @@ public class ContasAPagar {
     @JsonProperty
     @Getter
     @Setter
-    private Long idFornecedor;
+    private Long fornecedorId;
 
     @JsonProperty
     @Getter
     @Setter
     @Transient
-    private Long idCompra;
+    private Long compraId;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private Long tipoPagamentoId;
+
 }

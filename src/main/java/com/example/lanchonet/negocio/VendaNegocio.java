@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -103,10 +104,13 @@ public class VendaNegocio {
 
     private void criaContasAReceber(Venda venda) {
         if (venda.getParcelas() != null && venda.getParcelas() != 0) {
+
             List<ContasAReceber> contasAReceber = new ArrayList<>();
-            BigDecimal valorParcela = new BigDecimal(Math.floor(venda.getValorTotal().doubleValue() / venda.getParcelas().doubleValue()));
-            BigDecimal resto = new BigDecimal(venda.getValorTotal().doubleValue() % venda.getParcelas().doubleValue());
-            BigDecimal ultimaParcela = valorParcela.add(resto);
+
+            BigDecimal valorParcela = venda.getValorTotal().divide(BigDecimal.valueOf(venda.getParcelas()), 2, RoundingMode.HALF_UP);
+            BigDecimal total = valorParcela.multiply(BigDecimal.valueOf(venda.getParcelas())).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal resto = venda.getValorTotal().subtract(total).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal ultimaParcela = valorParcela.add(resto).setScale(2, RoundingMode.HALF_UP);
 
             for (int i = 1; i <= venda.getParcelas(); i++) {
                 ContasAReceber contaAReceber = new ContasAReceber();

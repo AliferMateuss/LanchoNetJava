@@ -20,6 +20,8 @@ import {ListaUsuariosComponent} from "./usuarios/lista-usuarios/lista-usuarios.c
 import {CadastroUsuariosComponent} from "./usuarios/cadastro-usuarios/cadastro-usuarios.component";
 import { VendaComponent } from "./venda/venda.component";
 import {CompraComponent} from "./compra/compra.component";
+import {ContasAReceberComponent} from "./contas-receber/contas-areceber.component";
+import {ContasPagarComponent} from "./contas-pagar/contas-pagar.component";
 
 export const routes: Routes = [
   { path: 'pedidos', component: ComandasComponent, pathMatch: 'full' },
@@ -39,6 +41,8 @@ export const routes: Routes = [
   { path: 'cadastroUsuarios/:id?', component: CadastroUsuariosComponent },
   { path: 'venda', component: VendaComponent },
   { path: 'compra', component: CompraComponent },
+  { path: 'contaReceber', component: ContasAReceberComponent },
+  { path: 'contaPagar', component: ContasPagarComponent },
 ];
 
 export const appRoutingProviders = [

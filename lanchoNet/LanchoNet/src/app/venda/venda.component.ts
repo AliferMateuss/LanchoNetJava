@@ -44,7 +44,7 @@ registerLocaleData(ptBr, 'pt-BR');
   providers: [{provide: LOCALE_ID, useValue: 'pt-BR'}]
 })
 export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
-  public venda: Venda = {vendaBalcao: false, vendaFiado:false} as Venda;
+  public venda: Venda = {vendaBalcao: false, vendaFiado: false} as Venda;
   public itemVenda: ItensVenda = new ItensVenda();
   public itensVenda: ItensVenda[] = [];
   public Clientes?: any[];
@@ -127,9 +127,9 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  selecionaVendaFiado() : void{
+  selecionaVendaFiado(): void {
     this.venda.vendaFiado = this.primeiroStep.get('vendaFiado')?.value;
-    if(this.primeiroStep.get('vendaFiado')?.value){
+    if (this.primeiroStep.get('vendaFiado')?.value) {
       this.primeiroStep.get('tipoPagamento')?.clearValidators();
       this.primeiroStep.get('tipoPagamento')?.reset();
       this.primeiroStep.get('tipoPagamento')?.updateValueAndValidity();
@@ -218,6 +218,7 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
 
         this.dataSource.data = this.itensVenda;
         this.itemVenda = new ItensVenda();
+        console.log(this.itensVenda);
       } else {
         this.tituloMensagem = "Estoque insuficiente para o item: " + this.produtoSelecionado.nome;
         this.textoMensagem = "Quantidade em estoque: " + this.produtoSelecionado.quantidade;
@@ -240,10 +241,10 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
         (prod) => prod.id === itemVenda.produtoId && prod.preco === itemVenda.precoUnitario
       );
 
-      if(indexProd && this.Produtos){
+      if (indexProd && this.Produtos) {
         this.Produtos[indexProd].quantidade = itemVenda.quantidade;
 
-        if(this.Produtos[indexProd].id === this.produtoSelecionado.id){
+        if (this.Produtos[indexProd].id === this.produtoSelecionado.id) {
           this.produtoSelecionado.quantidade = this.Produtos[indexProd].quantidade;
         }
 
@@ -270,11 +271,27 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   changeFormaPagamento() {
-    if (this.tipoPagamentoSelecionado?.avista === true) {
-      this.parcelar = false;
-    } else {
-      this.parcelar = true;
+    this.tipoPagamentoSelecionado = this.primeiroStep.get('tipoPagamento')?.value;
+    if (!this.tipoPagamentoSelecionado) {
+      this.openDialog("Erro: ", "Erro ao selecionar tipo pagamento", "Ok", true);
+      console.log(this.primeiroStep.get('tipoPagamento')?.value);
+      return;
     }
+
+    this.parcelar = this.tipoPagamentoSelecionado?.avista !== true;
+  }
+
+  changeParcelas() {
+    if (this.tipoPagamentoSelecionado) {
+      this.tipoPagamentoSelecionado.parcelaEscolhida = this.primeiroStep.get('parcelas')?.value;
+    }
+  }
+
+  avancaStep() {
+    if (this.tipoPagamentoSelecionado)
+      this.calcularParcelas(this.calcularValorVendaJuros(), this.tipoPagamentoSelecionado.parcelaEscolhida);
+
+    this.cdr.detectChanges();
   }
 
   abrirModalFinalizarVenda() {
@@ -286,22 +303,26 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     });
     this.segundoStep = this._formBuilder.group({});
     this.carregarTiposPagamentos();
-    this.modalService.open(this.modalFinalizarVenda, {centered: true, size: "xl" });
+    this.modalService.open(this.modalFinalizarVenda, {centered: true, size: "xl"});
   }
 
   fecharModalFinalizarVenda() {
     this.TiposPagamentos = null;
     this.tipoPagamentoSelecionado = null;
     this.stepper.reset();
+    this.primeiroStep.reset();
     this.modalService.dismissAll(this.modalFinalizarVenda);
   }
 
   finalizarVenda() {
     this.venda.itensVenda = this.itensVenda;
-    this.venda.valorTotal = this.calcularValorVenda();
+    this.venda.valorTotal = this.calcularValorVendaJuros();
     this.venda.usuarioId = 1;
-    if (this.tipoPagamentoSelecionado)
+    this.venda.dataVenda = new Date();
+    if (this.tipoPagamentoSelecionado) {
+      this.venda.parcelas = this.tipoPagamentoSelecionado.parcelaEscolhida;
       this.venda.tipoPagamentoId = this.tipoPagamentoSelecionado.id;
+    }
 
 
     this.http.post<Venda>(this.baseUrl + 'api/Venda/Salvar', this.venda).subscribe(
@@ -324,27 +345,31 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
 
   }
 
-  calcularValorVenda(): number{
-    return this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
+  calcularValorVendaJuros(): number {
+    let total = this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
+    if (this.tipoPagamentoSelecionado?.juros) {
+      total = total + ((total * this.tipoPagamentoSelecionado?.juros) / 100);
+    }
+    return total;
   }
 
-  calcularParcelas(valorTotal: number, parcelas: number, juros?: number) {
-    let totalComJuros = valorTotal;
-    if (juros) {
-      totalComJuros += valorTotal * juros / 100;
-    }
+  calcularValorVenda(): number {
+    let total = this.itensVenda.reduce((total, item) => total + item.subTotal, 0);
+    return total;
+  }
+
+  calcularParcelas(valorTotal: number, parcelas: number) {
     const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
     const total = parseFloat((valorParcela * parcelas).toFixed(2));
     const resto = parseFloat((valorTotal - total).toFixed(2));
     const temResto = resto > 0
     const ultimaParcela = parseFloat((valorParcela + resto).toFixed(2));
 
-
-    return {
-      valorParcela: valorParcela,
-      ultimaParcela: ultimaParcela,
-      temResto: temResto
-    };
+    if(this.tipoPagamentoSelecionado){
+      this.tipoPagamentoSelecionado.valorParcela = valorParcela;
+      this.tipoPagamentoSelecionado.ultimaParcelas = ultimaParcela;
+      this.tipoPagamentoSelecionado.temResto = temResto;
+    }
   }
 
   openModal() {
@@ -437,5 +462,9 @@ interface TipoPagamento {
   nome: string;
   juros: number;
   parcelas: number;
+  parcelaEscolhida: number;
   avista: boolean;
+  valorParcela: number;
+  temResto: boolean;
+  ultimaParcelas: number;
 }

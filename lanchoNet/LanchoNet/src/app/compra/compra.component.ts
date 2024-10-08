@@ -210,10 +210,13 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
 
   finalizarCompra() {
     this.compra.itensCompra = this.itensCompra;
-    this.compra.valorTotal = this.calcularValorCompra();
+    this.compra.valorTotal = this.calcularValorCompraJuros();
     this.compra.usuarioId = 1;
-    if (this.tipoPagamentoSelecionado)
+    this.compra.dataCompra = new Date();
+    if (this.tipoPagamentoSelecionado){
+      this.compra.parcelas = this.tipoPagamentoSelecionado.parcelaEscolhida;
       this.compra.tipoPagamentoId = this.tipoPagamentoSelecionado.id;
+    }
 
 
     this.http.post<Compra>(this.baseUrl + 'api/Compra/Salvar', this.compra).subscribe(
@@ -236,8 +239,39 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
 
   }
 
+  changeFormaPagamento() {
+    this.tipoPagamentoSelecionado = this.primeiroStep.get('tipoPagamento')?.value;
+    if (!this.tipoPagamentoSelecionado) {
+      this.openDialog("Erro: ", "Erro ao selecionar tipo pagamento", "Ok", true);
+      console.log(this.primeiroStep.get('tipoPagamento')?.value);
+      return;
+    }
+
+    this.parcelar = this.tipoPagamentoSelecionado?.avista !== true;
+  }
+
+  changeParcelas() {
+    if (this.tipoPagamentoSelecionado) {
+      this.tipoPagamentoSelecionado.parcelaEscolhida = this.primeiroStep.get('parcelas')?.value;
+    }
+  }
+
+  avancaStep() {
+    if (this.tipoPagamentoSelecionado)
+      this.calcularParcelas(this.calcularValorCompraJuros(), this.tipoPagamentoSelecionado.parcelaEscolhida);
+
+    this.cdr.detectChanges();
+  }
   calcularValorCompra(): number {
     return this.itensCompra.reduce((total, item) => total + item.subTotal, 0);
+  }
+
+  calcularValorCompraJuros(): number {
+    let total = this.itensCompra.reduce((total, item) => total + item.subTotal, 0);
+    if (this.tipoPagamentoSelecionado?.juros) {
+      total = total + ((total * this.tipoPagamentoSelecionado?.juros) / 100);
+    }
+    return total;
   }
 
   openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {
@@ -256,31 +290,18 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  changeFormaPagamento() {
-    if (this.tipoPagamentoSelecionado?.avista === true) {
-      this.parcelar = false;
-    } else {
-      this.parcelar = true;
+  calcularParcelas(valorTotal: number, parcelas: number) {
+    const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
+    const total = parseFloat((valorParcela * parcelas).toFixed(2));
+    const resto = parseFloat((valorTotal - total).toFixed(2));
+    const temResto = resto > 0
+    const ultimaParcela = parseFloat((valorParcela + resto).toFixed(2));
+
+    if(this.tipoPagamentoSelecionado){
+      this.tipoPagamentoSelecionado.valorParcela = valorParcela;
+      this.tipoPagamentoSelecionado.ultimaParcelas = ultimaParcela;
+      this.tipoPagamentoSelecionado.temResto = temResto;
     }
-  }
-
-  calcularParcelas(valorTotal: number, parcelas: number, juros?: number) {
-    let totalComJuros = valorTotal;
-    if (juros) {
-      totalComJuros += valorTotal * juros / 100;
-    }
-
-    let valorParcela = Math.floor((totalComJuros / parcelas) * 100) / 100;
-    let somaParcelas = valorParcela * parcelas;
-    let resto = Math.round((totalComJuros - somaParcelas) * 100) / 100;
-    const temResto = resto > 0;
-    const ultimaParcela = temResto ? parseFloat((valorParcela + resto).toFixed(2)) : valorParcela;
-
-    return {
-      valorParcela: parseFloat(valorParcela.toFixed(2)),
-      ultimaParcela: ultimaParcela,
-      temResto: temResto
-    };
   }
 
   formatarValorParaExibicao(valor: number): string {
@@ -348,5 +369,9 @@ export class TipoPagamento {
   nome!: string;
   juros!: number;
   parcelas!: number;
+  parcelaEscolhida!: number;
   avista!: boolean;
+  valorParcela!: number;
+  temResto!: boolean;
+  ultimaParcelas!: number;
 }
