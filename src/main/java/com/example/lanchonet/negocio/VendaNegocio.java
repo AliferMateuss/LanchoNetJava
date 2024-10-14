@@ -107,7 +107,8 @@ public class VendaNegocio {
 
             List<ContasAReceber> contasAReceber = new ArrayList<>();
 
-            BigDecimal valorParcela = venda.getValorTotal().divide(BigDecimal.valueOf(venda.getParcelas()), 2, RoundingMode.HALF_UP);
+            venda.setValorTotal(venda.getValorTotal().setScale(2, RoundingMode.HALF_UP));
+            BigDecimal valorParcela = BigDecimal.valueOf(Math.floor((venda.getValorTotal().doubleValue() / venda.getParcelas())));
             BigDecimal total = valorParcela.multiply(BigDecimal.valueOf(venda.getParcelas())).setScale(2, RoundingMode.HALF_UP);
             BigDecimal resto = venda.getValorTotal().subtract(total).setScale(2, RoundingMode.HALF_UP);
             BigDecimal ultimaParcela = valorParcela.add(resto).setScale(2, RoundingMode.HALF_UP);

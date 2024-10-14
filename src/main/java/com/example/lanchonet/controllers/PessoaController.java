@@ -18,7 +18,6 @@ public class PessoaController {
     private PessoaNegocio pessoaNegocio;
 
     @GetMapping("/RecuperarPessoas")
-
     public List<PessoaDto> recuperarPessoas(){
         return pessoaNegocio.buscarPessoas();
     }

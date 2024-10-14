@@ -1,5 +1,6 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.PedidoDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.*;
 import com.example.lanchonet.facades.*;
@@ -29,21 +30,33 @@ public class PedidoNegocio {
     private VendaNegocio vendaNegocio;
     private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da venda: %d, Quantidade em estoque: %d";
 
-    public void salvarPedido(Pedido pedido){
-        try{
+
+    public List<PedidoDto> recuperPedidosAbertos() {
+        return pedidoFacade.pedidosAbertos();
+    }
+
+    public List<PedidoDto> recuperPedidosFechados() {
+        return pedidoFacade.pedidosFechados();
+    }
+
+    public void salvarPedido(Pedido pedido) {
+        try {
             setPessoa(pedido);
+            if (pedido.getPessoa() == null && !pedido.getPedidoCliente()) {
+                throw new Exception("Cliente não definido para o pedido, selecione o cliente ou clique em pedido balcão");
+            }
             abreFechaMesa(pedido, true);
             setUsuario(pedido);
             pedido.setStatusPedido(StatusPedido.ABERTO);
             validaEstoque(pedido);
             pedidoFacade.save(pedido);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public Venda fecharPedidoPago(Pedido pedido){
-        try{
+    public Venda fecharPedidoPago(Pedido pedido) {
+        try {
             setPessoa(pedido);
             abreFechaMesa(pedido, false);
             setUsuario(pedido);
@@ -52,13 +65,13 @@ public class PedidoNegocio {
             pedido.setTipoPedido(TipoPedido.PAGO);
             pedidoFacade.save(pedido);
             return criaVenda(pedido);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public void fecharPedidoFiado(Pedido pedido){
-        try{
+    public void fecharPedidoFiado(Pedido pedido) {
+        try {
             setPessoa(pedido);
             abreFechaMesa(pedido, false);
             setUsuario(pedido);
@@ -68,13 +81,13 @@ public class PedidoNegocio {
             Venda venda = criaVenda(pedido);
             venda.setPedido(pedido);
             vendaNegocio.salvarVendaPedido(venda);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public void cancelarFechamentoPedido(Pedido pedido){
-        try{
+    public void cancelarFechamentoPedido(Pedido pedido) {
+        try {
             setPessoa(pedido);
             abreFechaMesa(pedido, true);
             setUsuario(pedido);
@@ -82,34 +95,26 @@ public class PedidoNegocio {
             pedido.setTipoPedido(null);
             pedido.setPedidoFechado(false);
             pedidoFacade.save(pedido);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
 
     private void validaEstoque(Pedido pedido) throws Exception {
-        try{
+        try {
             pedido.getItensPedido().forEach(item -> {
-                if(!item.getItemValidado()){
-                    Produto produto = produtoFacade.findById(item.getProdutoId());
-                    if (produto != null) {
-                        Integer quantidade = 0;
-                        if(item.getQuantidadeAnterior() != null && item.getQuantidadeAnterior() <= item.getQuantidade()){
-                            quantidade = item.getQuantidade() - item.getQuantidadeAnterior();
-                        } else {
-                            quantidade = item.getQuantidade();
-                        }
-                        if (produto.getQuantidade() <= quantidade) {
-                            throw new RuntimeException(String.format(ERRO_ESTOQUE, item.getProduto().getNome(), item.getQuantidade(), produto.getQuantidade()));
-                        } else {
-                            produto.setQuantidade(produto.getQuantidade() - quantidade);
-                            item.setItemValidado(true);
-                            item.setPedido(pedido);
-                        }
+                Produto produto = produtoFacade.findById(item.getProdutoId());
+                if (produto != null) {
+                    if (produto.getQuantidade() <= item.getQuantidade()) {
+                        throw new RuntimeException(String.format(ERRO_ESTOQUE, item.getProduto().getNome(), item.getQuantidade(), produto.getQuantidade()));
                     } else {
-                        throw new RuntimeException("Produto inexistente");
+                        produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
+                        item.setProduto(produto);
+                        item.setPedido(pedido);
                     }
+                } else {
+                    throw new RuntimeException("Produto inexistente");
                 }
             });
         } catch (Exception e) {
@@ -117,10 +122,10 @@ public class PedidoNegocio {
         }
     }
 
-    private void setPessoa(Pedido pedido)throws Exception{
-        if(pedido.getId() != null){
+    private void setPessoa(Pedido pedido) throws Exception {
+        if (pedido.getPessoaId() != null) {
             Pessoa pessoa = pessoaFacade.findById(pedido.getPessoaId());
-            if(pessoa == null){
+            if (pessoa == null) {
                 throw new Exception("Cliente não encontrado!");
             }
             pedido.setPessoa(pessoa);
@@ -128,10 +133,10 @@ public class PedidoNegocio {
     }
 
 
-    private void abreFechaMesa(Pedido pedido, Boolean abrir)throws Exception{
-        if(pedido.getId() != null){
+    private void abreFechaMesa(Pedido pedido, Boolean abrir) throws Exception {
+        if (pedido.getMesaId() != null) {
             Mesa mesa = mesaFacade.findById(pedido.getMesaId());
-            if(mesa == null){
+            if (mesa == null) {
                 throw new Exception("Mesa não encontrada!");
             }
             mesa.setStatus(abrir ? StatusMesa.ABERTA : StatusMesa.FECHADA);
@@ -141,17 +146,18 @@ public class PedidoNegocio {
         }
     }
 
-    private void setUsuario(Pedido pedido)throws Exception{
-        if(pedido.getId() != null){
+    private void setUsuario(Pedido pedido) throws Exception {
+        pedido.setUsuarioId(1L);
+        if (pedido.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(pedido.getUsuarioId());
-            if(usuario == null){
+            if (usuario == null) {
                 throw new Exception("Usuário não encontrado!");
             }
             pedido.setUsuario(usuario);
         }
     }
 
-    private Venda criaVenda(Pedido pedido){
+    private Venda criaVenda(Pedido pedido) {
 
         Venda venda = new Venda();
         venda.setDataVenda(pedido.getDataFechamentoPedido());
@@ -172,7 +178,7 @@ public class PedidoNegocio {
         return venda;
     }
 
-    private ItensVenda criaItensVenda(ItensPedido itemPedido, Venda venda){
+    private ItensVenda criaItensVenda(ItensPedido itemPedido, Venda venda) {
         ItensVenda itemVenda = new ItensVenda();
         itemVenda.setProduto(itemPedido.getProduto());
         itemVenda.setQuantidade(itemPedido.getQuantidade());

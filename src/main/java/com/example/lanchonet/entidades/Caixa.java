@@ -1,6 +1,7 @@
 package com.example.lanchonet.entidades;
 
 import com.example.lanchonet.enums.StatusCaixa;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,9 +39,14 @@ public class Caixa {
 
     @Getter
     @Setter
+    private BigDecimal valorInicial;
+
+    @Getter
+    @Setter
     @Enumerated(EnumType.STRING)
     private StatusCaixa status = StatusCaixa.ABERTO;
 
+    @JsonIgnore
     @Setter
     @OneToMany(mappedBy = "caixa", cascade = CascadeType.ALL)
     private List<MovimentoCaixa> movimentos;

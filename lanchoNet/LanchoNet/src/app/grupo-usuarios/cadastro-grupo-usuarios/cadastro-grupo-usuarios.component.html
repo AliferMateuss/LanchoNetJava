@@ -1,20 +1,24 @@
-<h1 class="text-center">Cadastro de Grupo de Usuário</h1>
-<div *ngIf="formGrupoUsuario != undefined"  style="margin-top: 20px">
-  <form class="row g-3 needs-validation" (ngSubmit)="salvarGrupoUsuario()" [formGroup]="formGrupoUsuario" #formDir="ngForm">
-    <div>
-      <div class="row" style="margin-bottom:40px;">
-        <div class="col-md-12">
-          <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" [(ngModel)]="grupoUsuario.nome" formControlName="nome" required>
-          <div class="invalid-feedback">
-            Campo obrigatório
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Cadastro de Grupo de Usuário</h1>
+  <div *ngIf="formGrupoUsuario != undefined" style="margin-top: 20px">
+    <form class="row g-3 needs-validation" (ngSubmit)="salvarGrupoUsuario()" [formGroup]="formGrupoUsuario"
+          #formDir="ngForm">
+      <div>
+        <div class="row" style="margin-bottom:40px;">
+          <div class="col-md-12">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" [(ngModel)]="grupoUsuario.nome" formControlName="nome"
+                   required>
+            <div class="invalid-feedback">
+              Campo obrigatório
+            </div>
           </div>
         </div>
+        <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;margin-top: 20px;">
+          <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaGrupoUsuarios']">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Salvar</button>
+        </div>
       </div>
-      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;margin-top: 20px;">
-        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaGrupoUsuarios']">Cancelar</button>
-        <button class="btn btn-primary" type="submit">Salvar</button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

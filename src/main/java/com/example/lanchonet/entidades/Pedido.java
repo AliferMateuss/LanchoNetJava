@@ -51,7 +51,7 @@ public class Pedido {
 
     @Getter
     @Setter
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TipoPedido tipoPedido;
 
     @JsonIgnore
@@ -89,6 +89,12 @@ public class Pedido {
 
     @Transient
     private Date dataPermanencia;
+
+    @Getter
+    @Setter
+    @Transient
+    @JsonProperty
+    private Boolean pedidoCliente;
 
     @Getter
     @Setter

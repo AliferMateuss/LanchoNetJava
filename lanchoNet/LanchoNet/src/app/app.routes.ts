@@ -22,9 +22,15 @@ import { VendaComponent } from "./venda/venda.component";
 import {CompraComponent} from "./compra/compra.component";
 import {ContasAReceberComponent} from "./contas-receber/contas-areceber.component";
 import {ContasPagarComponent} from "./contas-pagar/contas-pagar.component";
+import {ListaCaixaComponent} from "./caixa/lista-caixa/lista-caixa.component";
+import {CadastroCaixaComponent} from "./caixa/cadastro-caixa/cadastro-caixa.component";
+import {ListaCategoriasComponent} from "./categoria/lista-categoria/lista-categoria.component";
+import {CadastroCategoriasComponent} from "./categoria/cadastro-categoria/cadastro-categoria.component";
+import {PedidosComponent} from "./pedidos/pedidos/pedidos.component";
 
 export const routes: Routes = [
-  { path: 'pedidos', component: ComandasComponent, pathMatch: 'full' },
+  { path: '', component: ComandasComponent, pathMatch: 'full' },
+  { path: 'pedidos', component: PedidosComponent, pathMatch: 'full' },
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
   { path: 'cadastroPessoas/:id?', component: PessoasComponent },
@@ -39,6 +45,10 @@ export const routes: Routes = [
   { path: 'cadastroGruposUsuarios/:id?', component: CadastroGrupoUsuariosComponent },
   { path: 'listaUsuarios', component: ListaUsuariosComponent },
   { path: 'cadastroUsuarios/:id?', component: CadastroUsuariosComponent },
+  { path: 'listaCaixas', component: ListaCaixaComponent },
+  { path: 'cadastroCaixa/:id?', component: CadastroCaixaComponent },
+  { path: 'listaCategorias', component: ListaCategoriasComponent },
+  { path: 'cadastroCategorias/:id?', component: CadastroCategoriasComponent },
   { path: 'venda', component: VendaComponent },
   { path: 'compra', component: CompraComponent },
   { path: 'contaReceber', component: ContasAReceberComponent },

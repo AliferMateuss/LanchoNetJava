@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 import com.example.lanchonet.enums.StatusMesa;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,7 @@ public class Mesa {
     @Setter
     private Integer totalPessoas = 0;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "mesa")

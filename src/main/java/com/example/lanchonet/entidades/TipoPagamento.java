@@ -30,7 +30,7 @@ public class TipoPagamento {
 
     @Getter
     @Setter
-    private Boolean aVista;
+    private Boolean aVista = false;
 
 
     @JsonIgnore

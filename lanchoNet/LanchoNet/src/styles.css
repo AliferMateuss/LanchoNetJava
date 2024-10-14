@@ -35,6 +35,14 @@ code {
   align-items: center !important;
 }
 
+.modalPedidos {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  max-height: 70%;
+  max-width: 70%;
+}
+
 .cdk-overlay-container .cdk-global-overlay-wrapper {
   position: fixed;
   top: 0;
@@ -60,5 +68,18 @@ code {
 
 .mat-mdc-paginator-container {
   border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+body {
+  height: 100vh!important;
+  overflow: auto;
+}
+
+.mat-mdc-tab .mdc-tab-indicator__content--underline{
+  border-color: #333 !important;
+}
+
+.mat-mdc-tab-body-wrapper{
+  height: 100%;
 }
 

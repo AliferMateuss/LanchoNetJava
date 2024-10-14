@@ -71,7 +71,7 @@ export class PessoasComponent implements OnInit {
   funcionario: boolean = false;
   fornecedor: boolean = false;
   tipoPessoa: boolean = false;
-  dataSource!: MatTableDataSource<Endereco>;
+  dataSource: MatTableDataSource<Endereco> =  new MatTableDataSource<Endereco>();
   pageIndex!: number;
   pageSize: number = 10;
   displayedColumns: string[] = ['nome', 'bairro', 'cidade', 'Acoes'];
@@ -95,7 +95,7 @@ export class PessoasComponent implements OnInit {
         console.log(data);
         this.pessoa = data;
         this.pessoa.dataNascimento
-        this.pessoa.enderecos = data.enderecos;
+        this.pessoa.enderecos = data.enderecos ? data.enderecos : [];
         this.documento = data.cpf ?? data.cnpj ?? "";
         this.cliente = data.cliente ?? false;
         this.fornecedor = data.fornecedor ?? false;
@@ -128,7 +128,7 @@ export class PessoasComponent implements OnInit {
           fornecedor: new FormControl(false),
           funcionario: new FormControl(false),
         });
-        this.dataSource = new MatTableDataSource<Endereco>(this.pessoa.enderecos);
+        this.dataSource.data = this.pessoa.enderecos;
         this.cdr.detectChanges();
         this.setValidators();
       }, error =>  this.openDialog("Erro ao recuperar Pessoa", error.message, "Voltar", true));

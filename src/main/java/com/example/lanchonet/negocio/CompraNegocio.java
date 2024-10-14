@@ -69,7 +69,7 @@ public class CompraNegocio {
 
     private void criaContasAPagar(Compra compra){
         if (compra.getParcelas() != null && compra.getParcelas() != 0) {
-            List<ContasAPagar> contasAReceber = new ArrayList<>();
+            List<ContasAPagar> contasAPagarList = new ArrayList<>();
             BigDecimal valorParcela = compra.getValorTotal().divide(new BigDecimal(compra.getParcelas()), 2, RoundingMode.HALF_UP);
             BigDecimal total = valorParcela.multiply(new BigDecimal(compra.getParcelas()));
             BigDecimal resto = compra.getValorTotal().subtract(total);
@@ -98,9 +98,9 @@ public class CompraNegocio {
                 contaAPagar.setValor(i == compra.getParcelas() ? ultimaParcela : valorParcela);
             contaAPagar.setStatus(StatusConta.ABERTA);
 
-                contasAReceber.add(contaAPagar);
+                contasAPagarList.add(contaAPagar);
             }
-            compra.setContasAPagar(contasAReceber);
+            compra.setContasAPagar(contasAPagarList);
         }
     }
 

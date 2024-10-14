@@ -1,0 +1,96 @@
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h2>Pedido</h2>
+  <div style="font-size: 16px;"> {{ pedido.dataPedido | date: 'dd/MM/yyyy HH:mm:ss' }}</div>
+  <div class="bodyPedido" *ngIf="pedidoForm != undefined">
+    <div *ngIf="mostrarMensagem" class="alert alert-warning" role="alert">
+      <h1>{{ tituloMensagem }}</h1>
+      <p>{{ textoMensagem }}</p>
+    </div>
+    <form [formGroup]="pedidoForm" #formDir="ngForm">
+
+      <mat-checkbox class="example-margin" formControlName="pedidoCliente" (change)="pedidoClienteChange()">Pedido para balcão?</mat-checkbox>
+
+      <div class="selects" *ngIf="!getPedidoCliente()">
+        <label for="cliente">Cliente:</label>
+        <ng-select formControlName="pessoaId" id="cliente" (change)="selecionarCliente()">
+          <ng-option *ngFor="let cliente of Clientes" [value]="cliente.id">{{ cliente.nome }}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="form-input" *ngIf="getPedidoCliente()">
+        <label for="nomeCliente">Cliente:</label>
+        <input type="text" id="nomeCliente" formControlName="clienteNome" name="nomeCliente" required>
+      </div>
+
+      <div class="selects">
+        <label for="mesa">Mesa:</label>
+        <ng-select formControlName="mesaId" id="mesa" (change)="selecionarMesa()">
+          <ng-option *ngFor="let mesa of Mesas" [value]="mesa.id">{{ mesa.numero }}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="selects">
+        <label for="produto">Produto:</label>
+        <ng-select formControlName="produtoId" id="produto" (change)="selecionarProduto()">
+          <ng-option *ngFor="let produto of Produtos" [value]="produto.id">{{ produto.nome }}</ng-option>
+        </ng-select>
+      </div>
+      <div class="form-input">
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" min="0" id="quantidade" formControlName="quantidade" name="quantidade" required>
+      </div>
+      <div class="form-input">
+        <label for="preco">Preço:</label>
+        <input type="text" id="preco" currencyMask formControlName="preco"
+               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" name="preco" required>
+      </div>
+      <button class="btn btn-primary" type="button" (click)="adicionarItem()">Adicionar Item</button>
+    </form>
+  </div>
+  <br/>
+  <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" ngSkipHydration>
+    <ng-container matColumnDef="Produto">
+      <mat-header-cell *matHeaderCellDef> Produto</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.produto.nome }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Quantidade">
+      <mat-header-cell *matHeaderCellDef> Quantidade</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.quantidade }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Preço">
+      <mat-header-cell *matHeaderCellDef> Preço</mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ formatarValorParaExibicao(item.precoUnitario) }}</mat-cell>
+      <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="Acoes">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let item" style="display:flex; align-items:center; justify-content:center;">
+        <button class="btn btn-danger" type="button" style="margin-right:8px" (click)="removerItem(item)"> <i class="bi bi-trash-fill"></i> </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="background-color: white;"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <tr class="mat-row noDataRow" *matNoDataRow>
+      <td class="mat-cell" colspan="5">Nenhum item adicionado!</td>
+    </tr>
+  </mat-table>
+<!--  <div class="ValorTotal">-->
+<!--    <button type="button" class="btn btn-danger" disabled><label>Valor Total: {{ calcularValorTotal() }}</label></button>-->
+<!--  </div>-->
+  <button [disabled]="itensPedido.length === 0" class="btn btn-primary" type="button" (click)="salvarPedido()">Salvar Pedido</button>
+</div>
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">{{ tituloMensagem }}</h4>
+    <button type="button" class="close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>{{ textoMensagem }}</p>
+  </div>
+</ng-template>

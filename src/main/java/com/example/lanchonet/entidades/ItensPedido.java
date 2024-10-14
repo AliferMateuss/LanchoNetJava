@@ -42,10 +42,6 @@ public class ItensPedido {
 
     @Getter
     @Setter
-    private Integer quantidadeAnterior;
-
-    @Getter
-    @Setter
     private BigDecimal subTotal;
 
     @JsonProperty
@@ -53,8 +49,4 @@ public class ItensPedido {
     @Setter
     @Transient
     private Long produtoId;
-
-    @Getter
-    @Setter
-    private Boolean itemValidado;
 }

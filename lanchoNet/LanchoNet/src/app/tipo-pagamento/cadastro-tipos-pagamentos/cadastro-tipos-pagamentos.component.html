@@ -1,28 +1,34 @@
-<h1 class="text-center">Cadastro de Tipo de Pagamento</h1>
-<div *ngIf="formTipoPagamento != undefined" style="margin-top: 20px">
-  <form class="row g-3 needs-validation" (ngSubmit)="salvarTipoPagamento()" [formGroup]="formTipoPagamento" #formDir="ngForm">
-    <div>
-      <div class="row" style="margin-bottom:40px;">
-        <div class="col-md-6">
-          <label for="nome" class="form-label">Nome</label>
-          <input type="text" class="form-control" id="nome" [(ngModel)]="tipoPagamento.nome" formControlName="nome" required>
-          <div class="invalid-feedback">
-            Campo obrigatório
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Cadastro de Tipo de Pagamento</h1>
+  <div *ngIf="formTipoPagamento != undefined" style="margin-top: 20px">
+    <form class="row g-3 needs-validation" (ngSubmit)="salvarTipoPagamento()" [formGroup]="formTipoPagamento"
+          #formDir="ngForm">
+      <div>
+        <div class="row" style="margin-bottom:40px;">
+          <div class="col-md-6">
+            <label for="nome" class="form-label">Nome</label>
+            <input type="text" class="form-control" id="nome" [(ngModel)]="tipoPagamento.nome" formControlName="nome"
+                   required>
+            <div class="invalid-feedback">
+              Campo obrigatório
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="juros" class="form-label">Juros</label>
+            <input type="text" class="form-control" id="juros" [(ngModel)]="tipoPagamento.juros"
+                   formControlName="juros">
+          </div>
+          <div class="col-md-6">
+            <label for="parcelas" class="form-label">Parcelas</label>
+            <input type="text" class="form-control" id="parcelas" [(ngModel)]="tipoPagamento.parcelas"
+                   formControlName="parcelas">
           </div>
         </div>
-        <div class="col-md-6">
-          <label for="juros" class="form-label">Juros</label>
-          <input type="text" class="form-control" id="juros" [(ngModel)]="tipoPagamento.juros" formControlName="juros">
-        </div>
-        <div class="col-md-6">
-          <label for="parcelas" class="form-label">Parcelas</label>
-          <input type="text" class="form-control" id="parcelas" [(ngModel)]="tipoPagamento.parcelas" formControlName="parcelas">
+        <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
+          <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaTipoPagamentos']">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Salvar</button>
         </div>
       </div>
-      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
-        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaTipoPagamentos']">Cancelar</button>
-        <button class="btn btn-primary" type="submit">Salvar</button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

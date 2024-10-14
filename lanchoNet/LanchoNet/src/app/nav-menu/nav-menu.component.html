@@ -14,6 +14,9 @@
       </a>
       <div class="collapse" id="cadastros" style="">
         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small submenu">
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaCategorias']">Categorias</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaGruposUsuarios']">Grupos de Usuários</a>
           </li>
@@ -58,6 +61,9 @@
       </a>
       <div class="collapse" id="financeiro" style="">
         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small submenu">
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/listaCaixas']">Caixa</a>
+          </li>
           <li class="nav-item menuItem">
             <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/contaPagar']">Contas a pagar</a>
           </li>

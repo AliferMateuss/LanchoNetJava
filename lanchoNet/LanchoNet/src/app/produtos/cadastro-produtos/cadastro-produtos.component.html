@@ -1,63 +1,71 @@
-
-<h1 class="text-center">Cadastro de Produtos</h1>
-<div *ngIf="formProduto != undefined"  style="margin-top: 20px">
-  <form class="row g-3 needs-validation" (ngSubmit)="salvarproduto()" [formGroup]="formProduto" #formDir="ngForm">
-    <div>
-      <div class="row" style="margin-bottom:40px;">
-        <div class="col-md-8">
-          <div class="row">
-            <div class="col-md-6">
-              <label for="nome" class="form-label">Nome</label>
-              <input type="text" class="form-control" id="nome" aria-describedby="inputGroupPrepend" [(ngModel)]="produto.nome" formControlName="nome" required>
-              <div class="invalid-feedback">
-                Campo obrigatório
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Cadastro de Produtos</h1>
+  <div *ngIf="formProduto != undefined" style="margin-top: 20px">
+    <form class="row g-3 needs-validation" (ngSubmit)="salvarproduto()" [formGroup]="formProduto" #formDir="ngForm">
+      <div>
+        <div class="row" style="margin-bottom:40px;">
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" aria-describedby="inputGroupPrepend"
+                       [(ngModel)]="produto.nome" formControlName="nome" required>
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="nome" class="form-label">Imagem</label>
+                <input type="file" accept=".png, .jpeg, .pnge, .jpg" (change)="onFileSelected($event)"
+                       class="form-control" id="nome" aria-describedby="inputGroupPrepend">
               </div>
             </div>
-            <div class="col-md-6">
-              <label for="nome" class="form-label">Imagem</label>
-              <input type="file" accept=".png, .jpeg, .pnge, .jpg" (change)="onFileSelected($event)" class="form-control" id="nome" aria-describedby="inputGroupPrepend">
+            <div class="row">
+              <div class="col-md-4">
+                <label for="quantidade" class="form-label">Quantidade</label>
+                <input type="text" class="form-control" id="quantidade" aria-describedby="inputGroupPrepend"
+                       [(ngModel)]="produto.quantidade" formControlName="quantidade" required>
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="preco" class="form-label">Preço de Compra</label>
+                <input type="text" class="form-control" appImpedeColagem [(ngModel)]="produto.precoCompra"
+                       formControlName="precoCompra" required prefix="R$" suffix=",00" mask="separator.2"
+                       thousandSeparator="." decimalMarker="," id="precoCompra" aria-describedby="inputGroupPrepend">
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+                <div *ngIf="formProduto.errors?.['invalidComparison']" class="invalid-feedback preco">
+                  Preço de compra deve ser menor que o preço de venda.
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label for="preco" class="form-label">Preço de Venda</label>
+                <input type="text" appImpedeColagem class="form-control" [(ngModel)]="produto.preco"
+                       formControlName="preco" required prefix="R$" suffix=",00" mask="separator.2"
+                       thousandSeparator="." decimalMarker="," id="preco" aria-describedby="inputGroupPrepend">
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+              </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-4">
-              <label for="quantidade" class="form-label">Quantidade</label>
-              <input type="text" class="form-control" id="quantidade" aria-describedby="inputGroupPrepend" [(ngModel)]="produto.quantidade" formControlName="quantidade" required>
-              <div class="invalid-feedback">
-                Campo obrigatório
-              </div>
-            </div>
-            <div class="col-md-4">
-              <label for="preco" class="form-label">Preço de Compra</label>
-              <input type="text" class="form-control" appImpedeColagem [(ngModel)]="produto.precoCompra" formControlName="precoCompra" required prefix="R$" suffix=",00" mask="separator.2" thousandSeparator="." decimalMarker="," id="precoCompra" aria-describedby="inputGroupPrepend">
-              <div class="invalid-feedback">
-                Campo obrigatório
-              </div>
-              <div *ngIf="formProduto.errors?.['invalidComparison']" class="invalid-feedback preco">
-                Preço de compra deve ser menor que o preço de venda.
-              </div>
-            </div>
-            <div class="col-md-4">
-              <label for="preco" class="form-label">Preço de Venda</label>
-              <input type="text" appImpedeColagem class="form-control" [(ngModel)]="produto.preco" formControlName="preco" required prefix="R$" suffix=",00" mask="separator.2" thousandSeparator="." decimalMarker="," id="preco" aria-describedby="inputGroupPrepend">
-              <div class="invalid-feedback">
-                Campo obrigatório
+          <div class="col-md-4" style="display: flex;justify-content: flex-start;">
+            <div class="row">
+              <div class="col-md-8 mx-auto">
+                <label for="nome" class="form-label">Imagem:</label>
+                <img *ngIf="imageUrl" [src]="imageUrl" alt="Preview" style="width: 100px; height: 110px;">
               </div>
             </div>
           </div>
         </div>
-        <div class="col-md-4" style="display: flex;justify-content: flex-start;">
-          <div class="row">
-            <div class="col-md-8 mx-auto">
-              <label for="nome" class="form-label">Imagem:</label>
-              <img *ngIf="imageUrl" [src]="imageUrl" alt="Preview" style="width: 100px; height: 110px;">
-            </div>
-          </div>
+        <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
+          <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaProdutos']">Cancelar</button>
+          <button class="btn btn-primary" type="submit"> Salvar</button>
         </div>
       </div>
-      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
-        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaProdutos']">Cancelar</button>
-        <button class="btn btn-primary" type="submit"> Salvar</button>
-      </div>
-    </div>
-  </form>
+    </form>
+  </div>
 </div>

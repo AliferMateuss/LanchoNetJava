@@ -1,0 +1,12 @@
+<div class="comanda-item"
+     cdkDrag
+     (click)="toggle()"
+     (cdkDragStarted)="dragStarted()"
+     (cdkDragEnded)="dragEnded()"
+     [ngClass]="{ 'expanded': comanda.expanded }"
+     [ngStyle]="{ 'visibility': comanda.dragging ? 'hidden' : 'visible' }">
+  <div class="comanda-title">Cliente: {{ comanda.nomeCliente }}</div>
+  <div *ngIf="comanda.expanded" class="comanda-details">
+    {{ comanda.valorTotal }}
+  </div>
+</div>

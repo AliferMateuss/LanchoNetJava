@@ -24,17 +24,42 @@ public class CaixaNegocio {
 
     private Caixa caixa;
 
-
     public void abreCaixa(Caixa caixa){
         caixa.setStatus(StatusCaixa.ABERTO);
         caixa.setDataAbertura(new Date());
         facade.save(caixa);
     }
 
-    public void fechaCaixa(Caixa caixa){
-        caixa.setStatus(StatusCaixa.FECHADO);
-        caixa.setDataFechamento(new Date());
-        facade.save(caixa);
+    public void fechaCaixa(Long id){
+        try {
+            Caixa caixa = facade.findById(id);
+
+            if(caixa == null){
+                throw new Exception("Caixa não encontrado");
+            }
+
+            caixa.setStatus(StatusCaixa.FECHADO);
+            caixa.setDataFechamento(new Date());
+            facade.save(caixa);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void excluirCaixa(Long id){
+        try {
+            facade.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Caixa buscarCaixaPorId(Long id) {
+        return facade.findById(id);
+    }
+
+    public List<Caixa> buscarCaixas() {
+        return facade.findAll();
     }
 
     public void gerarMovimentacao(Venda venda){

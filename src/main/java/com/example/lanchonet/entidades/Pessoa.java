@@ -93,7 +93,6 @@ public class Pessoa {
     @OneToMany(mappedBy = "pessoa")
     private List<Compra> compras;
 
-    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
