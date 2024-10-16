@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {
   CdkDragDrop,
   CdkDragEnd,
@@ -39,7 +39,8 @@ export class ComandasComponent implements OnInit {
   ];
 
   connectedDropLists: string[] = [];
-  constructor(private dialog: MatDialog, private http: HttpClient, private router: Router) {
+  constructor(private dialog: MatDialog, private http: HttpClient, private router: Router,
+              private cdr: ChangeDetectorRef) {
 
   }
 
@@ -49,8 +50,10 @@ export class ComandasComponent implements OnInit {
 
   carregaComandas() {
     this.http.get<any[]>(this.baseUrl + 'api/Pedido/RecuperPedidosAbertos').subscribe(data => {
+      this.limpaColumns();
       this.distribuiComandas(data);
       this.connectedDropLists = this.columns.map((_, index) => `cdk-drop-list-${index}`);
+      this.cdr.detectChanges();
     }, error => this.openDialogError("Erro: ", error, "Voltar", true));
   }
 
@@ -76,6 +79,10 @@ export class ComandasComponent implements OnInit {
       hasBackdrop: true,
       maxHeight: 1000,
       maxWidth: 1000
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.carregaComandas();
     });
   }
 
@@ -105,8 +112,19 @@ export class ComandasComponent implements OnInit {
     this.setDraggingState(event, false);
   }
 
-  toggleExpand(item: any) {
-    item.expanded = !item.expanded;
+  toggleExpand(comanda: Comanda) {
+    if(comanda.expanded){
+      //fecha
+      comanda.expanded = false;
+    } else {
+      //abre
+      this.columns.forEach(column => {
+        column.items.forEach(comanda => {
+          comanda.expanded = false;
+        });
+      });
+      comanda.expanded = true;
+    }
   }
 
   private setDraggingState(event: CdkDragStart | CdkDragEnd, dragging: boolean) {
@@ -123,12 +141,22 @@ export class ComandasComponent implements OnInit {
       });
     });
   }
+
+  private limpaColumns(){
+    this.columns = [
+      { title: 'Coluna 1', items: [] },
+      { title: 'Coluna 2', items: [] },
+      { title: 'Coluna 3', items: [] },
+      { title: 'Coluna 4', items: [] }
+    ];
+  }
 }
 
 class Comanda{
   id!: number;
   valorTotal!: number;
   nomeCliente!: string;
-  expanded!: false;
-  dragging!: false;
+  expanded:boolean = false;
+  dragging:boolean =  false;
+  itens: any[] = [];
 }

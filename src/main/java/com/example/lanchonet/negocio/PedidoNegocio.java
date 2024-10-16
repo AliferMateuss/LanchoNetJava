@@ -1,12 +1,15 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ItemPedidoDto;
 import com.example.lanchonet.dtos.PedidoDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.*;
 import com.example.lanchonet.facades.*;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -55,6 +58,74 @@ public class PedidoNegocio {
         }
     }
 
+    public void salvaItemPedido(ItemPedidoDto itemDto) {
+        try {
+            Produto produto = produtoFacade.findById(itemDto.getProdutoId());
+            Pedido pedido = pedidoFacade.findById(itemDto.getIdPedido());
+
+            if (pedido == null) {
+                throw new Exception("Pedido não encontrado!");
+            }
+            if (produto != null) {
+                throw new RuntimeException("Produto inexistente");
+            }
+
+            if (!Hibernate.isInitialized(pedido.getItensPedido())) {
+                Hibernate.initialize(pedido.getItensPedido());
+            }
+
+            if (itemDto.getId() != null) {
+
+                ItensPedido itensPedido = pedido.getItensPedido().stream()
+                        .filter(item -> item.getId() > itemDto.getId())
+                        .findFirst()
+                        .orElse(null);
+
+                if (itemDto.getQuantidade().compareTo(itensPedido.getQuantidade()) < 0) {
+                    Integer qtd = itensPedido.getQuantidade() - itemDto.getQuantidade();
+                    BigDecimal totalRmv = itemDto.getSubTotal().subtract(itensPedido.getSubTotal());
+                    produto.setQuantidade(produto.getQuantidade() + qtd);
+                    itensPedido.setProduto(produto);
+                    itensPedido.setQuantidade(itemDto.getQuantidade());
+                    itensPedido.setSubTotal(itemDto.getSubTotal());
+                    itensPedido.setPrecoUnitario(itemDto.getPrecoUnitario());
+                    pedido.setValorTotal(pedido.getValorTotal().subtract(totalRmv));
+                    itensPedido.setPedido(pedido);
+                } else {
+                    Integer qtd = itemDto.getQuantidade() - itensPedido.getQuantidade();
+                    BigDecimal totalAdc = itemDto.getSubTotal().subtract(itensPedido.getSubTotal());
+                    if (produto.getQuantidade() < qtd) {
+                        throw new RuntimeException(String.format(ERRO_ESTOQUE, itemDto.getProdutoNome(), itemDto.getQuantidade(), produto.getQuantidade()));
+                    } else {
+                        produto.setQuantidade(produto.getQuantidade() - qtd);
+                        itensPedido.setProduto(produto);
+                        itensPedido.setQuantidade(itemDto.getQuantidade());
+                        itensPedido.setSubTotal(itemDto.getSubTotal());
+                        itensPedido.setPrecoUnitario(itemDto.getPrecoUnitario());
+                        pedido.setValorTotal(pedido.getValorTotal().add(totalAdc));
+                        itensPedido.setPedido(pedido);
+                    }
+                }
+            } else {
+                if (produto.getQuantidade() < itemDto.getQuantidade()) {
+                    throw new RuntimeException(String.format(ERRO_ESTOQUE, itemDto.getProdutoNome(), itemDto.getQuantidade(), produto.getQuantidade()));
+                } else {
+                    produto.setQuantidade(produto.getQuantidade() - itemDto.getQuantidade());
+                    ItensPedido itensPedido = new ItensPedido();
+                    itensPedido.setProduto(produto);
+                    itensPedido.setQuantidade(itemDto.getQuantidade());
+                    itensPedido.setSubTotal(itemDto.getSubTotal());
+                    itensPedido.setPrecoUnitario(itemDto.getPrecoUnitario());
+                    itensPedido.setPedido(pedido);
+                    pedido.getItensPedido().add(itensPedido);
+                }
+            }
+            pedidoFacade.save(pedido);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Venda fecharPedidoPago(Pedido pedido) {
         try {
             setPessoa(pedido);
@@ -98,6 +169,10 @@ public class PedidoNegocio {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public List<ItemPedidoDto> recuperItensComanda(Long id) {
+        return pedidoFacade.recuperItensComanda(id);
     }
 
 

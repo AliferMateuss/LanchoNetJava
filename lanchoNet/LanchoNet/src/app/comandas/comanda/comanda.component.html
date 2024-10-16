@@ -1,12 +1,35 @@
 <div class="comanda-item"
      cdkDrag
      (click)="toggle()"
-     (cdkDragStarted)="dragStarted()"
-     (cdkDragEnded)="dragEnded()"
+     (cdkDragStarted)="dragStarted($event)"
+     (cdkDragEnded)="dragEnded($event)"
      [ngClass]="{ 'expanded': comanda.expanded }"
      [ngStyle]="{ 'visibility': comanda.dragging ? 'hidden' : 'visible' }">
   <div class="comanda-title">Cliente: {{ comanda.nomeCliente }}</div>
   <div *ngIf="comanda.expanded" class="comanda-details">
-    {{ comanda.valorTotal }}
+    <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" ngSkipHydration>
+      <ng-container matColumnDef="Produto">
+        <mat-header-cell *matHeaderCellDef> Produto</mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{ item.produtoNome }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Quantidade">
+        <mat-header-cell *matHeaderCellDef style="display:flex; align-items:center; justify-content:center;"> Quantidade</mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{ item.quantidade }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="Acoes">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let item" style="display:flex; align-items:center; justify-content:center;">
+          <button class="btn btn-danger" type="button" style="margin-right:8px"> <i class="bi bi-trash-fill"></i> </button>
+          <button class="btn btn-primary" type="button" style="margin-right:8px"> <i class="bi bi-trash-fill"></i> </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: false" style="background-color: white;"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+    <br/>
+    <label>Valor Total : {{ formatarValorParaExibicao(comanda.valorTotal) }}</label>
   </div>
 </div>

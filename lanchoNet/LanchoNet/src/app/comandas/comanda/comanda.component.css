@@ -26,3 +26,12 @@
   font-size: 0.9em;
   color: #555;
 }
+
+.mat-mdc-header-row{
+ background-color: #d0d0d0!important;
+  min-height: 43px;
+}
+
+.mat-mdc-table{
+  box-shadow: none!important;
+}

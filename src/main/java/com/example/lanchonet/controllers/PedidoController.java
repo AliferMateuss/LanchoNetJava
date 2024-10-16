@@ -1,7 +1,9 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.ItemPedidoDto;
 import com.example.lanchonet.dtos.PedidoDto;
 import com.example.lanchonet.dtos.PessoaDto;
+import com.example.lanchonet.entidades.ItensPedido;
 import com.example.lanchonet.entidades.Pedido;
 import com.example.lanchonet.negocio.PedidoNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +47,15 @@ public class PedidoController {
     @PostMapping("/CancelarFechamentoPedido")
     public void cancelarFechamentoPedido(@RequestBody Pedido pedido){
         pedidoNegocio.cancelarFechamentoPedido(pedido);
+    }
+
+    @PostMapping("/RecuperarItensComanda")
+    public List<ItemPedidoDto> recuperItensComanda(@RequestBody Long id){
+        return pedidoNegocio.recuperItensComanda(id);
+    }
+
+    @PostMapping("/SalvaItemPedido")
+    public void salvaItemPedido(ItemPedidoDto itemPedidoDto){
+        pedidoNegocio.salvaItemPedido(itemPedidoDto);
     }
 }

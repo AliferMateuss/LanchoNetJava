@@ -208,7 +208,6 @@ export class PedidosComponent {
       } else {
         this.itensPedido.push({...this.itemPedido});
       }
-
       this.dataSource.data = this.itensPedido;
       this.itemPedido = new ItemPedido();
     }
