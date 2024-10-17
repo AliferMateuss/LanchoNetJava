@@ -359,7 +359,8 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
   }
 
   calcularParcelas(valorTotal: number, parcelas: number) {
-    const valorParcela = parseFloat((valorTotal / parcelas).toFixed(2));
+    valorTotal = parseFloat(valorTotal.toFixed(2));
+    const valorParcela = Math.trunc((valorTotal / parcelas) * Math.pow(10, 2)) / Math.pow(10, 2);
     const total = parseFloat((valorParcela * parcelas).toFixed(2));
     const resto = parseFloat((valorTotal - total).toFixed(2));
     const temResto = resto > 0

@@ -38,6 +38,6 @@ public class Mesa {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "mesa")
+    @OneToMany(mappedBy = "mesa", fetch = FetchType.LAZY)
     private List<Pedido> pedidos = new ArrayList<>();
 }

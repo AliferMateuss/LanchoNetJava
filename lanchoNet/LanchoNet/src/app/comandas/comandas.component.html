@@ -11,6 +11,7 @@
            id="cdk-drop-list-{{i}}">
         <app-comanda *ngFor="let item of column.items"
                      [comanda]="item"
+                     (carregaComandas)="carregaComandas()"
                      (toggleExpand)="toggleExpand(item)"
                      (onDragStart)="onDragStarted($event)"
                      (onDragEnd)="onDragEnded($event)">

@@ -1,5 +1,7 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ExcluiItemDto;
+import com.example.lanchonet.dtos.FechamentoPedidoDto;
 import com.example.lanchonet.dtos.ItemPedidoDto;
 import com.example.lanchonet.dtos.PedidoDto;
 import com.example.lanchonet.entidades.*;
@@ -15,6 +17,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PedidoNegocio {
@@ -30,7 +33,12 @@ public class PedidoNegocio {
     @Autowired
     private UsuarioFacade usuarioFacade;
     @Autowired
+    private TipoPagamentoFacade tipoPagamentoFacade ;
+    @Autowired
     private VendaNegocio vendaNegocio;
+
+    private TipoPagamento tipoPagamento;
+
     private static final String ERRO_ESTOQUE = "Estoque insuficiente para o produto - \n %s!! Quantidade da venda: %d, Quantidade em estoque: %d";
 
 
@@ -58,6 +66,10 @@ public class PedidoNegocio {
         }
     }
 
+    public void excluirPedido(Long id){
+        pedidoFacade.deleteById(id);
+    }
+
     public void salvaItemPedido(ItemPedidoDto itemDto) {
         try {
             Produto produto = produtoFacade.findById(itemDto.getProdutoId());
@@ -66,7 +78,7 @@ public class PedidoNegocio {
             if (pedido == null) {
                 throw new Exception("Pedido não encontrado!");
             }
-            if (produto != null) {
+            if (produto == null) {
                 throw new RuntimeException("Produto inexistente");
             }
 
@@ -77,7 +89,7 @@ public class PedidoNegocio {
             if (itemDto.getId() != null) {
 
                 ItensPedido itensPedido = pedido.getItensPedido().stream()
-                        .filter(item -> item.getId() > itemDto.getId())
+                        .filter(item -> Objects.equals(item.getId(), itemDto.getId()))
                         .findFirst()
                         .orElse(null);
 
@@ -126,16 +138,65 @@ public class PedidoNegocio {
         }
     }
 
-    public Venda fecharPedidoPago(Pedido pedido) {
+    public void excluirItemPedido(ExcluiItemDto dto){
+        try{
+            Pedido pedido = pedidoFacade.findById(dto.getIdPedido());
+
+            if (pedido == null) {
+                throw new Exception("Pedido não encontrado!");
+            }
+
+            if (!Hibernate.isInitialized(pedido.getItensPedido())) {
+                Hibernate.initialize(pedido.getItensPedido());
+            }
+
+            ItensPedido itensPedido = pedido.getItensPedido().stream()
+                    .filter(item -> Objects.equals(item.getId(), dto.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            pedido.setValorTotal(pedido.getValorTotal().subtract(itensPedido.getSubTotal()));
+            pedido.getItensPedido().remove(itensPedido);
+            pedidoFacade.save(pedido);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void fecharPedido(FechamentoPedidoDto dto){
+        try{
+            Pedido pedido = pedidoFacade.findById(dto.getId());
+            pedido.setMesaId(dto.getIdMesa());
+            pedido.setPessoaId(dto.getIdPessoa());
+            pedido.setParcelas(dto.getParcelas());
+            setTipoPagamento(dto.getIdTipoPagamento());
+
+            if (!Hibernate.isInitialized(pedido.getItensPedido())) {
+                Hibernate.initialize(pedido.getItensPedido());
+            }
+
+            if(dto.getPedidoFiado()){
+                fecharPedidoFiado(pedido);
+            } else {
+                fecharPedidoPago(pedido);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void fecharPedidoPago(Pedido pedido) {
         try {
             setPessoa(pedido);
             abreFechaMesa(pedido, false);
             setUsuario(pedido);
-            pedido.setDataFechamentoPedido(null);
+            pedido.setPedidoPago(true);
+            pedido.setDataFechamentoPedido(new Date());
             pedido.setStatusPedido(StatusPedido.FECHADO);
             pedido.setTipoPedido(TipoPedido.PAGO);
-            pedidoFacade.save(pedido);
-            return criaVenda(pedido);
+            Venda venda = criaVenda(pedido);
+            venda.setPedido(pedido);
+            vendaNegocio.salvarVendaPedido(venda);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -146,9 +207,10 @@ public class PedidoNegocio {
             setPessoa(pedido);
             abreFechaMesa(pedido, false);
             setUsuario(pedido);
-            pedido.setDataFechamentoPedido(null);
+            pedido.setPedidoPago(false);
+            pedido.setDataFechamentoPedido(new Date());
             pedido.setStatusPedido(StatusPedido.FECHADO);
-            pedido.setTipoPedido(TipoPedido.PAGO);
+            pedido.setTipoPedido(TipoPedido.FIADO);
             Venda venda = criaVenda(pedido);
             venda.setPedido(pedido);
             vendaNegocio.salvarVendaPedido(venda);
@@ -232,6 +294,15 @@ public class PedidoNegocio {
         }
     }
 
+    private void setTipoPagamento(Long id) throws Exception {
+        if (id != null) {
+             tipoPagamento = tipoPagamentoFacade.findById(id);
+            if (tipoPagamento == null) {
+                throw new Exception("Tipo pagamento não encontrado!");
+            }
+        }
+    }
+
     private Venda criaVenda(Pedido pedido) {
 
         Venda venda = new Venda();
@@ -241,6 +312,8 @@ public class PedidoNegocio {
         venda.setPessoa(pedido.getPessoa());
         venda.setNomeCliente(pedido.getNomeCliente());
         venda.setVendaFiado(!pedido.getPedidoPago());
+        venda.setTipoPagamento(tipoPagamento);
+        venda.setParcelas(pedido.getParcelas());
 
         List<ItensVenda> itensVenda = new ArrayList<>();
 

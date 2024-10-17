@@ -1,8 +1,6 @@
 package com.example.lanchonet.controllers;
 
-import com.example.lanchonet.dtos.ItemPedidoDto;
-import com.example.lanchonet.dtos.PedidoDto;
-import com.example.lanchonet.dtos.PessoaDto;
+import com.example.lanchonet.dtos.*;
 import com.example.lanchonet.entidades.ItensPedido;
 import com.example.lanchonet.entidades.Pedido;
 import com.example.lanchonet.negocio.PedidoNegocio;
@@ -34,14 +32,14 @@ public class PedidoController {
         pedidoNegocio.salvarPedido(pedido);
     }
 
-    @PostMapping("/FecharPedidoPago")
-    public void fecharPedidoPago(@RequestBody Pedido pedido){
-        pedidoNegocio.fecharPedidoPago(pedido);
+    @PostMapping("/Excluir")
+    public void excluir(@RequestBody Long id){
+        pedidoNegocio.excluirPedido(id);
     }
 
-    @PostMapping("/FecharPedidoFiado")
-    public void fecharPedidoFiado(@RequestBody Pedido pedido){
-        pedidoNegocio.fecharPedidoFiado(pedido);
+    @PostMapping("/FecharPedido")
+    public void fecharPedido(@RequestBody FechamentoPedidoDto pedido){
+        pedidoNegocio.fecharPedido(pedido);
     }
 
     @PostMapping("/CancelarFechamentoPedido")
@@ -55,7 +53,12 @@ public class PedidoController {
     }
 
     @PostMapping("/SalvaItemPedido")
-    public void salvaItemPedido(ItemPedidoDto itemPedidoDto){
+    public void salvaItemPedido(@RequestBody ItemPedidoDto itemPedidoDto){
         pedidoNegocio.salvaItemPedido(itemPedidoDto);
+    }
+
+    @PostMapping("/ExcluiItemPedido")
+    public void excluiItemPedido(@RequestBody ExcluiItemDto dto){
+        pedidoNegocio.excluirItemPedido(dto);
     }
 }

@@ -101,12 +101,12 @@ public class Venda {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ContasAReceber> contasAReceber;
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ItensVenda> itensVenda;
 
     @JsonProperty

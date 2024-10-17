@@ -74,7 +74,8 @@ public class VendaNegocio {
             venda.setDataVenda(new Date());
             venda = vendaFacade.save(venda);
             caixaNegocio.gerarMovimentacao(venda);
-            creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
+            if(venda.getVendaFiado())
+                creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }

@@ -1,0 +1,89 @@
+<h2 mat-dialog-title> Fechar pedido </h2>
+<mat-dialog-content>
+  <mat-stepper linear #stepper >
+    <mat-step [stepControl]="primeiroStep">
+      <form [formGroup]="primeiroStep">
+        <ng-template matStepLabel>Forma de pagamento:</ng-template>
+
+        <mat-checkbox *ngIf="comanda.idPessoa" formControlName="vendaFiado" class="example-margin" (click)="selecionaPedidoFiado()"  >Pedido Fiado?</mat-checkbox>
+
+        <div *ngIf="!comanda.pedidoFiado">
+          <mat-label>Selecione a forma de pagamento</mat-label>
+          <ng-select formControlName="tipoPagamento" name="pgto" id="pgto" (change)="changeFormaPagamento()" required>
+            <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp"> {{ tp.nome }} </ng-option>
+          </ng-select>
+
+          <div *ngIf="parcelar && tipoPagamentoSelecionado" style="margin-top: 10px">
+            <ng-template matStepLabel>Quantidade parcelas:</ng-template>
+            <ng-select formControlName="parcelas" id="parcelas" (change)="changeParcelas()">
+              <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado.parcelas); let i = index" [value]="i + 1">
+                {{ i + 1 }}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+        <div>
+          <button mat-button matStepperNext (click)="avancaStep()">Próximo</button>
+        </div>
+      </form>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </mat-step>
+    <mat-step [stepControl]="segundoStep">
+      <form>
+        <ng-template matStepLabel>Finalizar venda</ng-template>
+        <mat-label>Venda para {{ comanda.nomeCliente }}</mat-label>
+        <mat-label>Forma de pagamento: {{ comanda.pedidoFiado
+          ? "Fiado" : tipoPagamentoSelecionado?.nome  }}</mat-label>
+
+        <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
+          <mat-label>Total sem juros: {{ comanda.valorTotal | currency }}</mat-label><br/>
+          <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label><br/>
+          <mat-label>Total com juros: {{ calcularValorPedidoJuros() | currency }}</mat-label><br/>
+
+          <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+            {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+            {{ tipoPagamentoSelecionado.valorParcela | currency }}
+          </mat-label><br/>
+
+          <div *ngIf="tipoPagamentoSelecionado.temResto">
+            <mat-label>Última parcela:
+              {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
+            </mat-label>
+          </div>
+        </div>
+
+        <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros">
+          <mat-label>Total: {{ comanda.valorTotal | currency }}</mat-label>
+
+          <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+            {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+            {{ tipoPagamentoSelecionado.valorParcela | currency }}
+          </mat-label><br/>
+
+          <div *ngIf="tipoPagamentoSelecionado.temResto">
+            <mat-label>Última parcela:
+              {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
+            </mat-label>
+          </div>
+        </div>
+
+        <div *ngIf="comanda.pedidoFiado">
+          <mat-label>Total (Venda fiado): {{ comanda.valorTotal | currency }}</mat-label>
+        </div>
+        <div>
+          <button mat-button matStepperPrevious>Voltar</button>
+          <button mat-button (click)="finalizarPedido()"> Finalizar pedido</button>
+        </div>
+      </form>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+    </mat-step>
+  </mat-stepper>
+</mat-dialog-content>

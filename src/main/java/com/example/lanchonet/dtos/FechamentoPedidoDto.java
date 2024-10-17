@@ -5,8 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-public class PedidoDto {
-
+public class FechamentoPedidoDto {
     @Getter
     @Setter
     private Long id;
@@ -25,18 +24,22 @@ public class PedidoDto {
 
     @Getter
     @Setter
+    private Long idTipoPagamento;
+
+    @Getter
+    @Setter
     private String nomeCliente;
 
     @Getter
     @Setter
     private BigDecimal valorTotal;
 
-    public PedidoDto(Long id, Long idPessoa, Long idMesa, Long idUsuario, String nomeCliente, BigDecimal valorTotal) {
-        this.id = id;
-        this.idPessoa = idPessoa;
-        this.idUsuario = idUsuario;
-        this.idMesa = idMesa;
-        this.nomeCliente = nomeCliente;
-        this.valorTotal = valorTotal;
-    }
+    @Getter
+    @Setter
+    private Integer parcelas;
+
+    @Getter
+    @Setter
+    private Boolean pedidoFiado;
+
 }

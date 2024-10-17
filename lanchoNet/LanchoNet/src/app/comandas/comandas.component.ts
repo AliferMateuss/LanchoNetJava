@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {
   CdkDragDrop,
   CdkDragEnd,
@@ -38,6 +38,7 @@ export class ComandasComponent implements OnInit {
     { title: 'Coluna 4', items: [] }
   ];
 
+
   connectedDropLists: string[] = [];
   constructor(private dialog: MatDialog, private http: HttpClient, private router: Router,
               private cdr: ChangeDetectorRef) {
@@ -64,6 +65,10 @@ export class ComandasComponent implements OnInit {
       const newComanda = new Comanda();
       newComanda.id = comanda.id;
       newComanda.nomeCliente = comanda.nomeCliente;
+      newComanda.valorTotal = comanda.valorTotal;
+      newComanda.idMesa = comanda.idMesa;
+      newComanda.idPessoa = comanda.idPessoa;
+      newComanda.idUsuario = comanda.idUsuario;
       newComanda.valorTotal = comanda.valorTotal;
       newComanda.dragging = false;
       newComanda.expanded = false
@@ -154,6 +159,9 @@ export class ComandasComponent implements OnInit {
 
 class Comanda{
   id!: number;
+  idPessoa!: number;
+  idMesa!: number;
+  idUsuario!: number;
   valorTotal!: number;
   nomeCliente!: string;
   expanded:boolean = false;

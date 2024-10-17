@@ -1,0 +1,30 @@
+<mat-dialog-content>
+  <div *ngIf="formItemPedido != undefined" style="margin-top: 20px;">
+    <form class="row g-3 needs-validation" (ngSubmit)="salvarItemPedido()" [formGroup]="formItemPedido"
+          #formDir="ngForm">
+        <div class="col-md-12" style="display: flex; flex-direction: column; justify-content: center;">
+          <label for="produtoNome" class="form-label">Nome do Produto</label>
+          <input type="text" class="form-control" id="produtoNome" [(ngModel)]="itemPedido.produtoNome"
+                 formControlName="produtoNome" readonly required>
+
+
+          <br/>
+          <label for="precoUnitario" class="form-label">Preço Unitário</label>
+          <input type="number" class="form-control" id="precoUnitario" [(ngModel)]="itemPedido.precoUnitario"
+                 formControlName="precoUnitario" readonly required>
+
+          <br/>
+          <label for="quantidade" class="form-label">Quantidade</label>
+          <input type="number" class="form-control" id="quantidade" [(ngModel)]="itemPedido.quantidade"
+                 formControlName="quantidade" required>
+          <br/>
+          <label class="form-label">Subtotal: {{calculaSubTotal()}}</label>
+        </div>
+      <br/>
+        <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px;">
+          <button class="btn btn-danger me-4"  type="button" (click)="fecharModal()">Cancelar</button>
+          <button class="btn btn-primary" type="submit">Salvar</button>
+        </div>
+    </form>
+  </div>
+</mat-dialog-content>
