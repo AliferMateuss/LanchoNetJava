@@ -14,14 +14,10 @@ public class ItemPedidoDto {
 
     @Getter
     @Setter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Getter
     @Setter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPedido;
 
     @Getter

@@ -27,9 +27,13 @@ import {CadastroCaixaComponent} from "./caixa/cadastro-caixa/cadastro-caixa.comp
 import {ListaCategoriasComponent} from "./categoria/lista-categoria/lista-categoria.component";
 import {CadastroCategoriasComponent} from "./categoria/cadastro-categoria/cadastro-categoria.component";
 import {PedidosComponent} from "./pedidos/pedidos/pedidos.component";
+import {
+  ComandasFechadasViewComponent
+} from "./comandas-fechadas/comandas-fechadas-view/comandas-fechadas-view.component";
 
 export const routes: Routes = [
-  { path: '', component: ComandasComponent, pathMatch: 'full' },
+  { path: '', redirectTo: "/comandas", pathMatch: 'full' },
+  { path: 'comandas', component: ComandasComponent, pathMatch: 'full' },
   { path: 'pedidos', component: PedidosComponent, pathMatch: 'full' },
   { path: 'counter', component: CounterComponent },
   { path: 'fetch-data', component: FetchDataComponent },
@@ -53,6 +57,7 @@ export const routes: Routes = [
   { path: 'compra', component: CompraComponent },
   { path: 'contaReceber', component: ContasAReceberComponent },
   { path: 'contaPagar', component: ContasPagarComponent },
+  { path: 'pedidoFechado', component:  ComandasFechadasViewComponent},
 ];
 
 export const appRoutingProviders = [

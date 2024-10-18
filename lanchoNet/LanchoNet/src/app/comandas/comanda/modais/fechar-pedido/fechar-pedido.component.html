@@ -5,7 +5,7 @@
       <form [formGroup]="primeiroStep">
         <ng-template matStepLabel>Forma de pagamento:</ng-template>
 
-        <mat-checkbox *ngIf="comanda.idPessoa" formControlName="vendaFiado" class="example-margin" (click)="selecionaPedidoFiado()"  >Pedido Fiado?</mat-checkbox>
+        <mat-checkbox *ngIf="comanda.idPessoa" formControlName="pedidoFiado" class="example-margin" (click)="selecionaPedidoFiado()"  >Pedido Fiado?</mat-checkbox>
 
         <div *ngIf="!comanda.pedidoFiado">
           <mat-label>Selecione a forma de pagamento</mat-label>
@@ -36,9 +36,11 @@
       <form>
         <ng-template matStepLabel>Finalizar venda</ng-template>
         <mat-label>Venda para {{ comanda.nomeCliente }}</mat-label>
+        <br/>
         <mat-label>Forma de pagamento: {{ comanda.pedidoFiado
           ? "Fiado" : tipoPagamentoSelecionado?.nome  }}</mat-label>
 
+        <br/>
         <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
           <mat-label>Total sem juros: {{ comanda.valorTotal | currency }}</mat-label><br/>
           <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label><br/>

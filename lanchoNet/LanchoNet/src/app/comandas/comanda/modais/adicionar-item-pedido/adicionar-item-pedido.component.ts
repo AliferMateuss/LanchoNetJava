@@ -96,7 +96,8 @@ export class AdicionarItemPedidoComponent {
   }
 
   calculaSubTotal(): string{
-    return this.formatarValorParaExibicao((this.itemPedido.precoUnitario * this.itemPedido.quantidade));
+    const valor = (this.itemPedido.precoUnitario * this.itemPedido.quantidade).toFixed(2)
+    return this.formatarValorParaExibicao(Number.parseFloat(valor));
   }
 
   formatarValorParaExibicao(valor: number): string {

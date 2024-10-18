@@ -101,6 +101,9 @@ export class ComandaComponent {
       hasBackdrop: true,
       data: this.comanda
     });
+    dialogRef.afterClosed().subscribe(() => {
+      this.carregaComandas.emit();
+    });
   }
 
   excluirComanda() {
@@ -131,7 +134,7 @@ export class ComandaComponent {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.carregaItens();
+      this.carregaComandas.emit();
     })
   }
 
@@ -150,7 +153,7 @@ export class ComandaComponent {
         idPedido: item.idPedido
       }).subscribe(
         data => {
-          this.carregaItens();
+          this.carregaComandas.emit();
         },
         error => {
           console.error("Erro ao excluir item:", error.message);
@@ -167,7 +170,7 @@ export class ComandaComponent {
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.carregaItens();
+      this.carregaComandas.emit();
     })
 
   }

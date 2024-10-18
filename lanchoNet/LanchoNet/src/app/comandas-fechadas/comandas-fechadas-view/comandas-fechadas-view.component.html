@@ -1,0 +1,53 @@
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Detalhes do Pedido</h1>
+
+  <div *ngIf="pedido">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label for="nomeCliente" class="form-label">Cliente</label>
+        <input type="text" class="form-control" id="nomeCliente" [value]="pedido.nomeCliente" readonly>
+      </div>
+      <div class="col-md-6">
+        <label for="valorTotal" class="form-label">Valor Total</label>
+        <input type="text" class="form-control" id="valorTotal" [value]="pedido.valorTotal | currency:'BRL'" readonly>
+      </div>
+    </div>
+  </div>
+
+  <mat-table class="mat-elevation-z8" [dataSource]="itensPedido" aria-labelledby="tableLabel" matSort>
+
+    <ng-container matColumnDef="produtoNome">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Produto </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.produtoNome }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="quantidade">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Quantidade </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.quantidade }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="precoUnitario">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Preço Unitário </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.precoUnitario | currency:'BRL' }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="subTotal">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Subtotal </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{ item.subTotal | currency:'BRL' }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+    <tr class="mat-row noDataRow" *matNoDataRow>
+      <td class="mat-cell" colspan="4"></td>
+    </tr>
+  </mat-table>
+
+  <mat-paginator #paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+  <br/>
+  <label class="form-label">Subtotal: {{calculaSubTotal()}}</label>
+  <br/>
+  <button class="btn btn-danger" type="button" (click)="fechar()"> Voltar <i
+    class="bi bi-arrow-return-left" style="margin-left:3px"></i></button>
+</div>

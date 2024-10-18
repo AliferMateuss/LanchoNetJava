@@ -106,6 +106,11 @@ public class PedidoNegocio {
                 } else {
                     Integer qtd = itemDto.getQuantidade() - itensPedido.getQuantidade();
                     BigDecimal totalAdc = itemDto.getSubTotal().subtract(itensPedido.getSubTotal());
+
+                    if(itemDto.getSubTotal().equals(itensPedido.getSubTotal())){
+                        totalAdc = BigDecimal.ZERO;
+                    }
+
                     if (produto.getQuantidade() < qtd) {
                         throw new RuntimeException(String.format(ERRO_ESTOQUE, itemDto.getProdutoNome(), itemDto.getQuantidade(), produto.getQuantidade()));
                     } else {
@@ -129,6 +134,7 @@ public class PedidoNegocio {
                     itensPedido.setSubTotal(itemDto.getSubTotal());
                     itensPedido.setPrecoUnitario(itemDto.getPrecoUnitario());
                     itensPedido.setPedido(pedido);
+                    pedido.setValorTotal(pedido.getValorTotal().add(itemDto.getSubTotal()));
                     pedido.getItensPedido().add(itensPedido);
                 }
             }

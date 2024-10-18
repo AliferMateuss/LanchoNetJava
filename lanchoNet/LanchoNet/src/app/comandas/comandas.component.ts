@@ -9,7 +9,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {Router, RouterModule} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
@@ -20,17 +20,21 @@ import {ModalComponent} from "../modal/modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ModalPedidosComponent} from "../pedidos/modal-pedidos/modal-pedidos.component";
 import {HttpClient} from "@angular/common/http";
+import {ComandasFechadasComponent} from "../comandas-fechadas/comandas-fechadas.component";
+import {inflate} from "node:zlib";
+import {ApiServices} from "../services/api.services";
 
 @Component({
   selector: 'app-comandas',
   templateUrl: './comandas.component.html',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, DragDropModule, RouterModule, MatTableModule, MatPaginatorModule,
-    MatSortModule, ComandaComponent, MatTabGroup, MatTab, MatFabButton],
+    MatSortModule, ComandaComponent, MatTabGroup, MatTab, MatFabButton, ComandasFechadasComponent],
   standalone: true,
   styleUrls: ['./comandas.component.css']
 })
 export class ComandasComponent implements OnInit {
   baseUrl: string = 'http://localhost:8080/';
+  indiceTab: number = 0;
   columns: { title: string; items: Comanda[] }[] = [
     { title: 'Coluna 1', items: [] },
     { title: 'Coluna 2', items: [] },
@@ -41,12 +45,15 @@ export class ComandasComponent implements OnInit {
 
   connectedDropLists: string[] = [];
   constructor(private dialog: MatDialog, private http: HttpClient, private router: Router,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef, private route:ActivatedRoute, private apiService: ApiServices) {
 
   }
 
   ngOnInit() {
     this.carregaComandas();
+    if(this.apiService.getAba()){
+      this.indiceTab = 1;
+    }
   }
 
   carregaComandas() {

@@ -70,6 +70,7 @@ export class FecharPedidoComponent {
   carregarTiposPagamentos() {
     this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
       this.TiposPagamentos = data;
+      console.log(this.TiposPagamentos)
     }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
   }
 
@@ -101,7 +102,7 @@ export class FecharPedidoComponent {
       return;
     }
 
-    this.parcelar = this.tipoPagamentoSelecionado?.avista !== true;
+    this.parcelar = this.tipoPagamentoSelecionado?.parcelas > 0;
   }
 
   avancaStep() {
@@ -146,7 +147,7 @@ export class FecharPedidoComponent {
       this.comanda.pedidoFiado = this.primeiroStep.get('pedidoFiado')?.value;
     }
     this.http.post(this.baseUrl + "api/Pedido/FecharPedido", this.comanda).subscribe(data => {
-      this.openDialog("Sucesso!", "Pedido fechhado com sucesso!", "Voltar", true)
+      this.openDialog("Sucesso!", "Pedido fechado com sucesso!", "Voltar", true)
       this.dialogRef.close();
     }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
   }
