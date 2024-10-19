@@ -1,5 +1,9 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.ItemPedidoDto;
+import com.example.lanchonet.dtos.ItemVendaDto;
+import com.example.lanchonet.dtos.PedidoDto;
+import com.example.lanchonet.dtos.VendaDto;
 import com.example.lanchonet.entidades.Pedido;
 import com.example.lanchonet.entidades.Usuario;
 import com.example.lanchonet.entidades.Venda;
@@ -21,5 +25,15 @@ public class VendaController {
     @PostMapping("/Salvar")
     public void salvar(@RequestBody Venda venda){
         vendaNegocio.salvarVenda(venda);
+    }
+
+    @GetMapping("/RecuperarVendasFechadas")
+    public List<VendaDto> recuperarVendasFechadas(){
+        return vendaNegocio.recuperVendasFechadas();
+    }
+
+    @PostMapping("/RecuperarItensVenda")
+    public List<ItemVendaDto> recuperarItensVendac(@RequestBody Long id){
+        return vendaNegocio.recuperItensVenda(id);
     }
 }

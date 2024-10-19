@@ -1,5 +1,9 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.CompraDto;
+import com.example.lanchonet.dtos.ItemCompraDto;
+import com.example.lanchonet.dtos.ItemVendaDto;
+import com.example.lanchonet.dtos.VendaDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.StatusConta;
 import com.example.lanchonet.enums.TipoCompra;
@@ -41,11 +45,19 @@ public class CompraNegocio {
             setTipoPagamento(compra);
             manipulaProdutos(compra);
             criaContasAPagar(compra);
-            caixaNegocio.gerarMovimentacao(compra);
-            compraFacade.save(compra);
+            Compra compraSalva = compraFacade.save(compra);
+            caixaNegocio.gerarMovimentacao(compraSalva);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public List<CompraDto> recuperComprasFechadas() {
+        return compraFacade.comprasFechadas();
+    }
+
+    public List<ItemCompraDto> recuperItensCompra(Long id) {
+        return compraFacade.recuperItensCompra(id);
     }
 
     private void manipulaProdutos(Compra compra) throws Exception {

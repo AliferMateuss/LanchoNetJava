@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,4 +55,8 @@ public class Produto {
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItensVenda> itensVenda;
 
+    @JsonProperty
+    @Getter
+    @Setter
+    private Long categoriaId;
 }

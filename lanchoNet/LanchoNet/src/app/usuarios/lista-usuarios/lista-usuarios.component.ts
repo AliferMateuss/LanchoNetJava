@@ -66,6 +66,6 @@ export class ListaUsuariosComponent {
 class Usuario {
 
   id!: number;
-  usuario!: string;
-/*  grupoNome!: string;*/
+  usuarioNome!: string;
+  grupoNome!: string;
 }

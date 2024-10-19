@@ -30,6 +30,12 @@ import {PedidosComponent} from "./pedidos/pedidos/pedidos.component";
 import {
   ComandasFechadasViewComponent
 } from "./comandas-fechadas/comandas-fechadas-view/comandas-fechadas-view.component";
+import {VendasFechadasComponent} from "./vendas-fechadas/vendas-fechadas.component";
+import {VendasFechadasViewComponent} from "./vendas-fechadas/vendas-fechadas-view/vendas-fechadas-view.component";
+import {ComprasFechadasComponent} from "./compras-fechadas/compras-fechadas.component";
+import {ComprasFechadasViewComponent} from "./compras-fechadas/compras-fechadas-view/compras-fechadas-view.component";
+import {ListaCreditoClienteComponent} from "./creditoCliente/lista-credito-cliente/lista-credito-cliente.component";
+import {CreditoClienteComponent} from "./creditoCliente/credito-cliente/credito-cliente.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: "/comandas", pathMatch: 'full' },
@@ -54,10 +60,16 @@ export const routes: Routes = [
   { path: 'listaCategorias', component: ListaCategoriasComponent },
   { path: 'cadastroCategorias/:id?', component: CadastroCategoriasComponent },
   { path: 'venda', component: VendaComponent },
+  { path: 'vendas', component: VendasFechadasComponent },
+  { path: 'vendaFechada', component: VendasFechadasViewComponent },
   { path: 'compra', component: CompraComponent },
+  { path: 'compras', component: ComprasFechadasComponent },
+  { path: 'compraFechada', component: ComprasFechadasViewComponent },
   { path: 'contaReceber', component: ContasAReceberComponent },
   { path: 'contaPagar', component: ContasPagarComponent },
   { path: 'pedidoFechado', component:  ComandasFechadasViewComponent},
+  { path: 'listaCreditoCliente', component:  ListaCreditoClienteComponent},
+  { path: 'creditoCliente', component:  CreditoClienteComponent},
 ];
 
 export const appRoutingProviders = [

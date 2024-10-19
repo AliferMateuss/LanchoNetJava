@@ -1,0 +1,83 @@
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Detalhes do Crédito do Cliente</h1>
+
+  <div *ngIf="creditoCliente">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label for="nome" class="form-label">Nome do Cliente</label>
+        <input type="text" class="form-control" id="nome" [value]="creditoCliente.nome" readonly>
+      </div>
+      <div class="col-md-6">
+        <label for="valorTotal" class="form-label">Valor Total do Crédito</label>
+        <input type="text" class="form-control" id="valorTotal" [value]="creditoCliente.valorTotal | currency:'BRL'" readonly>
+      </div>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Movimentos de Crédito">
+      <mat-table class="mat-elevation-z8" [dataSource]="movimentosCredito" aria-labelledby="tableLabel" matSort>
+        <ng-container matColumnDef="dataMovimento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Data </mat-header-cell>
+          <mat-cell *matCellDef="let movimento"> {{ movimento.dataMovimento | date }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="valor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Valor </mat-header-cell>
+          <mat-cell *matCellDef="let movimento"> {{ movimento.valor | currency:'BRL' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoPagamento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Pagamento </mat-header-cell>
+          <mat-cell *matCellDef="let movimento"> {{ movimento.tipoPagamento }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="vendaId">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> ID da Venda </mat-header-cell>
+          <mat-cell *matCellDef="let movimento"> {{ movimento.vendaId }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumnsMovimento"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumnsMovimento"></mat-row>
+
+        <tr class="mat-row noDataRow" *matNoDataRow>
+          <td class="mat-cell" colspan="4">Nenhum movimento encontrado!</td>
+        </tr>
+      </mat-table>
+
+      <mat-paginator #paginatorMovimento [pageSize]="10" showFirstLastButtons></mat-paginator>
+    </mat-tab>
+
+    <!-- Aba Crédito Pagamento -->
+    <mat-tab label="Pagamentos de Crédito">
+      <mat-table class="mat-elevation-z8" [dataSource]="pagamentosCredito" aria-labelledby="tableLabel" matSort>
+        <ng-container matColumnDef="dataMovimento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Data </mat-header-cell>
+          <mat-cell *matCellDef="let pagamento"> {{ pagamento.dataMovimento | date }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="valor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Valor </mat-header-cell>
+          <mat-cell *matCellDef="let pagamento"> {{ pagamento.valor | currency:'BRL' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoPagamento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Pagamento </mat-header-cell>
+          <mat-cell *matCellDef="let pagamento"> {{ pagamento.tipoPagamento }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumnsPagamento"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumnsPagamento"></mat-row>
+
+        <tr class="mat-row noDataRow" *matNoDataRow>
+          <td class="mat-cell" colspan="3">Nenhum pagamento encontrado!</td>
+        </tr>
+      </mat-table>
+
+      <mat-paginator #paginatorPagamento [pageSize]="10" showFirstLastButtons></mat-paginator>
+    </mat-tab>
+  </mat-tab-group>
+
+  <br/>
+  <button class="btn btn-danger" type="button" (click)="fechar()">Voltar <i class="bi bi-arrow-return-left" style="margin-left:3px"></i></button>
+</div>

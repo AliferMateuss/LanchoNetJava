@@ -1,5 +1,8 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.CreditoClienteDto;
+import com.example.lanchonet.dtos.MovimentoCreditoDto;
+import com.example.lanchonet.dtos.PagamentoCreditoDto;
 import com.example.lanchonet.dtos.PagamentoDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.facades.*;
@@ -26,6 +29,19 @@ public class CreditoClienteNegocio {
 
     @Autowired
     private PagamentoCreditoClienteFacade pagamentoCreditoClienteFacade;
+
+    public List<CreditoClienteDto> recuperaCreditos(){
+        return facade.findAllDto();
+    }
+
+    public List<MovimentoCreditoDto> retornaMovimentosPorId(Long id) {
+        return movimentoCreditoClienteFacade.retornaMovimentosPorId(id);
+    }
+
+    public List<PagamentoCreditoDto> retornaPagamentosPorId(Long id) {
+        return pagamentoCreditoClienteFacade.retornaPagamentosPorId(id);
+    }
+
 
     public void geraMovimentoCreditoCliente(Venda venda) {
         try {

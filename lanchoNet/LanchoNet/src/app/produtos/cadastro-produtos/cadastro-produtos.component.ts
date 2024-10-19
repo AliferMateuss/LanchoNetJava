@@ -19,12 +19,13 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {NgxMaskDirective} from "ngx-mask";
 import {NgSelectModule} from "@ng-select/ng-select";
+import {CurrencyMaskModule} from "ng2-currency-mask";
 declare var $: any;
 @Component({
   selector: 'app-cadastro-produtos',
   templateUrl: './cadastro-produtos.component.html',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MatTableModule, MatPaginatorModule,
-    MatSortModule, NgxMaskDirective, NgSelectModule],
+    MatSortModule, NgxMaskDirective, NgSelectModule, CurrencyMaskModule],
   standalone: true,
   styleUrls: ['./cadastro-produtos.component.css'],
 })
@@ -34,6 +35,7 @@ export class CadastroProdutosComponent {
   formProduto?: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
   ehAlteracao: boolean = false;
+  categorias!: any;
 
 
   tituloModal: string = "Salvo com sucesso";
@@ -45,6 +47,7 @@ export class CadastroProdutosComponent {
     private dialog: MatDialog, private router: Router) { }
 
   ngOnInit() {
+    this.carregarCategorias();
     var id =  Number(this.route.snapshot.paramMap.get('id?'));
     if (id) {
       this.http.post<Produtos>(this.baseUrl + 'api/Produto/RertornaPorId', id).subscribe(data => {
@@ -63,8 +66,16 @@ export class CadastroProdutosComponent {
       nome: new FormControl(this.produto.nome, [Validators.required]),
       quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
       preco: new FormControl(this.produto.preco, [Validators.required]),
-      precoCompra: new FormControl(this.produto.precoCompra, [Validators.required])
+      precoCompra: new FormControl(this.produto.precoCompra, [Validators.required]),
+      categoriaId: new FormControl(this.produto.categoriaId, [Validators.required])
     }, [this.validacaoPrecos()]);
+
+  }
+
+  carregarCategorias() {
+    this.http.get<any[]>(this.baseUrl + 'api/Categoria/RecuperarCategorias').subscribe(data => {
+      this.categorias = data;
+    }, error => this.openDialog("Erro: ", error, "Voltar", true));
 
   }
 
@@ -120,7 +131,6 @@ export class CadastroProdutosComponent {
       }
   }
 
-
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
@@ -150,5 +160,6 @@ class Produtos {
   preco: number | null = null;
   precoCompra: number | null = null;
   imagem: string | null = null;
+  categoriaId: number | null = null;
 }
 

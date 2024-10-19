@@ -50,6 +50,10 @@ public class PedidoNegocio {
         return pedidoFacade.pedidosFechados();
     }
 
+    public List<ItemPedidoDto> recuperItensComanda(Long id) {
+        return pedidoFacade.recuperItensComanda(id);
+    }
+
     public void salvarPedido(Pedido pedido) {
         try {
             setPessoa(pedido);
@@ -237,10 +241,6 @@ public class PedidoNegocio {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-    }
-
-    public List<ItemPedidoDto> recuperItensComanda(Long id) {
-        return pedidoFacade.recuperItensComanda(id);
     }
 
 

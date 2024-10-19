@@ -15,13 +15,16 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="nome" class="form-label">Imagem</label>
-                <input type="file" accept=".png, .jpeg, .pnge, .jpg" (change)="onFileSelected($event)"
-                       class="form-control" id="nome" aria-describedby="inputGroupPrepend">
+                <label for="categoria">Categoria:</label>
+                <ng-select formControlName="categoriaId" id="categoria">
+                  <ng-option *ngFor="let categoria of categorias" [value]="categoria.id">{{ categoria.nome }}
+                  </ng-option>
+                </ng-select>
               </div>
+
             </div>
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <label for="quantidade" class="form-label">Quantidade</label>
                 <input type="text" class="form-control" id="quantidade" aria-describedby="inputGroupPrepend"
                        [(ngModel)]="produto.quantidade" formControlName="quantidade" required>
@@ -29,11 +32,25 @@
                   Campo obrigatório
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
+                <label for="nome" class="form-label">Imagem</label>
+                <input type="file" accept=".png, .jpeg, .pnge, .jpg" (change)="onFileSelected($event)"
+                       class="form-control" id="nome" aria-describedby="inputGroupPrepend">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
                 <label for="preco" class="form-label">Preço de Compra</label>
                 <input type="text" class="form-control" appImpedeColagem [(ngModel)]="produto.precoCompra"
-                       formControlName="precoCompra" required prefix="R$" suffix=",00" mask="separator.2"
-                       thousandSeparator="." decimalMarker="," id="precoCompra" aria-describedby="inputGroupPrepend">
+                       formControlName="precoCompra" required
+                       currencyMask
+                       [options]="{
+                                    prefix: 'R$ ',
+                                    thousands: '.',
+                                    decimal: ',',
+                                    precision: 2
+                                  }"
+                       id="precoCompra" aria-describedby="inputGroupPrepend">
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
@@ -41,16 +58,24 @@
                   Preço de compra deve ser menor que o preço de venda.
                 </div>
               </div>
-              <div class="col-md-4">
+              <div class="col-md-6">
                 <label for="preco" class="form-label">Preço de Venda</label>
                 <input type="text" appImpedeColagem class="form-control" [(ngModel)]="produto.preco"
-                       formControlName="preco" required prefix="R$" suffix=",00" mask="separator.2"
-                       thousandSeparator="." decimalMarker="," id="preco" aria-describedby="inputGroupPrepend">
+                       formControlName="preco" required
+                       currencyMask
+                       [options]="{
+                                    prefix: 'R$ ',
+                                    thousands: '.',
+                                    decimal: ',',
+                                    precision: 2
+                                  }"
+                       id="preco" aria-describedby="inputGroupPrepend">
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
               </div>
             </div>
+
           </div>
           <div class="col-md-4" style="display: flex;justify-content: flex-start;">
             <div class="row">

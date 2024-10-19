@@ -1,5 +1,9 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ItemPedidoDto;
+import com.example.lanchonet.dtos.ItemVendaDto;
+import com.example.lanchonet.dtos.PedidoDto;
+import com.example.lanchonet.dtos.VendaDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.StatusConta;
 import com.example.lanchonet.enums.StatusMesa;
@@ -72,14 +76,23 @@ public class VendaNegocio {
             venda.setTipoVenda(TipoVenda.FIADO);
             venda.setStatusVenda(StatusVenda.FECHADA);
             venda.setDataVenda(new Date());
-            venda = vendaFacade.save(venda);
-            caixaNegocio.gerarMovimentacao(venda);
+            Venda vendaSalva = vendaFacade.save(venda);
+            caixaNegocio.gerarMovimentacao(vendaSalva);
             if(venda.getVendaFiado())
                 creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public List<VendaDto> recuperVendasFechadas() {
+        return vendaFacade.vendasFechadas();
+    }
+
+    public List<ItemVendaDto> recuperItensVenda(Long id) {
+        return vendaFacade.recuperItensVenda(id);
+    }
+
 
     private void validaEstoque(Venda venda) throws Exception {
         try {

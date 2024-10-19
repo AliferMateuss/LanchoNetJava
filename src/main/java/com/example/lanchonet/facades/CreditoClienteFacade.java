@@ -1,5 +1,6 @@
 package com.example.lanchonet.facades;
 
+import com.example.lanchonet.dtos.CreditoClienteDto;
 import com.example.lanchonet.entidades.Caixa;
 import com.example.lanchonet.entidades.CreditoCliente;
 import com.example.lanchonet.entidades.Pessoa;
@@ -25,6 +26,15 @@ public class CreditoClienteFacade extends AbstractFacade<CreditoCliente, Long> {
                 .getResultList();
 
         return resultados.isEmpty() ? null : resultados.get(0);
+    }
+
+    public List<CreditoClienteDto> findAllDto(){
+        return entityManager.createQuery("SELECT new com.example.lanchonet.dtos.CreditoClienteDto(" +
+                "c.pessoa.id," +
+                "c.pessoa.nome," +
+                "c.id," +
+                "c.valorTotal" +
+                ") FROM CreditoCliente c", CreditoClienteDto.class).getResultList();
     }
 
 }

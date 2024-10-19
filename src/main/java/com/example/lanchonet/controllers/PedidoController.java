@@ -27,6 +27,11 @@ public class PedidoController {
         return pedidoNegocio.recuperPedidosFechados();
     }
 
+    @PostMapping("/RecuperarItensComanda")
+    public List<ItemPedidoDto> recuperItensComanda(@RequestBody Long id){
+        return pedidoNegocio.recuperItensComanda(id);
+    }
+
     @PostMapping("/Salvar")
     public void salvar(@RequestBody Pedido pedido){
         pedidoNegocio.salvarPedido(pedido);
@@ -45,11 +50,6 @@ public class PedidoController {
     @PostMapping("/CancelarFechamentoPedido")
     public void cancelarFechamentoPedido(@RequestBody Pedido pedido){
         pedidoNegocio.cancelarFechamentoPedido(pedido);
-    }
-
-    @PostMapping("/RecuperarItensComanda")
-    public List<ItemPedidoDto> recuperItensComanda(@RequestBody Long id){
-        return pedidoNegocio.recuperItensComanda(id);
     }
 
     @PostMapping("/SalvaItemPedido")

@@ -7,12 +7,12 @@
         <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" matSort>
           <ng-container matColumnDef="usuario">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Usuário</mat-header-cell>
-            <mat-cell *matCellDef="let usu"> {{ usu.usuario }}</mat-cell>
+            <mat-cell *matCellDef="let usu"> {{ usu.usuarioNome }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="grupoUsuario">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Grupo Usuário</mat-header-cell>
-            <mat-cell *matCellDef="let usu"></mat-cell>
+            <mat-cell *matCellDef="let usu"> {{ usu.grupoNome }}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="Acoes">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>

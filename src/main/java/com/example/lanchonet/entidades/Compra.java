@@ -78,13 +78,13 @@ public class Compra {
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "compra")
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContasAPagar> contasAPagar;
 
 
     @Getter
     @Setter
-    @OneToMany(mappedBy = "compra")
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItensCompra> itensCompra;
 
     @JsonProperty

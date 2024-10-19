@@ -55,4 +55,17 @@ public class Usuario {
     @Setter
     @Transient
     private Long grupoUsuarioId;
+
+    @JsonProperty
+    @Getter
+    @Setter
+    @Transient
+    private String grupoNome;
+
+    public Usuario() {}
+    public Usuario(Long id, String usuarioNome, String grupoNome) {
+        this.usuarioNome = usuarioNome;
+        this.grupoNome = grupoNome;
+        this.id = id;
+    }
 }
