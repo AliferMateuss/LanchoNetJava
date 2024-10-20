@@ -5,10 +5,19 @@ import { Injectable } from '@angular/core';
 })
 export class ApiServices {
   private pedidoSelecionado: any;
+  private caixaSelecionado: any;
   private creditoSelecionado: any;
   private vendaSelecionada: any;
   private compraSelecionada: any;
   private abaFechado: boolean = false;
+
+  setCaixa(caixa: any) {
+    this.caixaSelecionado = caixa;
+  }
+
+  getCaixa() {
+    return this.caixaSelecionado;
+  }
 
   setPedido(pedido: any) {
     this.pedidoSelecionado = pedido;

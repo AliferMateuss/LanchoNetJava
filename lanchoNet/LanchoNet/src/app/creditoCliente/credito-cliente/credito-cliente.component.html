@@ -79,5 +79,96 @@
   </mat-tab-group>
 
   <br/>
-  <button class="btn btn-danger" type="button" (click)="fechar()">Voltar <i class="bi bi-arrow-return-left" style="margin-left:3px"></i></button>
+  <div class="col-md-12" style="display: flex;
+    gap: 5px;
+    justify-content: center;">
+    <button class="btn btn-success" type="button" (click)="abrirModal()"> Baixa <i class="bi bi-cash" style="margin-left:3px; margin-right:5px"></i></button>
+    <button class="btn btn-danger" type="button" (click)="fechar()"> Voltar <i class="bi bi-arrow-return-left" style="margin-left:3px"></i></button>
+  </div>
 </div>
+
+<ng-template #modalBaixa let-modalBaixa>
+
+  <div *ngIf="creditoCliente">
+    <div class="modal-header">
+      <h4 class="modal-title">Pagamento crédito : </h4>
+      <button type="button" class="btn-close" (click)="modalBaixa.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div *ngIf="mostrarMensagem" class="alert alert-danger" role="alert">
+          <h5>{{ tituloMensagem }}</h5>
+          <p>{{ textoMensagem }}</p>
+        </div>
+
+        <div class="form-input" style="margin-bottom:10px">
+          <label class="form-label">Quantidade a ser paga:</label>
+          <input  type="text" name="preco" [(ngModel)]="valorAbate" currencyMask
+                  class="form-control" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}">
+        </div>
+
+        <div class="form-input" style="margin-bottom:10px">
+          <label>Selecione a forma de pagamento:</label>
+          <ng-select [(ngModel)]="tipoPagamentoSelecionado" name="pgto" id="pgto">
+            <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp"
+                       (click)="selecionaFormaPagamento(tp)"> {{ tp.nome }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+        <div *ngIf="parcelar && tipoPagamentoSelecionado" style="margin-top: 10px">
+          <ng-template matStepLabel>Quantidade parcelas:</ng-template>
+          <ng-select [(ngModel)]="tipoPagamentoSelecionado.parcelaEscolhida">
+            <ng-option *ngFor="let p of [].constructor(tipoPagamentoSelecionado.parcelas); let i = index" [value]="i + 1">
+              {{ i + 1 }}
+            </ng-option>
+          </ng-select>
+        </div>
+
+      </form>
+      <div style="display:flex; width:auto; justify-content:center; align-content:center;">
+        <button class="btn btn-secundary" type="button" (click)="abaterValor()">Dar Baixa</button>
+      </div>
+      <div class="form-input" style="margin-bottom:10px">
+        <label>Valor do crédito: {{ formatarValorParaExibicao(creditoCliente.valorTotal) }}</label>
+      </div>
+
+      <mat-label>Forma de pagamento: {{ tipoPagamentoSelecionado?.nome  }}</mat-label>
+
+      <div *ngIf="tipoPagamentoSelecionado != null && tipoPagamentoSelecionado.juros">
+        <mat-label>Juros: {{ tipoPagamentoSelecionado.juros }}%</mat-label><br/>
+        <mat-label>Total com juros: {{ calcularValorCreditoJuros() | currency }}</mat-label><br/>
+
+        <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+          {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+          {{ tipoPagamentoSelecionado.valorParcela | currency }}
+        </mat-label><br/>
+
+        <div *ngIf="tipoPagamentoSelecionado.temResto">
+          <mat-label>Última parcela:
+            {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
+          </mat-label>
+        </div>
+      </div>
+
+      <div *ngIf="tipoPagamentoSelecionado != null && !tipoPagamentoSelecionado.juros">
+        <mat-label *ngIf="tipoPagamentoSelecionado.parcelaEscolhida">Parcelas:
+          {{ tipoPagamentoSelecionado.parcelaEscolhida }}x
+          {{ tipoPagamentoSelecionado.valorParcela | currency }}
+        </mat-label><br/>
+
+        <div *ngIf="tipoPagamentoSelecionado.temResto">
+          <mat-label>Última parcela:
+            {{ tipoPagamentoSelecionado.ultimaParcelas | currency }}
+          </mat-label>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" (click)="salvarPagamento()">Salvar</button>
+    </div>
+  </div>
+</ng-template>

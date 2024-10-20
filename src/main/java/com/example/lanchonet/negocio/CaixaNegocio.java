@@ -1,5 +1,7 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.CaixaDto;
+import com.example.lanchonet.dtos.MovimentoCaixaDto;
 import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.StatusCaixa;
 import com.example.lanchonet.enums.TipoMovimentoCaixa;
@@ -62,6 +64,16 @@ public class CaixaNegocio {
         return facade.findAll();
     }
 
+    public List<MovimentoCaixaDto> buscarMovimentoCaixaPorId(Long id) {
+        return  movimentoCaixaFacade.retornaMovimentoPorId(id);
+    }
+
+    public CaixaDto retornaCaixaAberto(){
+        CaixaDto dto = facade.recuperaCaixaAbertoDto();
+        dto.setMovimentos(movimentoCaixaFacade.retornaMovimentoPorId(dto.getId()));
+        return dto;
+    }
+
     public void gerarMovimentacao(Venda venda){
         try {
             setCaixa();
@@ -70,9 +82,9 @@ public class CaixaNegocio {
             venda.setMovimentoCaixa(movimentacao);
 
             if(venda.getVendaFiado())
-                movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
-            else
                 movimentacao.setTipoMovimento(TipoMovimentoCaixa.FIADO);
+            else
+                movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
 
             movimentacao.setTipoPagamento(venda.getTipoPagamento());
             movimentacao.setValor(venda.getValorTotal());

@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,20 +29,21 @@ public class TipoPagamento {
     @Setter
     private Integer parcelas;
 
+    @JsonProperty
     @Getter
     @Setter
-    private Boolean aVista = false;
+    private Boolean aVista;
 
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY)
     private List<Compra> compras = new ArrayList<>();
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tipoPagamento", fetch = FetchType.LAZY)
     private List<Venda> vendas = new ArrayList<>();
 }

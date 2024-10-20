@@ -69,13 +69,12 @@ public class CreditoClienteNegocio {
     public void geraPagamentoCreditoCliente(PagamentoDto pagamentoDto) {
         try {
 
-            Pessoa pessoa = getPessoa(pagamentoDto.getPessoaId());
-            CreditoCliente creditoCliente = facade.recuperaCreditoPorPessoa(pessoa.getId());
+            CreditoCliente creditoCliente = facade.recuperaCreditoPorId(pagamentoDto.getCreditoId());
 
-            if (creditoCliente == null)
-                creditoCliente = new CreditoCliente();
+            if (creditoCliente == null){
+                throw new Exception("Crédito cliente não encontrado!");
+            }
 
-            creditoCliente.setPessoa(pessoa);
             Hibernate.initialize(creditoCliente.getPagamentoCreditoClientes());
 
             PagamentoCreditoCliente pagamentoCreditoCliente = montaPagamentoCreditoCliente(pagamentoDto);

@@ -36,6 +36,7 @@ import {ComprasFechadasComponent} from "./compras-fechadas/compras-fechadas.comp
 import {ComprasFechadasViewComponent} from "./compras-fechadas/compras-fechadas-view/compras-fechadas-view.component";
 import {ListaCreditoClienteComponent} from "./creditoCliente/lista-credito-cliente/lista-credito-cliente.component";
 import {CreditoClienteComponent} from "./creditoCliente/credito-cliente/credito-cliente.component";
+import {CaixaComponent} from "./caixa/caixa.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: "/comandas", pathMatch: 'full' },
@@ -55,8 +56,6 @@ export const routes: Routes = [
   { path: 'cadastroGruposUsuarios/:id?', component: CadastroGrupoUsuariosComponent },
   { path: 'listaUsuarios', component: ListaUsuariosComponent },
   { path: 'cadastroUsuarios/:id?', component: CadastroUsuariosComponent },
-  { path: 'listaCaixas', component: ListaCaixaComponent },
-  { path: 'cadastroCaixa/:id?', component: CadastroCaixaComponent },
   { path: 'listaCategorias', component: ListaCategoriasComponent },
   { path: 'cadastroCategorias/:id?', component: CadastroCategoriasComponent },
   { path: 'venda', component: VendaComponent },
@@ -70,6 +69,7 @@ export const routes: Routes = [
   { path: 'pedidoFechado', component:  ComandasFechadasViewComponent},
   { path: 'listaCreditoCliente', component:  ListaCreditoClienteComponent},
   { path: 'creditoCliente', component:  CreditoClienteComponent},
+  { path: 'caixa', component:  CaixaComponent},
 ];
 
 export const appRoutingProviders = [

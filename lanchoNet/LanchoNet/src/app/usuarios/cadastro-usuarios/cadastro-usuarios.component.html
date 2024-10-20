@@ -4,7 +4,7 @@
     <form class="row g-3 needs-validation" (ngSubmit)="salvarUsuario()" [formGroup]="formUsuario" #formDir="ngForm">
       <div class="col-md-6">
         <label for="usuario" class="form-label">Usuário</label>
-        <input type="text" class="form-control" id="usuario" [(ngModel)]="usuario.usuario" formControlName="usuario"
+        <input type="text" class="form-control" id="usuario" [(ngModel)]="usuario.usuarioNome" formControlName="usuario"
                required>
         <div class="invalid-feedback">Campo obrigatório</div>
       </div>

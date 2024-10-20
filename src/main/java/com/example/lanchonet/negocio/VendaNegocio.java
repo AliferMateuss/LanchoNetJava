@@ -167,6 +167,7 @@ public class VendaNegocio {
     }
 
     private void setUsuario(Venda venda) throws Exception {
+        venda.setUsuarioId(3L);
         if (venda.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(venda.getUsuarioId());
             if (usuario == null) {

@@ -55,8 +55,7 @@ export class ListaUsuariosComponent {
   }
 
   excluirUsuario(id: number) {
-    const params = new HttpParams().set('id', id);
-    this.http.get(this.baseUrl + "api/Usuario/Deletar", { params }).subscribe(data => {
+    this.http.post(this.baseUrl + "api/Usuario/Deletar", id).subscribe(data => {
       this.carregarUsuarios();
 
     }, error => console.error(error));

@@ -30,7 +30,9 @@ public class ProdutoNegocio {
     }
 
     public Produto buscarProdutoPorId(Long id) {
-        return facade.findById(id);
+        Produto produto = facade.findById(id);
+        produto.setCategoriaId(produto.getCategoria().getId());
+        return produto;
     }
 
     public List<ProdutoDto> buscarProdutos() {

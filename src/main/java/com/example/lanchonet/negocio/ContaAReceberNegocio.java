@@ -1,5 +1,7 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ContasPagarDto;
+import com.example.lanchonet.dtos.ContasReceberDto;
 import com.example.lanchonet.entidades.ContasAPagar;
 import com.example.lanchonet.entidades.ContasAReceber;
 import com.example.lanchonet.entidades.TipoPagamento;
@@ -7,6 +9,7 @@ import com.example.lanchonet.entidades.Venda;
 import com.example.lanchonet.enums.StatusConta;
 import com.example.lanchonet.facades.ContaReceberFacade;
 import com.example.lanchonet.facades.TipoPagamentoFacade;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +26,20 @@ public class ContaAReceberNegocio {
     @Autowired
     private TipoPagamentoFacade tipoPagamentoFacade;
 
-    public void baixar(ContasAReceber conta) {
+    public void baixar(ContasReceberDto dto) {
 
         try {
-            ContasAReceber contaSalva = facade.findById(conta.getId());
+            ContasAReceber contaSalva = facade.findById(dto.getId());
+            contaSalva.setTipoPagamentoId(dto.getTipoPagamentoId());
+            contaSalva.setVendaId(dto.getVendaId());
             setTipoPagamento(contaSalva);
-            if(conta.getValor().equals(BigDecimal.ZERO)){
+            if(dto.getValor().equals(BigDecimal.ZERO)){
                 contaSalva.setStatus(StatusConta.FECHADA);
+                contaSalva.setValor(dto.getValor());
             } else {
-                contaSalva.setValor(conta.getValor());
+                contaSalva.setValor(dto.getValor());
                 contaSalva.setStatus(StatusConta.PARCIAL);
             }
-
             facade.save(contaSalva);
             caixaNegocio.gerarMovimentacao(contaSalva);
         } catch (Exception e) {
@@ -50,8 +55,8 @@ public class ContaAReceberNegocio {
         return facade.findById(id);
     }
 
-    public List<ContasAReceber> buscarContaARecebers() {
-        return facade.findAll();
+    public List<ContasReceberDto> buscarContaARecebers() {
+        return facade.findAllDto();
     }
 
     public void excluirContaAReceber(ContasAReceber contaAReceber) {
@@ -67,9 +72,11 @@ public class ContaAReceberNegocio {
         if (conta.getTipoPagamentoId() != null) {
             TipoPagamento tp = tipoPagamentoFacade.findById(conta.getTipoPagamentoId());
             if (tp == null) {
-                throw new Exception("Cliente não encontrado!");
+                throw new Exception("Tipo Pagamento não encontrado!");
             }
             conta.setTipoPagamento(tp);
+        } else {
+            throw  new Exception("Tipo Pagamento não informado!");
         }
     }
 

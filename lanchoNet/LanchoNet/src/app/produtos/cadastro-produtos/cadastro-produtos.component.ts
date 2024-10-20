@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Component, Inject, RendererFactory2, TemplateRef, ViewChild } from '@angular/core';
+import {ChangeDetectorRef, Component, Inject, RendererFactory2, TemplateRef, ViewChild} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -44,7 +44,7 @@ export class CadastroProdutosComponent {
   @ViewChild('modalResposta') modalResposta!: TemplateRef<any>;
 
   constructor(private http: HttpClient, private route: ActivatedRoute,
-    private dialog: MatDialog, private router: Router) { }
+    private dialog: MatDialog, private router: Router, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.carregarCategorias();
@@ -57,19 +57,28 @@ export class CadastroProdutosComponent {
 
         this.ehAlteracao = true;
 
+        this.formProduto = new FormGroup({
+          nome: new FormControl(this.produto.nome, [Validators.required]),
+          quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
+          preco: new FormControl(this.produto.preco, [Validators.required]),
+          precoCompra: new FormControl(this.produto.precoCompra, [Validators.required]),
+          categoriaId: new FormControl(this.produto.categoriaId, [Validators.required])
+        }, [this.validacaoPrecos()]);
+
+        this.cdr.detectChanges();
+
       }, error => {
         this.openDialog("Erro ao recuperar produto", error, "Voltar", true);
       });
+    } else {
+      this.formProduto = new FormGroup({
+        nome: new FormControl(this.produto.nome, [Validators.required]),
+        quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
+        preco: new FormControl(this.produto.preco, [Validators.required]),
+        precoCompra: new FormControl(this.produto.precoCompra, [Validators.required]),
+        categoriaId: new FormControl(this.produto.categoriaId, [Validators.required])
+      }, [this.validacaoPrecos()]);
     }
-
-    this.formProduto = new FormGroup({
-      nome: new FormControl(this.produto.nome, [Validators.required]),
-      quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
-      preco: new FormControl(this.produto.preco, [Validators.required]),
-      precoCompra: new FormControl(this.produto.precoCompra, [Validators.required]),
-      categoriaId: new FormControl(this.produto.categoriaId, [Validators.required])
-    }, [this.validacaoPrecos()]);
-
   }
 
   carregarCategorias() {
@@ -125,10 +134,19 @@ export class CadastroProdutosComponent {
       }
       return;
     } else {
+        this.formToProduto();
         this.http.post<any>(this.baseUrl + 'api/Produto/Salvar', this.produto).subscribe(data => {
           this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
         }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
       }
+  }
+
+  formToProduto(){
+    this.produto.nome = this.formProduto?.get('nome')?.value;
+    this.produto.quantidade = this.formProduto?.get('quantidade')?.value;
+    this.produto.preco = this.formProduto?.get('preco')?.value;
+    this.produto.precoCompra = this.formProduto?.get('precoCompra')?.value;
+    this.produto.categoriaId = this.formProduto?.get('categoriaId')?.value;
   }
 
   onFileSelected(event: any): void {

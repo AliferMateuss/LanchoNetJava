@@ -1,5 +1,7 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.CaixaDto;
+import com.example.lanchonet.dtos.MovimentoCaixaDto;
 import com.example.lanchonet.entidades.Caixa;
 import com.example.lanchonet.negocio.CaixaNegocio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,11 @@ public class CaixaController {
     @PostMapping("/RertornaPorId")
     public Caixa retornaPorId(@RequestBody Long id){
         return caixaNegocio.buscarCaixaPorId(id);
+    }
+
+    @GetMapping("/RetornaCaixaAberto")
+    public CaixaDto rertornaMovimentos(){
+        return caixaNegocio.retornaCaixaAberto();
     }
 
     @PostMapping("/Deletar")

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.util.Lazy;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -49,29 +50,31 @@ public class ContasAReceber {
     @Enumerated(EnumType.STRING)
     private StatusConta status;
 
+    @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_venda", nullable = false)
     private Venda venda;
 
+    @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pessoa", nullable = false)
     private Pessoa pessoa;
 
     @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_pagamento")
     private TipoPagamento tipoPagamento;
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_movimento_caixa")
     private MovimentoCaixa movimentoCaixa;
 

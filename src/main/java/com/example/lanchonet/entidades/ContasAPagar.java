@@ -47,29 +47,31 @@ public class ContasAPagar {
     @Setter
     private StatusConta status;
 
+    @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_compra", nullable = false)
     private Compra compra;
 
+    @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pessoa", nullable = false)
     private Pessoa fornecedor;
 
     @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_pagamento")
     private TipoPagamento tipoPagamento;
 
     @JsonIgnore
     @Getter
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.LAZY)
     @JoinColumn(name = "id_movimento_caixa")
     private MovimentoCaixa movimentoCaixa;
 

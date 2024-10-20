@@ -1,0 +1,15 @@
+<mat-tab-group [(selectedIndex)]="indiceTab" style="width: 100%!important; height: 90%!important;">
+  <mat-tab label="Caixa Aberto" style="width: 100%!important; height: 100%!important">
+    <app-movimentos-caixa></app-movimentos-caixa>
+  </mat-tab>
+  <mat-tab label="Caixas Fechados" style="width: 100%!important; height: 100%!important">
+    <app-lista-caixa></app-lista-caixa>
+  </mat-tab>
+</mat-tab-group>
+
+<div style="display: flex; justify-content: center; flex-wrap: wrap; flex-direction: row; column-gap: 100px;">
+  <button type="button" class="btn btn-danger" [routerLink]="['/../']">
+    Voltar <i class="bi bi-arrow-bar-left"></i>
+  </button>
+</div>
+

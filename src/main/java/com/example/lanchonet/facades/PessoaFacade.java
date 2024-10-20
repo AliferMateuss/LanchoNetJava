@@ -16,7 +16,8 @@ public class PessoaFacade extends AbstractFacade<Pessoa, Long> {
 
     @Transactional
     public List<PessoaDto> findAllDto(){
-        return entityManager.createQuery("SELECT new com.example.lanchonet.dtos.PessoaDto(p.id, p.nome," +
+        return entityManager.createQuery("SELECT new com.example.lanchonet.dtos.PessoaDto(p.id, " +
+                "concat(CASE WHEN p.nome IS NOT NULL THEN p.nome ELSE '' END, CASE WHEN p.razaoSocial IS NOT NULL THEN p.razaoSocial ELSE '' END)," +
                 " concat(CASE WHEN p.cpf IS NOT NULL THEN p.cpf ELSE '' END, CASE WHEN p.cnpj IS NOT NULL THEN p.cnpj ELSE '' END) , p.cliente, " +
                 "p.fornecedor, p.funcionario) from Pessoa p ", PessoaDto.class).getResultList();
     }

@@ -51,7 +51,7 @@ export class CadastroUsuariosComponent {
     }
 
     this.formUsuario = new FormGroup({
-      usuario: new FormControl(this.usuario.usuario, [Validators.required]),
+      usuario: new FormControl(this.usuario.usuarioNome, [Validators.required]),
       senha: new FormControl(this.usuario.senha, [Validators.required]),
       idPessoa: new FormControl(this.usuario.pessoaId, [Validators.required]),
       idGrupoUsuario: new FormControl(this.usuario.grupoUsuarioId, [Validators.required])
@@ -112,7 +112,7 @@ export class CadastroUsuariosComponent {
 
 export class Usuario {
   id: number | null = null;
-  usuario: string | null = null;
+  usuarioNome: string | null = null;
   senha: string | null = null;
   pessoaId: number | null = null;
   grupoUsuarioId: number | null = null;

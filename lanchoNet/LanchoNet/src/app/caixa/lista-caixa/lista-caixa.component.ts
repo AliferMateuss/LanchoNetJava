@@ -4,8 +4,9 @@ import {MatPaginator, MatPaginatorIntl, MatPaginatorModule, PageEvent} from '@an
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {RouterModule} from "@angular/router";
+import {ActivatedRoute, Router, RouterModule} from "@angular/router";
 import {MatSortModule} from "@angular/material/sort";
+import {ApiServices} from "../../services/api.services";
 
 @Component({
   selector: 'app-lista-caixa',
@@ -24,7 +25,8 @@ export class ListaCaixaComponent {
   displayedColumns: string[] = ['dataAbertura', 'dataFechamento', 'valorInicial', 'valorTotal', 'status', 'acoes'];
 
   @ViewChild('paginator', { static: true }) paginator!: MatPaginator;
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private matPaginatorIntl: MatPaginatorIntl) {
+  constructor(private http: HttpClient, private cdr: ChangeDetectorRef, private matPaginatorIntl: MatPaginatorIntl,
+              private service: ApiServices, private router: Router) {
     this.matPaginatorIntl.itemsPerPageLabel = 'Itens por página:';
     this.matPaginatorIntl.nextPageLabel = 'Próxima página';
     this.matPaginatorIntl.previousPageLabel = 'Página anterior';
@@ -56,14 +58,13 @@ export class ListaCaixaComponent {
     }, error => console.error(error));
   }
 
-  excluirCaixa(id: number) {
-    this.http.post(this.baseUrl + "api/Caixa/Deletar", id).subscribe(data => {
-      this.carregarCaixas();
-    }, error => console.error(error));
+  visualizarCaixa(caixa: Caixa){
+    this.service.setCaixa(caixa);
+    this.router.navigate(['/../cadastroCaixa'])
   }
 
-  fecharCaixa(id: number) {
-    this.http.post(this.baseUrl + "api/Caixa/FechaCaixa", id).subscribe(data => {
+  excluirCaixa(id: number) {
+    this.http.post(this.baseUrl + "api/Caixa/Deletar", id).subscribe(data => {
       this.carregarCaixas();
     }, error => console.error(error));
   }

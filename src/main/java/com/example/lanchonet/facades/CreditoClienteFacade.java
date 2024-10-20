@@ -28,6 +28,15 @@ public class CreditoClienteFacade extends AbstractFacade<CreditoCliente, Long> {
         return resultados.isEmpty() ? null : resultados.get(0);
     }
 
+    @Transactional
+    public CreditoCliente recuperaCreditoPorId(Long id) throws NoResultException {
+        List<CreditoCliente> resultados = entityManager.createQuery("from CreditoCliente cc where cc.id = :id", CreditoCliente.class)
+                .setParameter("id", id)
+                .getResultList();
+
+        return resultados.isEmpty() ? null : resultados.get(0);
+    }
+
     public List<CreditoClienteDto> findAllDto(){
         return entityManager.createQuery("SELECT new com.example.lanchonet.dtos.CreditoClienteDto(" +
                 "c.pessoa.id," +

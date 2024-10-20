@@ -18,7 +18,7 @@ public class PagamentoDto {
 
     @Getter
     @Setter
-    private Long pessoaId;
+    private Long creditoId;
 
     @Getter
     @Setter

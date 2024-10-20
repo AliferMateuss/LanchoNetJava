@@ -1,0 +1,37 @@
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
+  <h1 class="text-center">Cadastro de Caixas</h1>
+  <div *ngIf="formCaixa != undefined" style="margin-top: 20px">
+    <form class="row g-3 needs-validation" (ngSubmit)="salvarCaixa()" [formGroup]="formCaixa" #formDir="ngForm">
+      <div>
+        <div class="row" style="margin-bottom:40px;">
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="dataAbertura" class="form-label">Data de Abertura</label>
+                <input type="date" class="form-control" id="dataAbertura" aria-describedby="inputGroupPrepend"
+                       [(ngModel)]="caixa.dataAbertura" formControlName="dataAbertura" required>
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="valorInicial" class="form-label">Valor Inicial</label>
+                <input type="text" class="form-control" appImpedeColagem [(ngModel)]="caixa.valorInicial"
+                       formControlName="valorInicial" required prefix="R$" suffix=",00" mask="separator.2"
+                       thousandSeparator="." decimalMarker="," id="valorInicial" aria-describedby="inputGroupPrepend">
+                <div class="invalid-feedback">
+                  Campo obrigatório
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
+          <button class="btn btn-danger me-4" type="button" (click)="fecharModal()">Cancelar</button>
+          <button class="btn btn-primary" type="submit" (click)="salvarCaixa()">Salvar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

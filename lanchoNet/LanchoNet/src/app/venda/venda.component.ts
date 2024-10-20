@@ -133,6 +133,7 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
       this.primeiroStep.get('tipoPagamento')?.clearValidators();
       this.primeiroStep.get('tipoPagamento')?.reset();
       this.primeiroStep.get('tipoPagamento')?.updateValueAndValidity();
+      this.tipoPagamentoSelecionado = null;
     } else {
       this.primeiroStep.get('tipoPagamento')?.reset();
       this.primeiroStep.get('tipoPagamento')?.setValidators([Validators.required]);
@@ -270,15 +271,21 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
     return this.formatarValorParaExibicao(this.itensVenda.reduce((total, item) => total + item.subTotal, 0));
   }
 
+  carregarTiposPagamentos() {
+    this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
+      this.TiposPagamentos = data;
+    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+
+  }
+
   changeFormaPagamento() {
     this.tipoPagamentoSelecionado = this.primeiroStep.get('tipoPagamento')?.value;
     if (!this.tipoPagamentoSelecionado) {
       this.openDialog("Erro: ", "Erro ao selecionar tipo pagamento", "Ok", true);
-      console.log(this.primeiroStep.get('tipoPagamento')?.value);
       return;
     }
 
-    this.parcelar = this.tipoPagamentoSelecionado?.avista !== true;
+    this.parcelar = !this.tipoPagamentoSelecionado?.avista;
   }
 
   changeParcelas() {
@@ -336,13 +343,6 @@ export class VendaComponent implements AfterViewInit, OnInit, OnDestroy {
 
       },
       error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
-  }
-
-  carregarTiposPagamentos() {
-    this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
-      this.TiposPagamentos = data;
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
-
   }
 
   calcularValorVendaJuros(): number {

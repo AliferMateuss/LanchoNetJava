@@ -1,5 +1,6 @@
 package com.example.lanchonet.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class Produto {
     @Setter
     private BigDecimal precoCompra;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne
@@ -45,11 +47,13 @@ public class Produto {
     @Column(columnDefinition = "Text")
     private String imagem;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ItensCompra> itensCompras;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -43,10 +43,10 @@
           <ng-container matColumnDef="Botoes">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let conta">
-              <button *ngIf="conta.status !== 'Fechada'" (click)="baixaTotal(conta)" class="btn btn-outline-primary"
+              <button *ngIf="conta.status !== 'FECHADA'" (click)="baixaTotal(conta)" class="btn btn-outline-primary"
                       type="button" style="margin-right:8px"> Dar baixa <i class="bi bi-cash"
                                                                            style="margin-left:3px"></i></button>
-              <button *ngIf="conta.status !== 'Fechada'" (click)="baixaParcial(conta)" class="btn btn-outline-warning"
+              <button *ngIf="conta.status !== 'FECHADA'" (click)="baixaParcial(conta)" class="btn btn-outline-warning"
                       type="button" style="margin-right: 8px"> Baixa parcial <i class="bi bi-list"
                                                                                 style="margin-left:3px"> </i></button>
               <button (click)="excluir(conta.id)" class="btn btn-outline-danger" type="button"> Excluir <i
@@ -76,16 +76,32 @@
     <div *ngIf="contaAPagar">
       <div class="modal-header">
         <h4 class="modal-title">Conta Nº- {{ contaAPagar.id }} </h4>
-        <button type="button" class="close" (click)="modalBaixa.dismiss('Cross click')">
+        <button type="button" class="btn-close" (click)="modalBaixa.dismiss('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-input" style="margin-bottom:10px">
-          <label>Quantidade a ser paga:</label>
-          <input type="text" name="preco" [(ngModel)]="valorAbate" currencyMask
-                 [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}">
-        </div>
+        <form>
+          <div *ngIf="mostrarMensagem" class="alert alert-danger" role="alert">
+            <h5>{{ tituloMensagem }}</h5>
+            <p>{{ textoMensagem }}</p>
+          </div>
+
+          <div class="form-input" style="margin-bottom:10px">
+            <label class="form-label">Quantidade a ser paga:</label>
+            <input  type="text" name="preco" [(ngModel)]="valorAbate" currencyMask
+                   class="form-control" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}">
+          </div>
+
+          <div class="form-input" style="margin-bottom:10px">
+            <label>Selecione a forma de pagamento:</label>
+            <ng-select [(ngModel)]="tipoPagamentoSelecionado" name="pgto" id="pgto">
+              <ng-option *ngFor="let tp of TiposPagamentos" [value]="tp"
+                         (click)="selecionaFormaPagamento(tp)"> {{ tp.nome }}
+              </ng-option>
+            </ng-select>
+          </div>
+        </form>
         <div style="display:flex; width:auto; justify-content:center; align-content:center;">
           <button class="btn btn-secundary" type="button" (click)="abaterValor()">Dar Baixa</button>
         </div>

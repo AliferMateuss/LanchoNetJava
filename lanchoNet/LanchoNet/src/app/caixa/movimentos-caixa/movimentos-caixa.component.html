@@ -1,0 +1,65 @@
+<div style="padding: 10px 30px 0px 30px;">
+  <h1 class="text-center">Detalhes do Caixa</h1>
+
+  <div *ngIf="caixa">
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <label for="dataAbertura" class="form-label">Data de Abertura</label>
+        <input type="text" class="form-control" id="dataAbertura" [value]="caixa.dataAbertura | date" readonly>
+      </div>
+      <div class="col-md-6">
+        <label for="valorTotal" class="form-label">Valor Total</label>
+        <input type="text" class="form-control" id="valorTotal" [value]="caixa.valorTotal | currency:'BRL'" readonly>
+      </div>
+    </div>
+  </div>
+
+  <mat-table class="mat-elevation-z8" [dataSource]="movimentosCaixa" aria-labelledby="tableLabel" matSort>
+    <ng-container matColumnDef="dataMovimento">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Data </mat-header-cell>
+      <mat-cell *matCellDef="let movimento"> {{ movimento.dataMovimento | date }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tipoPagamento">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pagamento </mat-header-cell>
+      <mat-cell *matCellDef="let movimento"> {{ movimento.tipoPagamentoNome  }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="valor">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Valor </mat-header-cell>
+      <mat-cell *matCellDef="let movimento"> {{ movimento.valor | currency:'BRL' }} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="tipoMovimento">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Movimento </mat-header-cell>
+      <mat-cell *matCellDef="let movimento">
+        <button [ngClass]="getColor(movimento.tipoMovimento)">
+          <i [ngClass]="getIconClass(movimento.tipoMovimento)"
+             matTooltip="{{ getMovimentoDescricao(movimento.tipoMovimento) }}">
+
+          </i>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+    <tr class="mat-row noDataRow" *matNoDataRow>
+      <td class="mat-cell" colspan="4">Nenhum movimento encontrado!</td>
+    </tr>
+  </mat-table>
+  <br/>
+  <br/>
+  <div class="total-box" style="display: flex; justify-content: center; gap:15px;">
+    <button class="btn btn-outline-success" disabled>
+      <h5>Valor entrada: {{ valorEntrada | currency:'BRL' }}</h5>
+    </button>
+    <button class="btn btn-outline-warning" disabled >
+      <h5>Valor fiado: {{ valorFiado | currency:'BRL' }}</h5>
+    </button>
+    <button class="btn btn-outline-danger" disabled>
+      <h5>Valor saída: {{ valorSaida | currency:'BRL' }}</h5>
+    </button>
+  </div>
+</div>

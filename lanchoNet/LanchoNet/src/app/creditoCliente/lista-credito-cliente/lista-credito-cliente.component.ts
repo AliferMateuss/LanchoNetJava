@@ -62,6 +62,6 @@ export class ListaCreditoClienteComponent {
 class CreditoCliente {
   idCliente!: number;
   nome!: string;
-  idCredito!: string;
+  idCredito!: number;
   valorTotal!: string;
 }

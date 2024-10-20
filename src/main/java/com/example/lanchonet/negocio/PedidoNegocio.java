@@ -290,7 +290,7 @@ public class PedidoNegocio {
     }
 
     private void setUsuario(Pedido pedido) throws Exception {
-        pedido.setUsuarioId(1L);
+        pedido.setUsuarioId(3L);
         if (pedido.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(pedido.getUsuarioId());
             if (usuario == null) {

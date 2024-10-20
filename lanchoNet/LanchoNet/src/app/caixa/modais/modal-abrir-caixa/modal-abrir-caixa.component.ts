@@ -1,24 +1,22 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
-import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxMaskDirective } from "ngx-mask";
-import { NgSelectModule } from "@ng-select/ng-select";
-import {ModalComponent} from "../../modal/modal.component";
-import {ApiServices} from "../../services/api.services";
+import {Component, TemplateRef, ViewChild} from '@angular/core';
+import {CommonModule, NgIf} from "@angular/common";
+import {NgxMaskDirective} from "ngx-mask";
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {Select2Module} from "ng-select2-component";
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {ModalComponent} from "../../../modal/modal.component";
+import {NgSelectModule} from "@ng-select/ng-select";
 
 @Component({
-  selector: 'app-cadastro-caixa',
+  selector: 'app-modal-abrir-caixa',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxMaskDirective, NgSelectModule, RouterLink],
-  templateUrl: './cadastro-caixa.component.html',
-  styleUrl: './cadastro-caixa.component.css'
+  templateUrl: './modal-abrir-caixa.component.html',
+  styleUrl: './modal-abrir-caixa.component.css'
 })
-
-export class CadastroCaixaComponent {
+export class ModalAbrirCaixaComponent {
   baseUrl: string = 'http://localhost:8080/';
   caixa: Caixa = new Caixa();
   formCaixa?: FormGroup;
@@ -27,18 +25,12 @@ export class CadastroCaixaComponent {
   @ViewChild('modalResposta') modalResposta!: TemplateRef<any>;
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private dialog: MatDialog, private router: Router,
-              private service: ApiServices) { }
+              private dialogRef: MatDialogRef<ModalAbrirCaixaComponent>) { }
 
   ngOnInit() {
-    this.caixa = this.service.getCaixa();
-
     this.formCaixa = new FormGroup({
       dataAbertura: new FormControl(this.caixa.dataAbertura, [Validators.required]),
-      valorInicial: new FormControl(this.caixa.valorInicial, [Validators.required]),
-      ...(this.ehAlteracao ? {
-        dataFechamento: new FormControl(this.caixa.dataFechamento),
-        valorTotal: new FormControl(this.caixa.valorTotal)
-      } : {})
+      valorInicial: new FormControl(this.caixa.valorInicial, [Validators.required])
     });
   }
 
@@ -47,9 +39,6 @@ export class CadastroCaixaComponent {
       panelClass: 'modalClass',
       hasBackdrop: true,
       data: { titulo: titulo, mensagem: mensagem, botao: botao, erro: erro }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (!erro) this.router.navigate(['/../listaCaixas']);
     });
   }
 
@@ -63,6 +52,10 @@ export class CadastroCaixaComponent {
         this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
       }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
     }
+  }
+
+  fecharModal(){
+    this.dialogRef.close();
   }
 }
 

@@ -1,5 +1,7 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.ContasPagarDto;
+import com.example.lanchonet.dtos.ContasReceberDto;
 import com.example.lanchonet.entidades.ContasAPagar;
 import com.example.lanchonet.entidades.ContasAReceber;
 import com.example.lanchonet.entidades.TipoPagamento;
@@ -25,12 +27,16 @@ public class ContaAPagarNegocio {
     private TipoPagamentoFacade tipoPagamentoFacade;
 
 
-    public void baixar(ContasAPagar conta) {
+    public void baixar(ContasPagarDto conta) {
         try {
             ContasAPagar contaSalva = facade.findById(conta.getId());
+            contaSalva.setTipoPagamentoId(conta.getTipoPagamentoId());
+            contaSalva.setCompraId(conta.getCompraId());
             setTipoPagamento(contaSalva);
+
             if(conta.getValor().equals(BigDecimal.ZERO)){
                 contaSalva.setStatus(StatusConta.FECHADA);
+                contaSalva.setValor(conta.getValor());
             } else {
                 contaSalva.setValor(conta.getValor());
                 contaSalva.setStatus(StatusConta.PARCIAL);
@@ -52,8 +58,8 @@ public class ContaAPagarNegocio {
         return facade.findById(id);
     }
 
-    public List<ContasAPagar> buscarContaAPagar() {
-        return facade.findAll();
+    public List<ContasPagarDto> buscarContaAPagar() {
+        return facade.findAllDto();
     }
 
     public void excluirContaAReceber(ContasAPagar contasAPagar) {
@@ -71,6 +77,8 @@ public class ContaAPagarNegocio {
                 throw new Exception("Tipo pagamento não encontrado!");
             }
             conta.setTipoPagamento(tp);
+        } else {
+            throw  new Exception("Tipo Pagamento não informado!");
         }
     }
 }

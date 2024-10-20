@@ -127,7 +127,7 @@ public class CompraNegocio {
     }
 
     private void setUsuario(Compra compra)throws Exception{
-        compra.setUsuarioId(1L);
+        compra.setUsuarioId(3L);
         if(compra.getUsuarioId() != null){
             Usuario usuario = usuarioFacade.findById(compra.getUsuarioId());
             if(usuario == null){

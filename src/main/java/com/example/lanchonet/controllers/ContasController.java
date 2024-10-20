@@ -1,5 +1,7 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.ContasPagarDto;
+import com.example.lanchonet.dtos.ContasReceberDto;
 import com.example.lanchonet.entidades.ContasAPagar;
 import com.example.lanchonet.entidades.ContasAReceber;
 import com.example.lanchonet.entidades.Mesa;
@@ -23,12 +25,12 @@ public class ContasController {
     private ContaAReceberNegocio contaAReceberNegocio;
 
     @PostMapping("/BaixarContasAPagar")
-    public void baixar(@RequestBody ContasAPagar conta){
+    public void baixar(@RequestBody ContasPagarDto conta){
         contaAPagarNegocio.baixar(conta);
     }
 
     @GetMapping("/RecuperarContasPagar")
-    public List<ContasAPagar> RecuperarContasPagar(){
+    public List<ContasPagarDto> RecuperarContasPagar(){
         return contaAPagarNegocio.buscarContaAPagar();
     }
 
@@ -48,12 +50,12 @@ public class ContasController {
     }
 
     @PostMapping("/BaixarContasAReceber")
-    public void baixar(@RequestBody ContasAReceber conta){
+    public void baixar(@RequestBody ContasReceberDto conta){
         contaAReceberNegocio.baixar(conta);
     }
 
     @GetMapping("/RecuperarContasReceber")
-    public List<ContasAReceber> RecuperarContaReceber(){
+    public List<ContasReceberDto> RecuperarContaReceber(){
         return contaAReceberNegocio.buscarContaARecebers();
     }
 
