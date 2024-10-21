@@ -1,10 +1,8 @@
 package com.example.lanchonet.facades;
 
 import com.example.lanchonet.dtos.CreditoClienteDto;
-import com.example.lanchonet.entidades.Caixa;
-import com.example.lanchonet.entidades.CreditoCliente;
-import com.example.lanchonet.entidades.Pessoa;
-import com.example.lanchonet.entidades.Venda;
+import com.example.lanchonet.dtos.FiltroDto;
+import com.example.lanchonet.entidades.*;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -44,6 +42,35 @@ public class CreditoClienteFacade extends AbstractFacade<CreditoCliente, Long> {
                 "c.id," +
                 "c.valorTotal" +
                 ") FROM CreditoCliente c", CreditoClienteDto.class).getResultList();
+    }
+
+    @Transactional
+    public List<CreditoClienteDto> creditoRel(FiltroDto filtro){
+
+        String hql = "SELECT new com.example.lanchonet.dtos.CreditoClienteDto(" +
+                "                c.pessoa.id," +
+                "                c.pessoa.nome," +
+                "                c.id,"  +
+                "                c.valorTotal" +
+                " ) FROM CreditoCliente c ";
+
+        String condicaoExtra = "WHERE 1=1 ";
+
+        if (filtro.getPessoaId() != null ) {
+            condicaoExtra += " AND c.pessoa.id = :id ";
+        }
+
+        if (condicaoExtra.equals("WHERE 1=1 ")) {
+            condicaoExtra = "";
+        }
+
+        TypedQuery<CreditoClienteDto> query = entityManager.createQuery(hql + condicaoExtra, CreditoClienteDto.class);
+
+        if (filtro.getPessoaId() != null ) {
+            query.setParameter("id", filtro.getPessoaId());
+        }
+
+        return query.getResultList();
     }
 
 }

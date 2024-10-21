@@ -5,6 +5,9 @@
 @import "bootstrap/dist/css/bootstrap.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 @import "@ng-select/ng-select/themes/default.theme.css";
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+
 
 a {
   color: #0366d6;

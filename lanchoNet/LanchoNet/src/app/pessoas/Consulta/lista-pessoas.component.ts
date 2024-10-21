@@ -80,6 +80,19 @@ export class ListaPessoasComponent {
     }
   }
 
+  montatipoPessoa(pessoa: Pessoa): string {
+    var tipo: string[] = [];
+
+    if (pessoa.cliente)
+      tipo.push('Cliente');
+    if (pessoa.fornecedor)
+      tipo.push('Fornecedor');
+    if (pessoa.funcionario)
+      tipo.push('Funcionario');
+
+    return tipo.join(' | ');
+  }
+
 
   ngAfterViewInit() {
   }
@@ -140,18 +153,7 @@ export class ListaPessoasComponent {
     return true;
   }
 
-  montatipoPessoa(pessoa: Pessoa): string {
-    var tipo: string[] = [];
 
-    if (pessoa.cliente)
-      tipo.push('Cliente');
-    if (pessoa.fornecedor)
-      tipo.push('Fornecedor');
-    if (pessoa.funcionario)
-      tipo.push('Funcionario');
-
-    return tipo.join(' | ');
-  }
 
   pageChangeEvent(event: PageEvent) {
     this.pageIndex = event.pageIndex;

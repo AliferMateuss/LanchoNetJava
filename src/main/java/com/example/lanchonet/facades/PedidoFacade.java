@@ -1,10 +1,13 @@
 package com.example.lanchonet.facades;
 
+import com.example.lanchonet.dtos.FiltroDto;
 import com.example.lanchonet.dtos.ItemPedidoDto;
 import com.example.lanchonet.dtos.PedidoDto;
+import com.example.lanchonet.entidades.Compra;
 import com.example.lanchonet.entidades.ItensPedido;
 import com.example.lanchonet.entidades.Pedido;
 import com.example.lanchonet.entidades.Venda;
+import jakarta.persistence.TypedQuery;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
@@ -53,5 +56,28 @@ public class PedidoFacade extends AbstractFacade<Pedido, Long> {
                 "i.produto.id," +
                 "i.produto.nome" +
                 ") from ItensPedido i WHERE i.pedido.id = :id", ItemPedidoDto.class).setParameter("id", id).getResultList();
+    }
+
+    public List<Pedido> pedidosRel(FiltroDto filtro) {
+        String hql = "SELECT p FROM Pedido p LEFT JOIN p.pessoa pessoa ";
+
+        String condicaoExtra = "WHERE 1=1 ";
+
+        if (filtro.getDataFim() != null && filtro.getDataInicio() != null) {
+            condicaoExtra += " AND p.dataPedido BETWEEN :dataInicio AND :dataFim ";
+        }
+
+        if (condicaoExtra.equals("WHERE 1=1 ")) {
+            condicaoExtra = "";
+        }
+
+        TypedQuery<Pedido> query = entityManager.createQuery(hql + condicaoExtra, Pedido.class);
+
+        if (filtro.getDataFim() != null && filtro.getDataInicio() != null) {
+            query.setParameter("dataInicio", filtro.getDataInicio());
+            query.setParameter("dataFim", filtro.getDataFim());
+        }
+
+        return query.getResultList();
     }
 }

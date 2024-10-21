@@ -17,6 +17,10 @@ public class ProdutoDto {
 
     @Getter
     @Setter
+    private String categoriaNome;
+
+    @Getter
+    @Setter
     private BigDecimal preco;
 
     @Getter
@@ -27,8 +31,9 @@ public class ProdutoDto {
     @Setter
     private Integer quantidade;
 
-    public ProdutoDto(Long id, String nome, BigDecimal preco, BigDecimal precoCompra, Integer quantidade) {
+    public ProdutoDto(Long id, String nome, String categoriaNome, BigDecimal preco, BigDecimal precoCompra, Integer quantidade) {
         this.id = id;
+        this.categoriaNome = categoriaNome;
         this.nome = nome;
         this.preco = preco;
         this.precoCompra = precoCompra;

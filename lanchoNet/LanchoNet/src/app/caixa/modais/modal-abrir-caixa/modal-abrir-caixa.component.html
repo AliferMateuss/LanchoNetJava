@@ -1,10 +1,10 @@
 <div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
-  <h1 class="text-center">Cadastro de Caixas</h1>
+  <h1 class="text-center">Abrir caixa</h1>
   <div *ngIf="formCaixa != undefined" style="margin-top: 20px">
     <form class="row g-3 needs-validation" (ngSubmit)="salvarCaixa()" [formGroup]="formCaixa" #formDir="ngForm">
       <div>
         <div class="row" style="margin-bottom:40px;">
-          <div class="col-md-8">
+          <div class="col-md-12">
             <div class="row">
               <div class="col-md-6">
                 <label for="dataAbertura" class="form-label">Data de Abertura</label>
@@ -29,7 +29,7 @@
 
         <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
           <button class="btn btn-danger me-4" type="button" (click)="fecharModal()">Cancelar</button>
-          <button class="btn btn-primary" type="submit" (click)="salvarCaixa()">Salvar</button>
+          <button class="btn btn-primary" id="salvarBtn" type="submit" (click)="salvarCaixa()">Salvar</button>
         </div>
       </div>
     </form>

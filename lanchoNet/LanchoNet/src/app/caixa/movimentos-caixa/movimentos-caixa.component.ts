@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -7,9 +7,9 @@ import {
   MatTable,
   MatTableDataSource
 } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import {MatPaginator} from '@angular/material/paginator';
+import {HttpClient} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {CurrencyPipe, DatePipe, NgClass, NgForOf, NgIf, NgStyle} from "@angular/common";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import {MatSort} from "@angular/material/sort";
@@ -20,6 +20,9 @@ import {Select2Module} from "ng-select2-component";
 import {MatStepLabel} from "@angular/material/stepper";
 import {MatLabel} from "@angular/material/form-field";
 import {MatTooltip} from "@angular/material/tooltip";
+import {ModalComponent} from "../../modal/modal.component";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {ModalAbrirCaixaComponent} from "../modais/modal-abrir-caixa/modal-abrir-caixa.component";
 
 @Component({
   selector: 'app-movimentos-caixa',
@@ -58,20 +61,25 @@ import {MatTooltip} from "@angular/material/tooltip";
   templateUrl: './movimentos-caixa.component.html',
   styleUrl: './movimentos-caixa.component.css'
 })
-export class MovimentosCaixaComponent {
+export class MovimentosCaixaComponent implements OnInit, OnDestroy{
   caixa!: CaixaDto;
   movimentosCaixa: MovimentoCaixaDto[] = [];
   dataSourceMovimentos = new MatTableDataSource(this.movimentosCaixa);
   displayedColumns: string[] = ['dataMovimento', 'tipoPagamento', 'valor', 'tipoMovimento'];
-   valorFiado = 0;
-   valorEntrada = 0;
-   valorSaida = 0;
+  valorFiado = 0;
+  valorEntrada = 0;
+  valorSaida = 0;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     this.carregarMovimentosCaixa();
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll(); // Fecha todos os diálogos ao destruir o componente
   }
 
   carregarMovimentosCaixa() {
@@ -82,13 +90,33 @@ export class MovimentosCaixaComponent {
       this.dataSourceMovimentos.paginator = this.paginator;
       this.calcularTotalCaixa();
     }, error => {
-      console.error('Erro ao carregar movimentos do caixa', error);
+      const dialogRef = this.dialog.open(ModalComponent, {
+        panelClass: 'modalClass',
+        hasBackdrop: true,
+        data: {titulo: "Atenção", mensagem: "Não foi encontrado nenhum caixa aberto! Deseja abrir um?", botao: "Sim", erro: false}
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        const otherDialog = this.dialog.open(ModalAbrirCaixaComponent, {
+          panelClass: 'modalClass',
+          hasBackdrop: true
+        });
+        otherDialog.afterClosed().subscribe(()=>{
+          this.carregarMovimentosCaixa();
+        })
+      });
     });
   }
 
   fecharCaixa(id: number) {
-    this.http.post('http://localhost:8080/api/Caixa/FechaCaixa', id).subscribe(data => {
-    }, error => console.error(error));
+    const dialogRef = this.dialog.open(ModalComponent, {
+      panelClass: 'modalClass',
+      hasBackdrop: true,
+      data: {titulo: "Atenção", mensagem: "Deseja fechar o caixa", botao: "Sim", erro: false}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      this.http.post('http://localhost:8080/api/Caixa/FechaCaixa', id).subscribe(data => {
+      }, error => console.error(error));
+    });
   }
 
   calcularTotalCaixa() {
@@ -109,6 +137,15 @@ export class MovimentosCaixaComponent {
       }
     })
   }
+
+  openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {
+    const dialogRef = this.dialog.open(ModalComponent, {
+      panelClass: 'modalClass',
+      hasBackdrop: true,
+      data: {titulo: titulo, mensagem: mensagem, botao: botao, erro: erro}
+    });
+  }
+
 
   getIconClass(tipoMovimento: string): string {
     switch (tipoMovimento) {

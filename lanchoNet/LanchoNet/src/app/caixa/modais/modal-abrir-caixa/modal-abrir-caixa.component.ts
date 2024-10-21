@@ -47,11 +47,18 @@ export class ModalAbrirCaixaComponent {
       const form = document.querySelector('.needs-validation') as HTMLFormElement;
       form.classList.add('was-validated');
       return;
-    } else {
-      this.http.post<any>(this.baseUrl + 'api/Caixa/AbreCaixa', this.caixa).subscribe(data => {
-        this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
-      }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
     }
+
+    const salvarBtn = document.querySelector('#salvarBtn') as HTMLButtonElement;
+    salvarBtn.disabled = true; // Desabilitar o botão
+
+    this.http.post<any>(this.baseUrl + 'api/Caixa/AbreCaixa', this.caixa).subscribe(data => {
+      this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
+      salvarBtn.disabled = false; // Reabilitar o botão
+    }, error => {
+      this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true);
+      salvarBtn.disabled = false; // Reabilitar o botão após erro
+    });
   }
 
   fecharModal(){

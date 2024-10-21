@@ -1,4 +1,4 @@
-<div style="padding: 10px 30px 0px 30px;">
+<div style="padding: 5px 30px 0px 30px;">
   <h1 class="text-center">Detalhes do Caixa</h1>
 
   <div *ngIf="caixa">
@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <mat-table class="mat-elevation-z8" [dataSource]="movimentosCaixa" aria-labelledby="tableLabel" matSort>
+  <mat-table class="mat-elevation-z8" [dataSource]="movimentosCaixa" aria-labelledby="tableLabel" matSort ngSkipHydration="">
     <ng-container matColumnDef="dataMovimento">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Data </mat-header-cell>
       <mat-cell *matCellDef="let movimento"> {{ movimento.dataMovimento | date }} </mat-cell>
@@ -60,6 +60,11 @@
     </button>
     <button class="btn btn-outline-danger" disabled>
       <h5>Valor saída: {{ valorSaida | currency:'BRL' }}</h5>
+    </button>
+  </div>
+  <div style="display: flex; justify-content: end">
+    <button class="btn btn-primary" (click)="fecharCaixa(caixa.id)">
+      Fechar caixa <i class="bi bi-lock-fill"></i>
     </button>
   </div>
 </div>

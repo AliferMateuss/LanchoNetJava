@@ -1,9 +1,6 @@
 package com.example.lanchonet.facades;
 
-import com.example.lanchonet.dtos.ItemPedidoDto;
-import com.example.lanchonet.dtos.ItemVendaDto;
-import com.example.lanchonet.dtos.PedidoDto;
-import com.example.lanchonet.dtos.VendaDto;
+import com.example.lanchonet.dtos.*;
 import com.example.lanchonet.entidades.Usuario;
 import com.example.lanchonet.entidades.Venda;
 import jakarta.persistence.TypedQuery;
@@ -11,6 +8,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -37,6 +36,33 @@ public class VendaFacade extends AbstractFacade<Venda, Long> {
                 "v.valorTotal) " +
                 "FROM Venda v LEFT JOIN v.pessoa pessoa " +
                 "WHERE v.statusVenda = 'FECHADA'", VendaDto.class).getResultList();
+    }
+
+    public List<Venda> vendasRel(FiltroDto filtro) {
+        String hql = "SELECT v FROM Venda v LEFT JOIN v.pessoa pessoa ";
+
+        String condicaoExtra = "WHERE 1=1 ";
+
+        if (filtro.getDataFim() != null && filtro.getDataInicio() != null) {
+            condicaoExtra += " AND v.dataVenda BETWEEN :dataInicio AND :dataFim ";
+        }
+
+        if (filtro.getVendaBalcao()) {
+            condicaoExtra += " AND v.vendaBalcao = true ";
+        }
+
+        if (condicaoExtra.equals("WHERE 1=1 ")) {
+            condicaoExtra = "";
+        }
+
+        TypedQuery<Venda> query = entityManager.createQuery(hql + condicaoExtra, Venda.class);
+
+        if (filtro.getDataFim() != null && filtro.getDataInicio() != null) {
+            query.setParameter("dataInicio", filtro.getDataInicio());
+            query.setParameter("dataFim", filtro.getDataFim());
+        }
+
+        return query.getResultList();
     }
 
     public List<ItemVendaDto> recuperItensVenda(Long id){

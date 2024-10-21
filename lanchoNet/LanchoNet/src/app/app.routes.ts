@@ -37,6 +37,15 @@ import {ComprasFechadasViewComponent} from "./compras-fechadas/compras-fechadas-
 import {ListaCreditoClienteComponent} from "./creditoCliente/lista-credito-cliente/lista-credito-cliente.component";
 import {CreditoClienteComponent} from "./creditoCliente/credito-cliente/credito-cliente.component";
 import {CaixaComponent} from "./caixa/caixa.component";
+import {RelVendaComponent} from "./relatorios/rel-venda/rel-venda.component";
+import {RelCompraComponent} from "./relatorios/rel-compra/rel-compra.component";
+import {RelPedidoComponent} from "./relatorios/rel-pedido/rel-pedido.component";
+import {RelCreditoComponent} from "./relatorios/rel-credito/rel-credito.component";
+import {RelPessoaComponent} from "./relatorios/rel-pessoa/rel-pessoa.component";
+import {RelProdutoComponent} from "./relatorios/rel-produto/rel-produto.component";
+import {RelUsuarioComponent} from "./relatorios/rel-usuario/rel-usuario.component";
+import {RelContasPagarComponent} from "./relatorios/rel-contas-pagar/rel-contas-pagar.component";
+import {RelContasReceberComponent} from "./relatorios/rel-contas-receber/rel-contas-receber.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: "/comandas", pathMatch: 'full' },
@@ -70,6 +79,15 @@ export const routes: Routes = [
   { path: 'listaCreditoCliente', component:  ListaCreditoClienteComponent},
   { path: 'creditoCliente', component:  CreditoClienteComponent},
   { path: 'caixa', component:  CaixaComponent},
+  { path: 'relatorioVendas', component:  RelVendaComponent},
+  { path: 'relatorioCompras', component:  RelCompraComponent},
+  { path: 'relatorioPedidos', component:  RelPedidoComponent},
+  { path: 'relatorioCredito', component:  RelCreditoComponent},
+  { path: 'relatorioPessoas', component:  RelPessoaComponent},
+  { path: 'relatorioProdutos', component:  RelProdutoComponent},
+  { path: 'relatorioUsuarios', component:  RelUsuarioComponent},
+  { path: 'relatorioContasPagar', component:  RelContasPagarComponent},
+  { path: 'relatorioContasReceber', component:  RelContasReceberComponent},
 ];
 
 export const appRoutingProviders = [

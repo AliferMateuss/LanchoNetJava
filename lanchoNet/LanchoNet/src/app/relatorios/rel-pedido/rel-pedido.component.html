@@ -1,0 +1,18 @@
+<div style="padding: 50px 50px 50px 50px;width: 100%;height: 90%;">
+  <h1 class="text-center" style=" margin-bottom: 60px; ">Relatório de Pedidos</h1>
+  <div class="container-fluid" style="display: flex; justify-content: center; flex-direction: column; max-width: 400px">
+    <mat-form-field>
+      <mat-label>Selecione o período</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate [(ngModel)]="this.objetoFiltro.dataInicio" placeholder="Start date">
+        <input matEndDate [(ngModel)]="this.objetoFiltro.dataFim" placeholder="End date">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <br/>
+
+    <br/>
+    <button class="btn btn-primary" (click)="geraRel()">Gerar relatório <i class="bi bi-file-earmark-pdf"></i> </button>
+  </div>
+</div>

@@ -29,6 +29,7 @@ public class CaixaNegocio {
     public void abreCaixa(Caixa caixa){
         caixa.setStatus(StatusCaixa.ABERTO);
         caixa.setDataAbertura(new Date());
+        caixa.setValorTotal(caixa.getValorInicial());
         facade.save(caixa);
     }
 
