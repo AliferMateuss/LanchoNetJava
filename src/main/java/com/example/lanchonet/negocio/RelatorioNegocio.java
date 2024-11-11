@@ -243,7 +243,9 @@ public class RelatorioNegocio {
                 Hibernate.initialize(usu.getPessoa());
                 Hibernate.initialize(usu.getGrupoUsuario());
                 relatorio.append(String.format("<tr><td>%s</td><td>%s</td><td>%s</td></tr>",
-                        usu.getUsuarioNome(), usu.getGrupoUsuario().getNome(), usu.getPessoa().getNome()));
+                        usu.getUsuarioNome(), usu.getGrupoUsuario().getNome(), usu.getPessoa().getNome() != null ?
+                                usu.getPessoa().getNome() : usu.getPessoa().getRazaoSocial() != null ?
+                                usu.getPessoa().getRazaoSocial() : "TESTE"));
             }
         }
 

@@ -38,7 +38,7 @@ public class Produto {
     @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
 
@@ -47,19 +47,8 @@ public class Produto {
     @Column(columnDefinition = "Text")
     private String imagem;
 
-    @JsonIgnore
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ItensCompra> itensCompras;
-
-    @JsonIgnore
-    @Getter
-    @Setter
-    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ItensVenda> itensVenda;
-
     @JsonProperty
+    @Transient
     @Getter
     @Setter
     private Long categoriaId;

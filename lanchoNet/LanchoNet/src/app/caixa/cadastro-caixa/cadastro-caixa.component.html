@@ -1,7 +1,7 @@
 <div style="padding: 50px 50px 50px 50px;width: 100%;height: 100%;">
   <h1 class="text-center">Cadastro de Caixas</h1>
-  <div *ngIf="formCaixa != undefined" style="margin-top: 20px">
-    <form class="row g-3 needs-validation" (ngSubmit)="salvarCaixa()" [formGroup]="formCaixa" #formDir="ngForm">
+  <div *ngIf="caixa != undefined" style="margin-top: 20px">
+    <form class="row g-3 needs-validation" #formDir="ngForm">
       <div>
         <div class="row" style="margin-bottom:40px;">
           <div class="col-md-8">
@@ -9,41 +9,87 @@
               <div class="col-md-6">
                 <label for="dataAbertura" class="form-label">Data de Abertura</label>
                 <input type="date" class="form-control" id="dataAbertura" aria-describedby="inputGroupPrepend"
-                       [(ngModel)]="caixa.dataAbertura" formControlName="dataAbertura" required>
+                       [(ngModel)]="caixa.dataAbertura" [ngModelOptions]="{standalone: true}">
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
               </div>
               <div class="col-md-6">
                 <label for="valorInicial" class="form-label">Valor Inicial</label>
-                <input type="text" class="form-control" appImpedeColagem [(ngModel)]="caixa.valorInicial"
-                       formControlName="valorInicial" required prefix="R$" suffix=",00" mask="separator.2"
-                       thousandSeparator="." decimalMarker="," id="valorInicial" aria-describedby="inputGroupPrepend">
+                <input type="text" class="form-control" appImpedeColagem [value]="caixa.valorInicial | currency:'BRL'"
+                       id="valorInicial" aria-describedby="inputGroupPrepend">
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
               </div>
             </div>
+            <div class="row">
 
-            <div class="row" *ngIf="ehAlteracao">
               <div class="col-md-6">
                 <label for="dataFechamento" class="form-label">Data de Fechamento</label>
                 <input type="date" class="form-control" id="dataFechamento" aria-describedby="inputGroupPrepend"
-                       [(ngModel)]="caixa.dataFechamento" formControlName="dataFechamento">
+                       [(ngModel)]="caixa.dataFechamento" [ngModelOptions]="{standalone: true}">
               </div>
               <div class="col-md-6">
                 <label for="valorTotal" class="form-label">Valor Total</label>
-                <input type="text" class="form-control" appImpedeColagem [(ngModel)]="caixa.valorTotal"
-                       formControlName="valorTotal" prefix="R$" suffix=",00" mask="separator.2" thousandSeparator="."
-                       decimalMarker="," id="valorTotal" aria-describedby="inputGroupPrepend">
+                <input type="text" class="form-control" appImpedeColagem [value]="caixa.valorTotal | currency:'BRL'"
+                       id="valorTotal" aria-describedby="inputGroupPrepend">
               </div>
             </div>
           </div>
         </div>
 
+        <mat-table class="mat-elevation-z8" [dataSource]="movimentosCaixa" aria-labelledby="tableLabel" matSort ngSkipHydration="">
+          <ng-container matColumnDef="dataMovimento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Data </mat-header-cell>
+            <mat-cell *matCellDef="let movimento"> {{ movimento.dataMovimento | date }} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="tipoPagamento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pagamento </mat-header-cell>
+            <mat-cell *matCellDef="let movimento"> {{ movimento.tipoPagamentoNome  }} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="valor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Valor </mat-header-cell>
+            <mat-cell *matCellDef="let movimento"> {{ movimento.valor | currency:'BRL' }} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="tipoMovimento">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Movimento </mat-header-cell>
+            <mat-cell *matCellDef="let movimento">
+              <button [ngClass]="getColor(movimento.tipoMovimento)">
+                <i [ngClass]="getIconClass(movimento.tipoMovimento)"
+                   matTooltip="{{ getMovimentoDescricao(movimento.tipoMovimento) }}">
+
+                </i>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+          <tr class="mat-row noDataRow" *matNoDataRow>
+            <td class="mat-cell" colspan="4">Nenhum movimento encontrado!</td>
+          </tr>
+        </mat-table>
+        <br/>
+        <br/>
+        <div class="total-box" style="display: flex; justify-content: center; gap:15px;">
+          <button class="btn btn-outline-success" disabled>
+            <h5>Valor entrada: {{ valorEntrada | currency:'BRL' }}</h5>
+          </button>
+          <button class="btn btn-outline-warning" disabled >
+            <h5>Valor fiado: {{ valorFiado | currency:'BRL' }}</h5>
+          </button>
+          <button class="btn btn-outline-danger" disabled>
+            <h5>Valor saída: {{ valorSaida | currency:'BRL' }}</h5>
+          </button>
+        </div>
+
         <div class="col-md-8 mx-auto" style="display: flex; justify-content: center; margin-top: 20px">
-          <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaCaixas']">Cancelar</button>
-          <button class="btn btn-primary" type="submit">Salvar</button>
+          <button class="btn btn-danger me-4" type="button" [routerLink]="['/../caixa']">Voltar</button>
         </div>
       </div>
     </form>

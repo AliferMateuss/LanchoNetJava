@@ -22,6 +22,16 @@ public class PessoaController {
         return pessoaNegocio.buscarPessoas();
     }
 
+    @GetMapping("/RecuperarFornecedores")
+    public List<PessoaDto> recuperarFornecedores(){
+        return pessoaNegocio.buscarFornecedores();
+    }
+
+    @GetMapping("/RecuperarClientes")
+    public List<PessoaDto> recuperarClientes(){
+        return pessoaNegocio.buscarClientes();
+    }
+
     @PostMapping("/SalvarPessoa")
     public void SalvarPessoa(@RequestBody Pessoa pessoa){
         pessoaNegocio.salvarPessoa(pessoa);

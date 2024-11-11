@@ -57,6 +57,11 @@ export class ComandasFechadasComponent implements OnInit{
     this.router.navigate(['/pedidoFechado']);
   }
 
+  atualizar(){
+    this.carregarPedidos();
+    this.cdr.detectChanges();
+  }
+
 }
 
 class Pedido {

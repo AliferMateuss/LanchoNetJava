@@ -9,6 +9,7 @@ import com.example.lanchonet.facades.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class CaixaNegocio {
     private VendaFacade vendaFacade;
     @Autowired
     private CompraFacade compraFacade;
+    @Autowired
+    private PedidoFacade pedidoFacade;
 
     private Caixa caixa;
 
@@ -39,6 +42,10 @@ public class CaixaNegocio {
 
             if(caixa == null){
                 throw new Exception("Caixa não encontrado");
+            }
+
+            if(pedidoFacade.verificaSeExistePedidosAbertos()){
+                throw new Exception("Existem pedidos abertos!");
             }
 
             caixa.setStatus(StatusCaixa.FECHADO);
@@ -75,11 +82,18 @@ public class CaixaNegocio {
         return dto;
     }
 
+    public CaixaDto retornaMovimentosPorId(Long id) {
+        CaixaDto dto = facade.recuperaCaixaPorId(id);
+        dto.setMovimentos(movimentoCaixaFacade.retornaMovimentoPorId(dto.getId()));
+        return dto;
+    }
+
     public void gerarMovimentacao(Venda venda){
         try {
             setCaixa();
             MovimentoCaixa movimentacao = new MovimentoCaixa();
             movimentacao.setVenda(venda);
+            movimentacao.setDataMovimento(new Date());
             venda.setMovimentoCaixa(movimentacao);
 
             if(venda.getVendaFiado())
@@ -92,6 +106,7 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
+            geraValorTotal();
             facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,6 +117,7 @@ public class CaixaNegocio {
         try {
             setCaixa();
             MovimentoCaixa movimentacao = new MovimentoCaixa();
+            movimentacao.setDataMovimento(new Date());
             movimentacao.setCompra(compra);
             compra.setMovimentoCaixa(movimentacao);
 
@@ -115,6 +131,7 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
+            geraValorTotal();
             facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -131,6 +148,7 @@ public class CaixaNegocio {
             if(venda == null)
                 throw new Exception("Venda não encontrada!");
 
+            movimentacao.setDataMovimento(new Date());
             movimentacao.setContasAReceber(conta);
             conta.setMovimentoCaixa(movimentacao);
             movimentacao.setTipoMovimento(TipoMovimentoCaixa.ENTRADA);
@@ -140,6 +158,7 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
+            geraValorTotal();
             facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -155,6 +174,7 @@ public class CaixaNegocio {
             if(compra == null)
                 throw new Exception("Compra não encontrada!");
 
+            movimentacao.setDataMovimento(new Date());
             movimentacao.setContasAPagar(conta);
             conta.setMovimentoCaixa(movimentacao);
             movimentacao.setTipoMovimento(TipoMovimentoCaixa.SAIDA);
@@ -163,10 +183,25 @@ public class CaixaNegocio {
             movimentacao.setCaixa(caixa);
 
             caixa.getMovimentos().add(movimentacao);
+            geraValorTotal();
             facade.save(caixa);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void geraValorTotal(){
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
+        for (MovimentoCaixa mov : caixa.getMovimentos()) {
+            if(mov.getTipoMovimento().equals(TipoMovimentoCaixa.ENTRADA)){
+                valorTotal = valorTotal.add(mov.getValor());
+            } else if (mov.getTipoMovimento().equals(TipoMovimentoCaixa.SAIDA)) {
+                valorTotal = valorTotal.subtract(mov.getValor());
+            }
+        }
+
+        caixa.setValorTotal(valorTotal);
     }
 
     public void apagarMovimentacaoVenda(Venda venda){

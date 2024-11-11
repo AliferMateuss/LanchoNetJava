@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import {NavMenuComponent} from "./nav-menu/nav-menu.component";
 import {MatTabGroup} from "@angular/material/tabs";
 
@@ -12,4 +12,10 @@ import {MatTabGroup} from "@angular/material/tabs";
 })
 export class AppComponent {
   title = 'LanchoNet';
+
+  constructor(private router : Router) {
+  }
+  ngOnInit() {
+    this.router.navigate(['/login']);
+  }
 }

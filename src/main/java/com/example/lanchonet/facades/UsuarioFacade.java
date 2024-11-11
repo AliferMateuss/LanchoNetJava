@@ -3,6 +3,7 @@ import com.example.lanchonet.dtos.FiltroDto;
 import com.example.lanchonet.dtos.ProdutoDto;
 import com.example.lanchonet.entidades.Produto;
 import com.example.lanchonet.entidades.Usuario;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +45,11 @@ public class UsuarioFacade extends AbstractFacade<Usuario, Long>{
         }
 
         return query.getResultList();
+    }
+
+    @Transactional
+    public Usuario recuperaPorLogin(String login) throws NoResultException {
+        return entityManager.createQuery("FROM Usuario u WHERE u.usuarioNome = :login", Usuario.class)
+                .setParameter("login", login).getSingleResult();
     }
 }

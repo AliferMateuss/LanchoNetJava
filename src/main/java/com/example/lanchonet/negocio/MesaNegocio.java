@@ -22,7 +22,7 @@ public class MesaNegocio {
     }
 
     public List<Mesa> buscarMesas() {
-        return facade.findAll();
+        return facade.recuperaMesasAbertas();
     }
 
     public void excluirMesa(Mesa mesa) {

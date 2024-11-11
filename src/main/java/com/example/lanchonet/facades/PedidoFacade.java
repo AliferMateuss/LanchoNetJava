@@ -11,6 +11,7 @@ import jakarta.persistence.TypedQuery;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository
@@ -32,6 +33,13 @@ public class PedidoFacade extends AbstractFacade<Pedido, Long> {
                 "FROM Pedido p LEFT JOIN p.pessoa pessoa " +
                 "WHERE p.statusPedido = 'ABERTO' ORDER BY p.id", PedidoDto.class).getResultList();
 
+    }
+
+    public Boolean verificaSeExistePedidosAbertos(){
+        Long result = entityManager.createQuery("SELECT COUNT(p.id) FROM Pedido p WHERE  p.statusPedido = 'ABERTO'"
+                , Long.class).getSingleResult();
+
+        return result.intValue() > 0;
     }
 
     public List<PedidoDto> pedidosFechados() {

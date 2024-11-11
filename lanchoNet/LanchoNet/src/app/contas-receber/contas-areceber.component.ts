@@ -144,12 +144,18 @@ export class ContasAReceberComponent {
     this.tipoPagamentoSelecionado = tp;
   }
 
-  formatarValorParaExibicao(valor: number): string {
+formatarValorParaExibicao(valor: number): string {
     const partes = valor.toString().split('.');
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    const parteDecimal = partes[1] || '00';
+    let parteDecimal = partes[1] || '00';
+
+    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+    if (parteDecimal.length === 1) {
+        parteDecimal += '0';
+    }
+
     return `R$ ${parteInteira},${parteDecimal}`;
-  }
+}
 
   reload() {
     this.modalService.dismissAll();
@@ -173,7 +179,7 @@ export class ContasAReceberComponent {
     });
     if (!erro) {
       dialogRef.afterClosed().subscribe(() => {
-        this.router.navigate(['/../']);
+        this.router.navigate(['/../comandas']);
       });
     }
   }

@@ -19,7 +19,7 @@ import { Subscription, interval } from 'rxjs';
 import {CommonModule, registerLocaleData} from '@angular/common';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import ptBr from '@angular/common/locales/pt';
-import {RouterModule} from "@angular/router";
+import {Router, RouterModule} from "@angular/router";
 import {MatSortModule} from "@angular/material/sort";
 import {NgOptionComponent, NgSelectComponent} from "@ng-select/ng-select";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -74,7 +74,8 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
     private modalService: NgbModal,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
+    private router: Router
   ) {
     this.compraForm = new FormGroup({
       fornecedorId: new FormControl('', [Validators.required]),
@@ -99,7 +100,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
   }
 
   carregarFornecedores() {
-    this.http.get<any[]>(this.baseUrl + 'api/Pessoas/RecuperarPessoas').subscribe(
+    this.http.get<any[]>(this.baseUrl + 'api/Pessoas/RecuperarFornecedores').subscribe(
       (data) => {
         this.Fornecedores = data;
       },
@@ -283,9 +284,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
 
     if (!erro) {
       dialogRef.afterClosed().subscribe(() => {
-        this.zone.run(() => {
-          location.reload();
-        });
+        this.router.navigate(['/../comandas']);
       });
     }
   }
@@ -305,12 +304,18 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  formatarValorParaExibicao(valor: number): string {
+formatarValorParaExibicao(valor: number): string {
     const partes = valor.toString().split('.');
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    const parteDecimal = partes[1] || '00';
+    let parteDecimal = partes[1] || '00';
+
+    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+    if (parteDecimal.length === 1) {
+        parteDecimal += '0';
+    }
+
     return `R$ ${parteInteira},${parteDecimal}`;
-  }
+}
 
   formToCompra(): void {
     this.compra.pessoaId = this.getFornecedorId();

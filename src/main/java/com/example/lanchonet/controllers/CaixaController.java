@@ -43,6 +43,11 @@ public class CaixaController {
         return caixaNegocio.retornaCaixaAberto();
     }
 
+    @PostMapping("/RetornaMovimentosPorId")
+    public CaixaDto rertornaMovimentosPorId(@RequestBody Long id){
+        return caixaNegocio.retornaMovimentosPorId(id);
+    }
+
     @PostMapping("/Deletar")
     public void Deletar(@RequestBody Long id){
         caixaNegocio.excluirCaixa(id);

@@ -1,4 +1,4 @@
-import {Component, TemplateRef, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Output, TemplateRef, ViewChild} from '@angular/core';
 import {CommonModule, NgIf} from "@angular/common";
 import {NgxMaskDirective} from "ngx-mask";
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -21,11 +21,9 @@ export class ModalAbrirCaixaComponent {
   caixa: Caixa = new Caixa();
   formCaixa?: FormGroup;
   ehAlteracao: boolean = false;
+  @Output() carregaMovimentos = new EventEmitter<void>();
 
-  @ViewChild('modalResposta') modalResposta!: TemplateRef<any>;
-
-  constructor(private http: HttpClient, private route: ActivatedRoute, private dialog: MatDialog, private router: Router,
-              private dialogRef: MatDialogRef<ModalAbrirCaixaComponent>) { }
+  constructor(private http: HttpClient, private route: ActivatedRoute, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit() {
     this.formCaixa = new FormGroup({
@@ -50,19 +48,14 @@ export class ModalAbrirCaixaComponent {
     }
 
     const salvarBtn = document.querySelector('#salvarBtn') as HTMLButtonElement;
-    salvarBtn.disabled = true; // Desabilitar o botão
+    salvarBtn.disabled = true;
 
     this.http.post<any>(this.baseUrl + 'api/Caixa/AbreCaixa', this.caixa).subscribe(data => {
-      this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
-      salvarBtn.disabled = false; // Reabilitar o botão
+      this.carregaMovimentos.emit();
     }, error => {
-      this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true);
-      salvarBtn.disabled = false; // Reabilitar o botão após erro
+      this.openDialog("Erro ao abrir caixa", error, "Voltar", true);
+      salvarBtn.disabled = false;
     });
-  }
-
-  fecharModal(){
-    this.dialogRef.close();
   }
 }
 

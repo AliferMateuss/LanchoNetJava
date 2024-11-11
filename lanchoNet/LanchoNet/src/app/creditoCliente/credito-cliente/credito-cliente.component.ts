@@ -172,12 +172,18 @@ export class CreditoClienteComponent {
     }
   }
 
-  formatarValorParaExibicao(valor: number): string {
+formatarValorParaExibicao(valor: number): string {
     const partes = valor.toString().split('.');
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    const parteDecimal = partes[1] || '00';
+    let parteDecimal = partes[1] || '00';
+
+    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+    if (parteDecimal.length === 1) {
+        parteDecimal += '0';
+    }
+
     return `R$ ${parteInteira},${parteDecimal}`;
-  }
+}
 
   salvarPagamento(){
     this.pagamentoCredito = new PagamentoCredito();
@@ -186,8 +192,11 @@ export class CreditoClienteComponent {
     this.pagamentoCredito.tipoPagamentoId = this.tipoPagamentoSelecionado?.id;
     this.pagamentoCredito.creditoId = this.creditoCliente.idCredito;
     this.http.post('http://localhost:8080/api/CreditoCliente/GerarPagamentoCredito', this.pagamentoCredito).subscribe(data => {
-      this.modalService.dismissAll();
-      this.carregarTiposPagamentos();
+        this.modalService.dismissAll();
+        if (this.creditoCliente.idCredito) {
+          this.carregarMovimentosCredito(this.creditoCliente.idCredito);
+          this.carregarPagamentosCredito(this.creditoCliente.idCredito);
+        }
     }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
   }
 
@@ -206,7 +215,7 @@ export class CreditoClienteComponent {
     });
     if (!erro) {
       dialogRef.afterClosed().subscribe(() => {
-        this.router.navigate(['/../']);
+        this.router.navigate(['/../comandas']);
       });
     }
   }

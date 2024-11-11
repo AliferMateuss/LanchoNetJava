@@ -21,15 +21,56 @@ code {
   color: #e01a76;
 }
 
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+.body-blue{
+  background-color: #2E2E2E;
 }
 
-.mat-mdc-header-row {
+body{
+  background-color: #F5F5F5;
+}
+
+
+.btn-primary {
+  color: #F5F5F5;
+  background-color: #1E4D5B;
+  border-color: #1E4D5B;
+}
+
+.btn-primary:hover {
+  color: #F5F5F5;
+  background-color: #2A6E7B;
+  border-color: #2A6E7B;
+}
+
+.btn-primary:disabled {
+  color: #F5F5F5;
+  background-color: #1E4D5B;
+  border-color: #1E4D5B;
+}
+
+.btn-danger{
+  color: #F5F5F5;
+  background-color: #8B0000;
+  border-color: #8B0000;
+}
+
+.btn-danger:disabled{
+  color: #F5F5F5;
+  background-color: #8B0000;
+  border-color: #8B0000;
+}
+
+.btn-danger:hover{
+  color: #F5F5F5;
+  background-color: #A52A2A;
+  border-color: #A52A2A;
+}
+
+.mat-mdc-header-row{
   z-index: 0 !important;
+  background-color: #404040!important;
+  min-height: 43px;
+  color: #F5F5F5!important;
 }
 
 .top10ClassesFodas {

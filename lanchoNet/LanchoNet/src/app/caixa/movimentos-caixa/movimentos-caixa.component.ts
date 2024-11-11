@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -56,7 +56,8 @@ import {ModalAbrirCaixaComponent} from "../modais/modal-abrir-caixa/modal-abrir-
     MatLabel,
     MatTooltip,
     NgClass,
-    NgStyle
+    NgStyle,
+    ModalAbrirCaixaComponent
   ],
   templateUrl: './movimentos-caixa.component.html',
   styleUrl: './movimentos-caixa.component.css'
@@ -69,9 +70,12 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
   valorFiado = 0;
   valorEntrada = 0;
   valorSaida = 0;
+  caixaFechado = false;
+  abrirCaixa = false;
+  abrindoCaixa = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private http: HttpClient, private router: Router, private dialog: MatDialog) {
+  constructor(private http: HttpClient, private router: Router, private dialog: MatDialog, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -79,7 +83,6 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy() {
-    this.dialog.closeAll(); // Fecha todos os diálogos ao destruir o componente
   }
 
   carregarMovimentosCaixa() {
@@ -89,22 +92,17 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
       this.dataSourceMovimentos.data = this.caixa.movimentos;
       this.dataSourceMovimentos.paginator = this.paginator;
       this.calcularTotalCaixa();
+      this.caixaFechado = false;
+      this.abrirCaixa = false;
+      this.cdr.detectChanges();
     }, error => {
-      const dialogRef = this.dialog.open(ModalComponent, {
-        panelClass: 'modalClass',
-        hasBackdrop: true,
-        data: {titulo: "Atenção", mensagem: "Não foi encontrado nenhum caixa aberto! Deseja abrir um?", botao: "Sim", erro: false}
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        const otherDialog = this.dialog.open(ModalAbrirCaixaComponent, {
-          panelClass: 'modalClass',
-          hasBackdrop: true
-        });
-        otherDialog.afterClosed().subscribe(()=>{
-          this.carregarMovimentosCaixa();
-        })
-      });
+      this.caixaFechado = true;
     });
+  }
+
+  abrirCaixaVoid(){
+    this.abrirCaixa = true;
+
   }
 
   fecharCaixa(id: number) {
@@ -115,7 +113,8 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
     });
     dialogRef.afterClosed().subscribe(result => {
       this.http.post('http://localhost:8080/api/Caixa/FechaCaixa', id).subscribe(data => {
-      }, error => console.error(error));
+         this.carregarMovimentosCaixa();
+      }, error => this.openDialog("Atenção!", error.error.message, "Ok", false));
     });
   }
 
@@ -129,10 +128,8 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
         case 'FIADO':
           this.valorFiado += mov.valor;
           break;
-        case 'SAIDA':
-          this.valorSaida += mov.valor;
-          break;
         default:
+          this.valorSaida += mov.valor;
           break;
       }
     })
@@ -153,10 +150,8 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
         return 'bi bi-arrow-up';
       case 'FIADO':
         return 'bi bi-arrow-right';
-      case 'SAIDA':
-        return 'bi bi-arrow-down';
       default:
-        return '';
+        return 'bi bi-arrow-down';
     }
   }
 
@@ -166,10 +161,8 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
         return 'btn btn-success';
       case 'FIADO':
         return 'btn btn-warning';
-      case 'SAIDA':
-        return 'btn btn-danger';
       default:
-        return '';
+        return 'btn btn-danger';
     }
   }
 
@@ -179,10 +172,8 @@ export class MovimentosCaixaComponent implements OnInit, OnDestroy{
         return 'Entrada';
       case 'FIADO':
         return 'Fiado';
-      case 'SAIDA':
-        return 'Saída';
       default:
-        return '';
+        return 'Saída';
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.example.lanchonet.controllers;
 
+import com.example.lanchonet.dtos.LoginDto;
 import com.example.lanchonet.dtos.PessoaDto;
 import com.example.lanchonet.entidades.Pessoa;
 import com.example.lanchonet.entidades.Usuario;
@@ -35,9 +36,13 @@ public class UsuarioController {
         return usuarioNegocio.buscarUsuarioPorId(id);
     }
 
-    @PostMapping("Deletar")
-
+    @PostMapping("/Deletar")
     public void Deletar(@RequestBody Long id){
         usuarioNegocio.excluirUsuario(id);
+    }
+
+    @PostMapping("/Logar")
+    public Boolean logar(@RequestBody LoginDto dto ){
+        return usuarioNegocio.logar(dto);
     }
 }

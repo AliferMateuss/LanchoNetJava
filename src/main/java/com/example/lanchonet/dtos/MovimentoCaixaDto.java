@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class MovimentoCaixaDto {
 
@@ -16,6 +17,11 @@ public class MovimentoCaixaDto {
     @Setter
     private String tipoMovimento;
 
+
+    @Getter
+    @Setter
+    private Date dataMovimento;
+
     @Getter
     @Setter
     private String tipoPagamentoNome;
@@ -24,10 +30,11 @@ public class MovimentoCaixaDto {
     @Setter
     private BigDecimal valor;
 
-    public MovimentoCaixaDto(Long id, TipoMovimentoCaixa tipoMovimento, String tipoPagamentoNome, BigDecimal valor) {
+    public MovimentoCaixaDto(Long id, TipoMovimentoCaixa tipoMovimento, String tipoPagamentoNome, BigDecimal valor, Date dataMovimento) {
         this.id = id;
         this.tipoMovimento = tipoMovimento.name();
         this.tipoPagamentoNome = tipoPagamentoNome;
         this.valor = valor;
+        this.dataMovimento = dataMovimento;
     }
 }

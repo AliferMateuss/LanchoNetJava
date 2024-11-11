@@ -58,15 +58,14 @@ export class ListaCaixaComponent {
     }, error => console.error(error));
   }
 
-  visualizarCaixa(caixa: Caixa){
-    this.service.setCaixa(caixa);
-    this.router.navigate(['/../cadastroCaixa'])
-  }
-
   excluirCaixa(id: number) {
     this.http.post(this.baseUrl + "api/Caixa/Deletar", id).subscribe(data => {
       this.carregarCaixas();
     }, error => console.error(error));
+  }
+
+  atualizar(){
+    this.carregarCaixas();
   }
 
   pageChangeEvent(event: PageEvent) {

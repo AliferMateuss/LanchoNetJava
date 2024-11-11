@@ -1,5 +1,6 @@
 package com.example.lanchonet.negocio;
 
+import com.example.lanchonet.dtos.LoginDto;
 import com.example.lanchonet.entidades.GrupoUsuario;
 import com.example.lanchonet.entidades.Pessoa;
 import com.example.lanchonet.entidades.Usuario;
@@ -7,6 +8,7 @@ import com.example.lanchonet.entidades.Venda;
 import com.example.lanchonet.facades.GrupoUsuarioFacade;
 import com.example.lanchonet.facades.PessoaFacade;
 import com.example.lanchonet.facades.UsuarioFacade;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,20 @@ public class UsuarioNegocio {
 
     @Autowired
     private GrupoUsuarioFacade grupoUsuarioFacade;
+
+    public Boolean logar(LoginDto dto){
+        try{
+            Usuario usuario = facade.recuperaPorLogin(dto.getLogin());
+            return usuario.getSenha().equals(dto.getSenha());
+        }
+        catch (NoResultException e){
+            new RuntimeException("Usuario não encontrado");
+        }
+        catch (Exception e){
+            new RuntimeException(e.getMessage());
+        }
+        return false;
+    }
 
 
     public void salvarUsuario(Usuario usuario) {

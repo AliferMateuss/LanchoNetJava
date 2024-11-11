@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Entity
 @Table(name = "movimento_caixa")
@@ -32,6 +33,11 @@ public class MovimentoCaixa {
     @Getter
     @Setter
     private BigDecimal valor;
+
+    @Getter
+    @Setter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataMovimento;
 
     @JsonIgnore
     @Getter

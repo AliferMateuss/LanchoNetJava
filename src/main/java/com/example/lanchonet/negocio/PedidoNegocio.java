@@ -60,7 +60,7 @@ public class PedidoNegocio {
             if (pedido.getPessoa() == null && !pedido.getPedidoCliente()) {
                 throw new Exception("Cliente não definido para o pedido, selecione o cliente ou clique em pedido balcão");
             }
-            abreFechaMesa(pedido, true);
+            abreFechaMesa(pedido, false);
             setUsuario(pedido);
             pedido.setStatusPedido(StatusPedido.ABERTO);
             validaEstoque(pedido);
@@ -180,6 +180,7 @@ public class PedidoNegocio {
             pedido.setPessoaId(dto.getIdPessoa());
             pedido.setParcelas(dto.getParcelas());
             setTipoPagamento(dto.getIdTipoPagamento());
+            abreFechaMesa(pedido, true);
 
             if (!Hibernate.isInitialized(pedido.getItensPedido())) {
                 Hibernate.initialize(pedido.getItensPedido());
@@ -198,7 +199,6 @@ public class PedidoNegocio {
     public void fecharPedidoPago(Pedido pedido) {
         try {
             setPessoa(pedido);
-            abreFechaMesa(pedido, false);
             setUsuario(pedido);
             pedido.setPedidoPago(true);
             pedido.setDataFechamentoPedido(new Date());
@@ -215,7 +215,6 @@ public class PedidoNegocio {
     public void fecharPedidoFiado(Pedido pedido) {
         try {
             setPessoa(pedido);
-            abreFechaMesa(pedido, false);
             setUsuario(pedido);
             pedido.setPedidoPago(false);
             pedido.setDataFechamentoPedido(new Date());
@@ -250,7 +249,7 @@ public class PedidoNegocio {
                 Produto produto = produtoFacade.findById(item.getProdutoId());
                 if (produto != null) {
                     if (produto.getQuantidade() <= item.getQuantidade()) {
-                        throw new RuntimeException(String.format(ERRO_ESTOQUE, item.getProduto().getNome(), item.getQuantidade(), produto.getQuantidade()));
+                        throw new RuntimeException(String.format(ERRO_ESTOQUE, produto.getNome(), item.getQuantidade(), produto.getQuantidade()));
                     } else {
                         produto.setQuantidade(produto.getQuantidade() - item.getQuantidade());
                         item.setProduto(produto);
@@ -290,7 +289,7 @@ public class PedidoNegocio {
     }
 
     private void setUsuario(Pedido pedido) throws Exception {
-        pedido.setUsuarioId(3L);
+        pedido.setUsuarioId(1L);
         if (pedido.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(pedido.getUsuarioId());
             if (usuario == null) {

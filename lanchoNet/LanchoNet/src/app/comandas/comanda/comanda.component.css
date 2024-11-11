@@ -1,19 +1,23 @@
 .comanda-item {
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #e0e0e0;
+  background-color: #2E2E2E;
   border-radius: 4px;
   cursor: move; /* Altera o cursor para indicar que pode ser movido */
   transition: all 0.2s ease;
   overflow: hidden;
 }
 
+.comanda-title{
+  color:#F5F5F5;
+}
+
 .comanda-item:hover {
-  background-color: #d0d0d0; /* Altera a cor de fundo quando o cursor passa sobre o item */
+  background-color: #404040; /* Altera a cor de fundo quando o cursor passa sobre o item */
 }
 
 .comanda-item.expanded {
-  background-color: #d0d0d0;
+  background-color: #404040;
   max-height: 150px;
   overflow-y: auto;
   cursor: default; /* Altera o cursor quando a comanda está expandida */
@@ -27,9 +31,14 @@
   color: #555;
 }
 
+label{
+  color: #F5F5F5;
+}
+
 .mat-mdc-header-row{
- background-color: #d0d0d0!important;
+ background-color: #404040!important;
   min-height: 43px;
+  color: #F5F5F5;
 }
 
 .mat-mdc-table{

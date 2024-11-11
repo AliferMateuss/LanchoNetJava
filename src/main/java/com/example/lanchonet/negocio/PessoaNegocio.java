@@ -35,6 +35,14 @@ public class PessoaNegocio {
         return facade.findAllDto();
     }
 
+    public List<PessoaDto> buscarClientes() {
+        return facade.findAllDtoClientes();
+    }
+
+    public List<PessoaDto> buscarFornecedores() {
+        return facade.findAllDtoFornecedores();
+    }
+
     public void excluirPessoa(Pessoa pessoa) {
         facade.delete(pessoa);
     }

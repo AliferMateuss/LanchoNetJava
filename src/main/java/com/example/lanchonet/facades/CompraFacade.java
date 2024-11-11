@@ -22,7 +22,7 @@ public class CompraFacade extends AbstractFacade<Compra, Long>  {
                 "c.id, " +
                 "c.pessoa.id, " +
                 "c.usuario.id, " +
-                "c.pessoa.nome, " +
+                "c.pessoa.razaoSocial, " +
                 "c.valorTotal) " +
                 "FROM Compra c LEFT JOIN c.pessoa pessoa", CompraDto.class).getResultList();
     }

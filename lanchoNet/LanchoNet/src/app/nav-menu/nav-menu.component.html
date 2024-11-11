@@ -7,6 +7,9 @@
     <li class="nav-item menuItem">
       <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/pedidos']">Pedidos</a>
     </li>
+    <li class="nav-item menuItem">
+      <a class="nav-link text-light" (click)="fecharMenu()" [routerLink]="['/comandas']">Comandas</a>
+    </li>
     <li class="nav-item has-submenu" [class.submenu-active]="subMenuAberto.cadastros">
       <a data-bs-toggle="collapse" data-bs-target="#cadastros" aria-expanded="false" aria-controls="cadastros" class="nav-link text-light" (click)="toggleSubMenu('cadastros')">
         Cadastros

@@ -7,6 +7,7 @@ import com.example.lanchonet.entidades.ItensVenda;
 import com.example.lanchonet.entidades.Produto;
 import com.example.lanchonet.facades.CategoriaFacade;
 import com.example.lanchonet.facades.ProdutoFacade;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,7 @@ public class ProdutoNegocio {
     public void setCategoria(Produto produto) throws Exception {
         if(produto.getCategoriaId() != null){
             Categoria categoria = categoriaFacade.findById(produto.getCategoriaId());
+
 
             if(categoria == null){
                 throw new Exception("Categoria não encontrada");

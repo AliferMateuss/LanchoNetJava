@@ -35,6 +35,17 @@ public class CaixaFacade extends AbstractFacade<Caixa, Long> {
                 ") FROM Caixa c WHERE c.status = 'ABERTO'", CaixaDto.class).getSingleResult();
     }
 
+    @Transactional
+    public CaixaDto recuperaCaixaPorId(Long id){
+        return entityManager.createQuery("SELECT new com.example.lanchonet.dtos.CaixaDto(" +
+                "c.id," +
+                "c.dataAbertura," +
+                "c.dataFechamento," +
+                "c.valorTotal," +
+                "c.valorInicial" +
+                ") FROM Caixa c WHERE  c.id = " + id, CaixaDto.class).getSingleResult();
+    }
+
 
     @Transactional
     public void excluiMovimentacaoPorCompra(Long id){

@@ -55,12 +55,12 @@
 
           <ng-container matColumnDef="preco">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Preço Compra</mat-header-cell>
-            <mat-cell *matCellDef="let prod"> {{ formatReal(prod.preco) }}</mat-cell>
+            <mat-cell *matCellDef="let prod"> {{ formatReal(prod.precoCompra) }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="precoCompra">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Preço Venda</mat-header-cell>
-            <mat-cell *matCellDef="let prod"> {{ formatReal(prod.precoCompra) }}</mat-cell>
+            <mat-cell *matCellDef="let prod"> {{ formatReal(prod.preco) }}</mat-cell>
           </ng-container>
 
 
@@ -91,7 +91,7 @@
       </div>
     </div>
     <div style="display: flex; justify-content: center; flex-wrap: wrap; flex-direction: row; column-gap: 100px; }">
-      <button type="button" class="btn btn-danger" [routerLink]="['/../']">
+      <button type="button" class="btn btn-danger" [routerLink]="['/../comandas']">
         Voltar <i class="bi bi-arrow-bar-left"></i>
       </button>
       <button type="button" class="btn btn-primary" [routerLink]="['/../cadastroProdutos', '' ]">

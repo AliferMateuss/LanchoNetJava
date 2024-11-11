@@ -28,7 +28,7 @@ public class ItensVenda {
     @JsonIgnore
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_produto", nullable = false)
     private Produto produto;
 

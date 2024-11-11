@@ -23,7 +23,8 @@ public class MovimentoCaixaFacade extends AbstractFacade<MovimentoCaixa, Long> {
                         "m.id," +
                         "m.tipoMovimento," +
                         "CASE WHEN tp IS NULL THEN 'N/A' ELSE tp.nome END," +
-                        "m.valor" +
+                        "m.valor," +
+                        "m.dataMovimento" +
                         ") FROM MovimentoCaixa m LEFT JOIN m.tipoPagamento tp WHERE m.caixa.id = :id ", MovimentoCaixaDto.class)
                 .setParameter("id", id)
                 .getResultList();

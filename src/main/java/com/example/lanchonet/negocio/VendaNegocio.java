@@ -79,7 +79,7 @@ public class VendaNegocio {
             Venda vendaSalva = vendaFacade.save(venda);
             caixaNegocio.gerarMovimentacao(vendaSalva);
             if(venda.getVendaFiado())
-                creditoClienteNegocio.geraMovimentoCreditoCliente(venda);
+                creditoClienteNegocio.geraMovimentoCreditoCliente(vendaSalva);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -167,7 +167,7 @@ public class VendaNegocio {
     }
 
     private void setUsuario(Venda venda) throws Exception {
-        venda.setUsuarioId(3L);
+        venda.setUsuarioId(1L);
         if (venda.getUsuarioId() != null) {
             Usuario usuario = usuarioFacade.findById(venda.getUsuarioId());
             if (usuario == null) {
