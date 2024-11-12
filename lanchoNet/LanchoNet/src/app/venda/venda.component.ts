@@ -265,7 +265,7 @@ formatarValorParaExibicao(valor: number): string {
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     let parteDecimal = partes[1] || '00';
 
-    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+
     if (parteDecimal.length === 1) {
         parteDecimal += '0';
     }
@@ -280,7 +280,7 @@ formatarValorParaExibicao(valor: number): string {
   carregarTiposPagamentos() {
     this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
       this.TiposPagamentos = data;
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
 
   }
 
@@ -348,7 +348,7 @@ formatarValorParaExibicao(valor: number): string {
         this.openDialog("Venda: ", "Venda realizada com sucesso", "Ok", false);
 
       },
-      error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+      error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
   }
 
   calcularValorVendaJuros(): number {

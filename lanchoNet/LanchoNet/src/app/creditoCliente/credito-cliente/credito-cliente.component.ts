@@ -177,7 +177,7 @@ formatarValorParaExibicao(valor: number): string {
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     let parteDecimal = partes[1] || '00';
 
-    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+
     if (parteDecimal.length === 1) {
         parteDecimal += '0';
     }
@@ -197,13 +197,13 @@ formatarValorParaExibicao(valor: number): string {
           this.carregarMovimentosCredito(this.creditoCliente.idCredito);
           this.carregarPagamentosCredito(this.creditoCliente.idCredito);
         }
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
   }
 
   carregarTiposPagamentos() {
     this.http.get<TipoPagamento[]>('http://localhost:8080/api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
       this.TiposPagamentos = data;
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
 
   }
 

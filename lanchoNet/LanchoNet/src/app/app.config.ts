@@ -27,5 +27,5 @@ export const appConfig: ApplicationConfig = {
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
     importProvidersFrom(MatNativeDateModule)
 
-  ]// Importando o MatNativeDateModule corretamente]
+  ]
 };

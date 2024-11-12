@@ -112,7 +112,7 @@ public class RelatorioNegocio {
                 Hibernate.initialize(compra.getItensCompra());
                 String valorFormatado = formatarValor(compra.getValorTotal());
                 relatorio.append(String.format("<tr><td>%s</td><td>%s</td><td>%s</td><td>",
-                        compra.getDataCompra(),  compra.getPessoa().getNome() ,
+                        compra.getDataCompra(),  compra.getPessoa().getRazaoSocial() ,
                         valorFormatado));
 
                 int count = 1;
@@ -269,7 +269,7 @@ public class RelatorioNegocio {
             for (ContasAPagar conta : contas) {
                 Hibernate.initialize(conta.getFornecedor());
                 relatorio.append(String.format("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>",
-                        conta.getId().toString(), conta.getFornecedor().getNome(), conta.getDataConta(),
+                        conta.getId().toString(), conta.getFornecedor().getRazaoSocial(), conta.getDataConta(),
                         conta.getDataVencimento(), conta.getDataCompetencia(), formatarValor(conta.getValor()),
                         conta.getStatus().getDescricao()));
             }

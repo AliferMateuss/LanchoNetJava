@@ -43,12 +43,16 @@ export class CadastroUsuariosComponent {
   ngOnInit() {
     var id = this.route.snapshot.paramMap.get('id?');
     if (id) {
-      const params = new HttpParams().set("id", id);
-      this.http.get<Usuario>(this.baseUrl + 'api/Usuario/RertornaPorId', { params }).subscribe(data => {
+      this.http.post<Usuario>(this.baseUrl + 'api/Usuario/RertornaPorId', id, {
+        headers: { 'Content-Type': 'application/json' }
+      }).subscribe(data => {
         this.usuario = data;
         this.ehAlteracao = true;
       }, error => this.openDialog("Erro ao recuperar usuário", error, "Voltar", true));
     }
+
+    this.carregargrupoUsuario();
+    this.carregarPessoas();
 
     this.formUsuario = new FormGroup({
       usuario: new FormControl(this.usuario.usuarioNome, [Validators.required]),
@@ -57,8 +61,7 @@ export class CadastroUsuariosComponent {
       idGrupoUsuario: new FormControl(this.usuario.grupoUsuarioId, [Validators.required])
     });
 
-    this.carregargrupoUsuario();
-    this.carregarPessoas();
+
   }
 
   carregargrupoUsuario() {
@@ -94,7 +97,7 @@ export class CadastroUsuariosComponent {
       form.classList.add('was-validated');
       return;
     } else {
-      const url = this.ehAlteracao ? 'api/Usuario/Atualizar' : 'api/Usuario/Salvar';
+      const url = 'api/Usuario/Salvar';
       this.http.post<any>(this.baseUrl + url, this.usuario).subscribe(data => {
         this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
       }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
@@ -102,11 +105,11 @@ export class CadastroUsuariosComponent {
   }
 
   selecionarPessoa(event: any) {
-    // Lógica para selecionar pessoa
+
   }
 
   selecionarGrupoUsuario(event: any) {
-    // Lógica para selecionar grupo de usuário
+
   }
 }
 

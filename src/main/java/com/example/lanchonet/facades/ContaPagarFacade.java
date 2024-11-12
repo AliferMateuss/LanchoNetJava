@@ -27,7 +27,7 @@ public class ContaPagarFacade extends AbstractFacade<ContasAPagar, Long>  {
                 "c.parcela," +
                 "c.valor," +
                 "c.status," +
-                "c.fornecedor.nome," +
+                "c.fornecedor.razaoSocial," +
                 "c.fornecedor.id" +
                 ") FROM ContasAPagar c", ContasPagarDto.class).getResultList();
     }

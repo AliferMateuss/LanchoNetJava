@@ -52,7 +52,8 @@ public class PedidoFacade extends AbstractFacade<Pedido, Long> {
                 "CASE WHEN p.nomeCliente IS NOT NULL THEN p.nomeCliente ELSE '' END), " +
                 "p.valorTotal) " +
                 "FROM Pedido p LEFT JOIN p.pessoa pessoa " +
-                "WHERE p.statusPedido = 'FECHADO'", PedidoDto.class).getResultList();
+                "WHERE p.statusPedido = 'FECHADO'" +
+                "ORDER BY p.id DESC", PedidoDto.class).getResultList();
     }
 
     public List<ItemPedidoDto> recuperItensComanda(Long id){

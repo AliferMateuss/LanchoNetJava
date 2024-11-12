@@ -35,7 +35,7 @@ export class CadastroCategoriasComponent {
       this.http.post<Categoria>(this.baseUrl + 'api/Categoria/RertornaPorId', id ).subscribe(data => {
         this.categoria = data;
         this.ehAlteracao = true;
-      }, error => this.openDialog("Erro ao recuperar categoria", error, "Voltar", true));
+      }, error => this.openDialog("Erro ao recuperar categoria", error.error.message, "Voltar", true));
     }
 
     this.formCategoria = new FormGroup({
@@ -64,7 +64,7 @@ export class CadastroCategoriasComponent {
     } else {
       this.http.post<any>(this.baseUrl + 'api/Categoria/Salvar', this.categoria).subscribe(data => {
         this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
-      }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
+      }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error.error.message, "Voltar", true));
     }
   }
 }

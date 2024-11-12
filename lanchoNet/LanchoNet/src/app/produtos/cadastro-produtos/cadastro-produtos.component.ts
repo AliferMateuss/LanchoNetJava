@@ -106,8 +106,8 @@ export class CadastroProdutosComponent {
 
   validacaoPrecos(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
-      const preco = group.get('preco')?.value;
-      const precoCompra = group.get('precoCompra')?.value;
+      const preco = this.formProduto?.get('preco')?.value;
+      const precoCompra = this.formProduto?.get('precoCompra')?.value;
       if (preco && precoCompra && preco <= precoCompra) {
         return { invalidComparison: true };
       }
@@ -116,6 +116,7 @@ export class CadastroProdutosComponent {
   }
 
   salvarproduto() {
+    this.formProduto?.updateValueAndValidity();
     if (this.formProduto?.invalid) {
       const form = document.querySelector('.needs-validation') as HTMLFormElement;
       form.classList.add('was-validated');

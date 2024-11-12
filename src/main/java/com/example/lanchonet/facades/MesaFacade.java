@@ -16,6 +16,11 @@ public class MesaFacade extends AbstractFacade<Mesa, Long> {
 
     @Transactional
     public List<Mesa> recuperaMesasAbertas(){
-        return entityManager.createQuery("FROM Mesa m WHERE m.status = 'ABERTA' ").getResultList();
+        return entityManager.createQuery("FROM Mesa m  ").getResultList();
+    }
+
+    @Transactional
+    public List<Mesa> recuperaMesas(){
+        return entityManager.createQuery("FROM Mesa m ").getResultList();
     }
 }

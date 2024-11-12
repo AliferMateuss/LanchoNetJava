@@ -74,7 +74,7 @@
   <ng-template #modalBaixa let-modalBaixa>
     <div *ngIf="contaAReceber">
       <div class="modal-header">
-        <h4 class="modal-title">Conta Nº- {{ contaAReceber.id }} </h4>
+        <h4 class="modal-title">Conta Nº- {{ contaAReceber.id }}  Parcela- {{contaAReceber.parcela}}</h4>
         <button class="btn btn-close" type="button" (click)="modalBaixa.dismiss('Cross click')">
           <span aria-hidden="true">&times;</span>
         </button>

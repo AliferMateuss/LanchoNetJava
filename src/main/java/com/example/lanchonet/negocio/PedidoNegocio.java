@@ -179,7 +179,8 @@ public class PedidoNegocio {
             pedido.setMesaId(dto.getIdMesa());
             pedido.setPessoaId(dto.getIdPessoa());
             pedido.setParcelas(dto.getParcelas());
-            setTipoPagamento(dto.getIdTipoPagamento());
+            if(!dto.getPedidoFiado())
+                setTipoPagamento(dto.getIdTipoPagamento());
             abreFechaMesa(pedido, true);
 
             if (!Hibernate.isInitialized(pedido.getItensPedido())) {

@@ -22,6 +22,10 @@ public class MesaNegocio {
     }
 
     public List<Mesa> buscarMesas() {
+        return facade.recuperaMesas();
+    }
+
+    public List<Mesa> buscarMesasAbertas() {
         return facade.recuperaMesasAbertas();
     }
 

@@ -6,6 +6,7 @@ import com.example.lanchonet.entidades.*;
 import com.example.lanchonet.enums.StatusCaixa;
 import com.example.lanchonet.enums.TipoMovimentoCaixa;
 import com.example.lanchonet.facades.*;
+import jakarta.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -108,7 +109,10 @@ public class CaixaNegocio {
             caixa.getMovimentos().add(movimentacao);
             geraValorTotal();
             facade.save(caixa);
-        } catch (Exception e) {
+        } catch (NoResultException ne){
+            throw new RuntimeException("Nenhum caixa aberto!");
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -212,7 +216,7 @@ public class CaixaNegocio {
         movimentoCaixaFacade.excluiMovimentacaoPorCompra(compra);
     }
 
-    private void setCaixa()throws Exception{
+    private void setCaixa() throws Exception{
             caixa = facade.recuperaCaixaAberto();
             if(caixa == null)
                 throw new Exception("Nenhum caixa aberto!");

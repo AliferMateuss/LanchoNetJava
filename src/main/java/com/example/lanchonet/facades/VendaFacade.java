@@ -31,11 +31,17 @@ public class VendaFacade extends AbstractFacade<Venda, Long> {
                 "v.id, " +
                 "v.pessoa.id, " +
                 "v.usuario.id, " +
-                "concat(CASE WHEN v.pessoa IS NOT NULL THEN v.pessoa.nome ELSE '' END, " +
-                "CASE WHEN v.nomeCliente IS NOT NULL THEN v.nomeCliente ELSE '' END), " +
+                "concat(" +
+                "    CASE " +
+                "        WHEN v.nomeCliente IS NOT NULL THEN v.nomeCliente " +
+                "        WHEN v.pessoa IS NOT NULL THEN v.pessoa.nome " +
+                "        ELSE '' " +
+                "    END" +
+                ")," +
                 "v.valorTotal) " +
                 "FROM Venda v LEFT JOIN v.pessoa pessoa " +
-                "WHERE v.statusVenda = 'FECHADA'", VendaDto.class).getResultList();
+                "WHERE v.statusVenda = 'FECHADA' " +
+                " ORDER BY v.id DESC", VendaDto.class).getResultList();
     }
 
     public List<Venda> vendasRel(FiltroDto filtro) {

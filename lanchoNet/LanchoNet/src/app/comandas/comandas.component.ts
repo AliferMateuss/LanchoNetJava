@@ -62,7 +62,7 @@ export class ComandasComponent implements OnInit {
       this.distribuiComandas(data);
       this.connectedDropLists = this.columns.map((_, index) => `cdk-drop-list-${index}`);
       this.cdr.detectChanges();
-    }, error => this.openDialogError("Erro: ", error, "Voltar", true));
+    }, error => this.openDialogError("Erro: ", error.error.message, "Voltar", true));
   }
 
   distribuiComandas(comandas: any[]) {

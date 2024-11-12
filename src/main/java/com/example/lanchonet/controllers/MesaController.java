@@ -16,9 +16,13 @@ public class MesaController {
     private MesaNegocio mesaNegocio;
 
     @GetMapping("/RecuperarMesas")
-
     public List<Mesa> recuperarMesas(){
         return mesaNegocio.buscarMesas();
+    }
+
+    @GetMapping("/RecuperarMesasAbertas")
+    public List<Mesa> recuperarMesasAbertas(){
+        return mesaNegocio.buscarMesasAbertas();
     }
 
     @PostMapping("/Salvar")

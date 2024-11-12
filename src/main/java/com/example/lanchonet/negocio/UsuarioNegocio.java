@@ -54,7 +54,10 @@ public class UsuarioNegocio {
     }
 
     public Usuario buscarUsuarioPorId(Long id) {
-        return facade.findById(id);
+        Usuario usu =  facade.findById(id);
+        usu.setGrupoUsuarioId(usu.getGrupoUsuario().getId());
+        usu.setPessoaId(usu.getPessoa().getId());
+        return usu;
     }
 
     public List<Usuario> buscarUsuarios() {

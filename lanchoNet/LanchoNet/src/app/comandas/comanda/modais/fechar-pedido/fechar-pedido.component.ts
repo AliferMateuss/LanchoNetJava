@@ -71,7 +71,7 @@ export class FecharPedidoComponent {
     this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
       this.TiposPagamentos = data;
       console.log(this.TiposPagamentos)
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
   }
 
   changeParcelas() {
@@ -149,7 +149,7 @@ export class FecharPedidoComponent {
     this.http.post(this.baseUrl + "api/Pedido/FecharPedido", this.comanda).subscribe(data => {
       this.openDialog("Sucesso!", "Pedido fechado com sucesso!", "Voltar", true)
       this.dialogRef.close();
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
   }
 
   openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {

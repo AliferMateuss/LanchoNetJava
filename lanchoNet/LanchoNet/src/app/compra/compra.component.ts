@@ -44,7 +44,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
   public compra: Compra = new Compra();
   public itemCompra: ItensCompra = new ItensCompra();
   public itensCompra: ItensCompra[] = [];
-  public Fornecedores?: any[]; // Fornecedores no lugar de Clientes
+  public Fornecedores?: any[];
   public Produtos?: any[];
   public TiposPagamentos!: TipoPagamento[] | null;
   public tipoPagamentoSelecionado: TipoPagamento | null | undefined;
@@ -104,7 +104,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
       (data) => {
         this.Fornecedores = data;
       },
-      (error) => this.openDialog('Erro: ', error, 'Voltar', true)
+      (error) => this.openDialog('Erro: ', error.error.message, 'Voltar', true)
     );
   }
 
@@ -113,7 +113,7 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
       (data) => {
         this.Produtos = data;
       },
-      (error) => this.openDialog('Erro: ', error, 'Voltar', true)
+      (error) => this.openDialog('Erro: ', error.error.message, 'Voltar', true)
     );
   }
 
@@ -230,13 +230,13 @@ export class CompraComponent implements  AfterViewInit, OnInit, OnDestroy {
         this.openDialog("Compra: ", "Compra realizada com sucesso", "Ok", false);
 
       },
-      error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+      error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
   }
 
   carregarTiposPagamentos() {
     this.http.get<TipoPagamento[]>(this.baseUrl + 'api/TipoPagamento/RecuperarTipoPagamentos').subscribe(data => {
       this.TiposPagamentos = data;
-    }, error => this.openDialog("Erro: ", error.mensage, "Voltar", true));
+    }, error => this.openDialog("Erro: ", error.error.message, "Voltar", true));
 
   }
 
@@ -309,7 +309,6 @@ formatarValorParaExibicao(valor: number): string {
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     let parteDecimal = partes[1] || '00';
 
-    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
     if (parteDecimal.length === 1) {
         parteDecimal += '0';
     }

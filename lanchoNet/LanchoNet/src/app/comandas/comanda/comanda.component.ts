@@ -93,7 +93,6 @@ formatarValorParaExibicao(valor: number): string {
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     let parteDecimal = partes[1] || '00';
 
-    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
     if (parteDecimal.length === 1) {
         parteDecimal += '0';
     }
@@ -125,7 +124,7 @@ formatarValorParaExibicao(valor: number): string {
           this.carregaComandas.emit();
         },
         error => {
-          console.error("Erro ao excluir comanda", error.message);
+          console.error("Erro ao excluir comanda", error.error.message);
         }
       );
     })
@@ -162,7 +161,7 @@ formatarValorParaExibicao(valor: number): string {
           this.carregaComandas.emit();
         },
         error => {
-          console.error("Erro ao excluir item:", error.message);
+          console.error("Erro ao excluir item:", error.error.message);
         }
       );
     })

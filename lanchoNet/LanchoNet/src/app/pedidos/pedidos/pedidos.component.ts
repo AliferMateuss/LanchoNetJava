@@ -154,7 +154,7 @@ export class PedidosComponent {
   }
 
   carregarMesas() {
-    this.http.get<any[]>(this.baseUrl + 'api/Mesa/RecuperarMesas').subscribe(data => {
+    this.http.get<any[]>(this.baseUrl + 'api/Mesa/RecuperarMesasAbertas').subscribe(data => {
       this.Mesas = data;
     }, error => this.openDialog("Erro: ", error, "Voltar", true));
   }
@@ -229,7 +229,7 @@ formatarValorParaExibicao(valor: number): string {
     const parteInteira = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     let parteDecimal = partes[1] || '00';
 
-    // Completa a parte decimal com um zero à direita, se tiver apenas um dígito
+
     if (parteDecimal.length === 1) {
         parteDecimal += '0';
     }
@@ -261,7 +261,7 @@ formatarValorParaExibicao(valor: number): string {
         this.finalizacaoSucesso.emit();
         this.pedido = new Pedido();
       },
-      error => this.openDialog("Erro", error.message, "Voltar", true)
+      error => this.openDialog("Erro", error.error.message, "Voltar", true)
     );
   }
 

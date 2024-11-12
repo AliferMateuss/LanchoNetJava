@@ -31,7 +31,6 @@ public class UsuarioController {
     }
 
     @PostMapping("/RertornaPorId")
-
     public Usuario retornaPorId(@RequestBody Long id){
         return usuarioNegocio.buscarUsuarioPorId(id);
     }

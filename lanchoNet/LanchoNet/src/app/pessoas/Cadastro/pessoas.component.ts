@@ -131,7 +131,7 @@ export class PessoasComponent implements OnInit {
         this.dataSource.data = this.pessoa.enderecos;
         this.cdr.detectChanges();
         this.setValidators();
-      }, error =>  this.openDialog("Erro ao recuperar Pessoa", error.message, "Voltar", true));
+      }, error =>  this.openDialog("Erro ao recuperar Pessoa", error.error.message, "Voltar", true));
     }
   }
 

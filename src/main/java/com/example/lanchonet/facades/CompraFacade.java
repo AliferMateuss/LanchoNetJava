@@ -24,7 +24,8 @@ public class CompraFacade extends AbstractFacade<Compra, Long>  {
                 "c.usuario.id, " +
                 "c.pessoa.razaoSocial, " +
                 "c.valorTotal) " +
-                "FROM Compra c LEFT JOIN c.pessoa pessoa", CompraDto.class).getResultList();
+                "FROM Compra c LEFT JOIN c.pessoa pessoa" +
+                " ORDER BY c.id DESC", CompraDto.class).getResultList();
     }
 
     public List<ItemCompraDto> recuperItensCompra(Long id){

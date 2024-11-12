@@ -54,6 +54,7 @@ public class VendaNegocio {
             if (venda.getVendaBalcao()) {
                 venda.setTipoVenda(TipoVenda.BALCAO);
             } else if (venda.getVendaFiado()) {
+                venda.setTipoPagamento(null);
                 venda.setTipoVenda(TipoVenda.FIADO);
             } else {
                 venda.setTipoVenda(TipoVenda.CLIENTE);

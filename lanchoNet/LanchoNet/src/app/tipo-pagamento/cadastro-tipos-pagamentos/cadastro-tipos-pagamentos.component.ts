@@ -88,7 +88,7 @@ export class CadastroTiposPagamentosComponent {
 
       this.http.post<any>(this.baseUrl + 'api/TipoPagamento/Salvar', this.tipoPagamento).subscribe(data => {
         this.openDialog(this.ehAlteracao ? "Alteração realizada com sucesso" : "Cadastro realizado com sucesso", "", "Continuar", false);
-      }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
+      }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error.error.message, "Voltar", true));
     }
   }
 }

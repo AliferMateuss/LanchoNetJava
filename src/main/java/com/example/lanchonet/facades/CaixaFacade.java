@@ -4,7 +4,9 @@ import com.example.lanchonet.dtos.CaixaDto;
 import com.example.lanchonet.entidades.Caixa;
 import com.example.lanchonet.entidades.Mesa;
 import com.example.lanchonet.entidades.Venda;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ public class CaixaFacade extends AbstractFacade<Caixa, Long> {
 
 
     @Transactional
-    public Caixa recuperaCaixaAberto(){
+    public Caixa recuperaCaixaAberto() throws NoResultException {
         return entityManager.createQuery("FROM Caixa c WHERE c.status = 'ABERTO'", Caixa.class).getSingleResult();
     }
 
